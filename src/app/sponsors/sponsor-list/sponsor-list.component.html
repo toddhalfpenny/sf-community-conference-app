@@ -1,0 +1,10 @@
+
+@if (sponsorList$ | async; as sponsorList) {
+  <ion-list>
+    @for(sponsor of sponsorList; track sponsor) {
+    <ion-item>
+      {{ sponsor.name }}
+    </ion-item>
+  }
+  </ion-list>
+}
