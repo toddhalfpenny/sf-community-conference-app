@@ -1,0 +1,7 @@
+.scanner-container {
+  // visibility: hidden;
+  &.scanner-active {
+    visibility: visible;
+  }
+}
+

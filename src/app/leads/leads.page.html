@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-list>
+  <!-- <ion-list>
     @for (lead of leads; track $index) {
       <ion-item detail>
         <ion-label>
@@ -17,11 +17,18 @@
         </ion-label>
       </ion-item>
     }
-  </ion-list>
+  </ion-list> -->
+  <div class="scanner-container" [ngClass]="{'scanner-active': action.isStart}">
+    <ngx-scanner-qrcode #action="scanner" (event)="handleScan($event, action)"></ngx-scanner-qrcode>
+  </div>
 </ion-content>
+
+
 <ion-footer>
-  <ion-button expand="block" shape="round" color="primary" size="large" (click)="addLead()">
+  <!-- <button (click)="action.isStart ? action.stop() : action.start()">{{action.isStart ? 'Stop' : 'Start'}}</button> -->
+  <ion-button expand="block" fill="outline" shape="round" color="primary" (click)="toggleCamera()">Toggle Camera</ion-button>
+  <ion-button expand="block" shape="round" color="primary" size="large" (click)="action.isStart ? action.stop() : startScanner()">
     <ion-icon slot="start" name="scan-circle"></ion-icon>
-    Add Lead  
+    {{action.isStart ? 'Cancel' : 'Add lead'}}  
   </ion-button>
 </ion-footer>
