@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonContent,
   IonHeader,
@@ -28,6 +29,7 @@ export interface UserCredentials {
   standalone: true,
   imports: [
     IonBackButton,
+    IonButton,
     IonButtons,
     IonContent,
     IonHeader,
@@ -54,7 +56,7 @@ export class AuthenticationPage implements OnDestroy {
    */
   readonly currentPage = this.router.url.split('/')[
     this.router.url.split('/').length - 1
-  ] as 'login' | 'signup' | 'reset';
+  ] as 'login' | 'logout' | 'signup' | 'reset';
 
  /**
    * This object holds the configuration for the authentication page.
@@ -65,6 +67,10 @@ export class AuthenticationPage implements OnDestroy {
     login: {
       pageTitle: 'Sign In',
       actionButtonText: 'Sign In',
+    },
+    logout: {
+      pageTitle: 'Log out?',
+      actionButtonText: 'Log out',
     },
     signup: {
       pageTitle: 'Create your account',
@@ -90,6 +96,10 @@ export class AuthenticationPage implements OnDestroy {
     this.activeSubscription?.unsubscribe();
   }
 
+  handleLogout() {
+  
+  }
+
   /**
   * This method gets the form value from the authentication component,
   * then it calls the respective method.
@@ -112,6 +122,13 @@ export class AuthenticationPage implements OnDestroy {
     this.activeSubscription = this.authenticationService
       .login(email, password as string)
       .pipe(tap(() => this.router.navigateByUrl('')))
+      .subscribe();
+  }
+
+  logout() {
+    this.activeSubscription = this.authenticationService
+      .logout()
+      .pipe(tap(() => this.router.navigateByUrl('home')))
       .subscribe();
   }
   

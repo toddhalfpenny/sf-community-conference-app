@@ -4,13 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
-  selector: 'app-maps',
-  templateUrl: './maps.page.html',
-  styleUrls: ['./maps.page.scss'],
+  selector: 'app-announcements',
+  templateUrl: './announcements.page.html',
+  styleUrls: ['./announcements.page.scss'],
   standalone: true,
   imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule]
 })
-export class MapsPage implements OnInit {
+export class AnnouncementsPage implements OnInit {
 
   constructor() { }
 

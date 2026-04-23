@@ -12,6 +12,10 @@ export const routes: Routes = [
     component: AuthenticationPage,
   },
   {
+    path: 'logout',
+    component: AuthenticationPage,
+  },
+  {
     path: 'signup',
     component: AuthenticationPage,
   },

@@ -40,11 +40,15 @@ export const routes: Routes = [
     loadComponent: () => import('./faq/faq.page').then( m => m.FaqPage)
   },
   {
-    path: 'annoucements',
-    loadComponent: () => import('./annoucements/annoucements.page').then( m => m.AnnoucementsPage)
+    path: 'announcements',
+    loadComponent: () => import('./announcements/announcements.page').then( m => m.AnnouncementsPage)
   },
   {
     path: 'profile',
     loadComponent: () => import('./profile/profile.page').then( m => m.ProfilePage)
+  },
+  {
+    path: 'leads',
+    loadComponent: () => import('./leads/leads.page').then( m => m.LeadsPage)
   },
 ];

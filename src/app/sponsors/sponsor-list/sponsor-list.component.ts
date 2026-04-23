@@ -15,10 +15,14 @@ import { SponsorsService } from '../sponsors.service';
 export class SponsorListComponent  implements OnInit {
   
   private readonly sponsorsService = inject(SponsorsService);
-  readonly sponsorList$: Observable<Sponsor[]> = this.sponsorsService.getSponsors();
+  protected readonly tiers = this.sponsorsService.getTiers();
+  sponsorList: any
 
   constructor() { }
 
-  ngOnInit() {}
+  async ngOnInit() {
+    this.sponsorList = await this.sponsorsService.getSponsors();
+    console.log('Sponsor list in component:', this.sponsorList);
+  }
 
 }

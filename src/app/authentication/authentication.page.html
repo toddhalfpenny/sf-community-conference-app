@@ -8,19 +8,26 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <app-auth-form
-    (formSubmitted)="handleUserCredentials($event)"
-    [actionButtonText]="actionButtonText"
-    [isPasswordResetPage]="currentPage === 'reset'"
-  ></app-auth-form>
+  @if (currentPage === 'logout') {
+    <ion-button expand="block" fill="clear" (click)="logout()">
+      {{actionButtonText}}
+    </ion-button>
+  } 
+  @if (currentPage !== 'logout') {
+    <app-auth-form
+      (formSubmitted)="handleUserCredentials($event)"
+      [actionButtonText]="actionButtonText"
+      [isPasswordResetPage]="currentPage === 'reset'"
+    ></app-auth-form>
 
-  @if (currentPage !== 'signup') {
-  <ion-button expand="block" fill="clear" routerLink="/auth/signup">
-    Create a new account
-  </ion-button>
-  } @if (currentPage !== 'reset') {
-  <ion-button expand="block" fill="clear" routerLink="/auth/reset">
-    I forgot my password :(
-  </ion-button>
+    @if (currentPage !== 'signup') {
+    <ion-button expand="block" fill="clear" routerLink="/auth/signup">
+      Create a new account
+    </ion-button>
+    } @if (currentPage !== 'reset') {
+    <ion-button expand="block" fill="clear" routerLink="/auth/reset">
+      I forgot my password :(
+    </ion-button>
+    }
   }
 </ion-content>

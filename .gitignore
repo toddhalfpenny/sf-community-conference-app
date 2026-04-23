@@ -1,8 +1,6 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
-src/main.ts
-
 *~
 *.sw[mnpcod]
 .tmp
@@ -14,6 +12,7 @@ $RECYCLE.BIN/
 *.log
 log.txt
 
+/src/environments/
 
 /.sourcemaps
 /.versions

@@ -6,6 +6,7 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, 
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Subscription } from 'rxjs';
 import { SponsorListComponent } from '../sponsors/sponsor-list/sponsor-list.component';
+import { UserService } from '../user/user-service';
 
 @Component({
   selector: 'app-home',
@@ -29,6 +30,7 @@ import { SponsorListComponent } from '../sponsors/sponsor-list/sponsor-list.comp
 export class HomePage implements OnDestroy {
 
   private readonly authenticationService = inject(AuthenticationService);
+  private readonly userService = inject(UserService);
   private authubscription?: Subscription;
 
   protected user: any;
@@ -39,6 +41,8 @@ export class HomePage implements OnDestroy {
     this.authubscription = this.authenticationService.getUser().subscribe(user => {
       this.user = user;
     });
+    // const eventUser = this.userService.getUser();
+    // console.log('Event user from UserService:', eventUser);
   }
 
   ngOnDestroy(): void {
