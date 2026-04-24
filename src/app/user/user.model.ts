@@ -1,6 +1,9 @@
 export interface User {
-  id: string; // Id + Email of the user, also used for login.
-  type: UserType;
+  email?: string; // Id + Email of the user, also used for login.
+  id?: string; 
+  company?: string;
+  firstname?: string;
+  type?: UserType;
 }
 
 export enum UserType {
