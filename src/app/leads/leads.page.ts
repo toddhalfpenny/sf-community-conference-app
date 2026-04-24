@@ -5,6 +5,7 @@ import { IonButton, IonButtons, IonContent, IonFooter, IonIcon, IonHeader, IonIt
 import { scanCircle } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { RouterLink } from '@angular/router';
+import { LeadService } from './lead-service';
 
 @Component({
   selector: 'app-leads',
@@ -15,6 +16,7 @@ import { RouterLink } from '@angular/router';
 })
 export class LeadsPage implements OnInit {
 
+  private readonly leadsService = new LeadService();
   protected isShowingScanner: boolean = false;
   protected leads: any[] = [];
 
@@ -22,8 +24,13 @@ export class LeadsPage implements OnInit {
     addIcons({ scanCircle });
    }
 
-  ngOnInit() {
+  async ngOnInit() {
   }
+
+  async ionViewWillEnter() {
+    this.leads = await this.leadsService.getMyLeads();
+  }
+
 
 
   protected showScanner() {

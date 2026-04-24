@@ -40,6 +40,7 @@ bootstrapApplication(AppComponent, {
     provideAnalytics(() => getAnalytics()), ScreenTrackingService, UserTrackingService, provideFirestore(() => getFirestore()), provideFunctions(() => getFunctions()), provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'
-          }),
+          })
+    ,
   ],
 });

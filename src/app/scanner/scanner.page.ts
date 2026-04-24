@@ -1,10 +1,13 @@
 import { Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter } from '@ionic/angular/standalone';
 import { close } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { NgxScannerQrcodeComponent, LOAD_WASM, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
+import { Lead } from '../leads/lead.model';
+import { LeadService } from '../leads/lead-service';
 
 @Component({
   selector: 'app-scanner',
@@ -17,12 +20,15 @@ export class ScannerPage implements OnDestroy{
 
   @ViewChild('action') scanner!: NgxScannerQrcodeComponent;
 
+  private readonly leadsService = inject(LeadService);
+  private readonly router = inject(Router);
   private readonly location = inject(Location);
   private currDeviceIdx = 0;
   private devices: any[] = [];
   
   protected isLoading: boolean = true;
   protected inProgress:boolean = false;
+  protected lead!: Lead;
   protected scanComplete: boolean = false;
 
   constructor() {
@@ -80,11 +86,14 @@ export class ScannerPage implements OnDestroy{
     this.scanner.stop();
     this.inProgress = true;
     this.scanComplete = true;
+    this.lead = JSON.parse(event[0].value) as Lead;
   }
 
-  protected save() {
+  protected async save() {
     // TODO save and navigate to leads page
-    this.location.back();
+    const newLead  = await this.leadsService.newLead(this.lead);
+    console.log('New lead saved:', newLead);
+    this.router.navigate(['/leads']);
   }
 
   protected async startScanner() {
