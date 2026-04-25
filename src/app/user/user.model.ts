@@ -3,6 +3,7 @@ export interface User {
   id?: string; 
   company?: string;
   firstname?: string;
+  lastname?: string;
   type?: UserType;
 }
 

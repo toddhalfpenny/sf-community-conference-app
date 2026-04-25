@@ -14,7 +14,7 @@
     @for (lead of leads; track $index) {
       <ion-item detail>
         <ion-label>
-          <h2>{{ lead.firstname }}</h2>
+          <h2>{{ lead.firstname }} {{lead.lastname}}</h2>
           <p>{{ lead.company }}</p>
         </ion-label>
       </ion-item>

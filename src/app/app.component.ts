@@ -125,57 +125,57 @@ export class AppComponent {
   protected appPages: any[] = [];
 
   constructor() {
-    this.storageService.init().then(() => {
-      addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle });
-      this.authubscription = this.authenticationService.getUser().subscribe(user => {
-        console.log('User in AppComponent:', user);
-        this.userService.setUser(user?.email || '').then(eventUser => {
-          console.log('Event user in AppComponent:', eventUser);
-          this.appPages = this.attendeePages; // Default to attendee pages
-          if (user) {
-            if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.type === UserType.Exhibitor || eventUser?.type === UserType['Exhibitor-Admin']) {
-              this.appPages = [...this.appPages, ...this.exhibitorPages];
-            }
-            this.appPages.push(
-              {
-                type: 'seperator',
-                title: '',
-                url: '',
-                icon: ''
-              },
-              {
-                type: 'page',
-                title: 'profile',
-                url: '/profile',
-                icon: 'person'
-              },
-              {
-                type: 'page',
-                title: 'Logout  ',
-                url: '/auth/logout',
-                icon: 'log-out'
-              }
-            );
-          } else {
-            this.appPages.push(
-              {
-                type: 'seperator',
-                title: '',
-                url: '',
-                icon: ''
-              },
-              {
-                type: 'page',
-                title: 'Login',
-                url: '/auth/login',
-                icon: 'log-in'
-              }
-            );
+    addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle });
+    this.authubscription = this.authenticationService.getUser().subscribe(user => {
+      console.log('User in AppComponent:', user);
+      this.userService.setUser(user?.email || '').then(eventUser => {
+        console.log('Event user in AppComponent:', eventUser);
+        this.appPages = this.attendeePages; // Default to attendee pages
+        if (user) {
+          if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.type === UserType.Exhibitor || eventUser?.type === UserType['Exhibitor-Admin']) {
+            this.appPages = [...this.appPages, ...this.exhibitorPages];
           }
-          console.log('App Pages:', this.appPages); 
-        }).catch(error => {
-          console.error('Error setting user in AppComponent:', error);
-        });
+          this.appPages.push(
+            {
+              type: 'seperator',
+              title: '',
+              url: '',
+              icon: ''
+            },
+            {
+              type: 'page',
+              title: 'profile',
+              url: '/profile',
+              icon: 'person'
+            },
+            {
+              type: 'page',
+              title: 'Logout  ',
+              url: '/auth/logout',
+              icon: 'log-out'
+            }
+          );
+        } else {
+          // // TODO - remove this
+          // this.appPages = [...this.appPages, ...this.exhibitorPages];
+          this.appPages.push(
+            {
+              type: 'seperator',
+              title: '',
+              url: '',
+              icon: ''
+            },
+            {
+              type: 'page',
+              title: 'Login',
+              url: '/auth/login',
+              icon: 'log-in'
+            }
+          );
+        }
+        console.log('App Pages:', this.appPages); 
+      }).catch(error => {
+        console.error('Error setting user in AppComponent:', error);
       });
     });
   }

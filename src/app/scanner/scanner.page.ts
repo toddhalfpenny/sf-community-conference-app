@@ -3,11 +3,13 @@ import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter } from '@ionic/angular/standalone';
-import { close } from 'ionicons/icons';
+import { close, cameraReverse } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { NgxScannerQrcodeComponent, LOAD_WASM, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
 import { Lead } from '../leads/lead.model';
 import { LeadService } from '../leads/lead-service';
+
+const DEVICE_SCAN_TOKEN = 'lastUsedScannerDeviceId';
 
 @Component({
   selector: 'app-scanner',
@@ -32,7 +34,7 @@ export class ScannerPage implements OnDestroy{
   protected scanComplete: boolean = false;
 
   constructor() {
-    addIcons({ close });}
+    addIcons({ cameraReverse, close });}
 
   ngOnDestroy(): void {
     // TODO UNSUBSCRIBE
@@ -96,19 +98,63 @@ export class ScannerPage implements OnDestroy{
     this.router.navigate(['/leads']);
   }
 
-  protected async startScanner() {
-    this.scanner.devices.subscribe((devices) => {
-      this.devices = devices;
-      console.log('Available devices:', devices);
-      if (devices.length > 1) {
-        this.scanner.playDevice(devices[2].deviceId);
-        this.currDeviceIdx = 2;
-      }
-    });
-    // await this.scanner.stop();
-    await this.scanner.start();
-    this.isLoading = false;
-    return;
+  // protected async startScanner() {
+  //   this.scanner.devices.subscribe(async (devices) => {
+  //     this.devices = devices;
+  //     console.log('Available devices:', devices);
+  //     if (devices.length > 1) {
+  //       // this.scanner.playDevice(devices[2].deviceId);
+  //       // this.currDeviceIdx = 2;
+  //     }
+  //     if (this.devices.length === 0) {
+  //       console.warn('No camera devices found.');
+  //       this.isLoading = false;
+  //       return;
+  //     } else {
+  //       // await this.scanner.stop();
+  //       // await this.scanner.start();
+  //       this.isLoading = false;
+  //       return;
+  //     }
+  //   });
+  // }
+
+  async startScanner() {
+    setTimeout(() => {
+      this.scanner.devices.subscribe((devices) => {
+        this.devices = devices;
+        console.log('Available devices:', devices);
+        if (this.devices.length === 0) {
+          console.warn('No camera devices found.');
+          this.isLoading = false;
+          return;
+        } else {
+          this.devices = devices;
+          const lastUsedDeviceId = localStorage.getItem(DEVICE_SCAN_TOKEN);
+          if (lastUsedDeviceId) {
+            console.log('Last used device ID found in localStorage:', lastUsedDeviceId);
+            const lastUsedDevice = devices.find((device) => device.deviceId === lastUsedDeviceId);
+            if (lastUsedDevice) {
+              console.log('Playing last used device:', lastUsedDevice);
+              this.scanner.playDevice(lastUsedDeviceId);
+              this.currDeviceIdx = devices.indexOf(lastUsedDevice);
+            }
+          } else {
+            this.scanner.playDevice(devices[devices.length - 1].deviceId);
+            this.currDeviceIdx = devices.length - 1;
+            localStorage.setItem(DEVICE_SCAN_TOKEN, this.devices[this.currDeviceIdx].deviceId);
+          }
+          this.isLoading = false;
+          return;
+        }
+      });
+      
+    }, 200);
+      // await this.scanner.stop();
+      // await this.scanner.start();
+      // this.isLoading = false;
+      // return;
+      
   }
 
   protected toggleCamera() {
@@ -117,6 +163,7 @@ export class ScannerPage implements OnDestroy{
       this.currDeviceIdx = 0;
     } 
     console.log('Switching to device index:', this.currDeviceIdx, this.devices[this.currDeviceIdx]);
+    localStorage.setItem(DEVICE_SCAN_TOKEN, this.devices[this.currDeviceIdx].deviceId);
     this.scanner.playDevice(this.devices[this.currDeviceIdx].deviceId);
   }
 

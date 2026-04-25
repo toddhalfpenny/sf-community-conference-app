@@ -33,7 +33,11 @@ const TABLE_SPECS: TableSpec[] = [
 export class StorageService {
   private db!: IDBDatabase;
 
-  public async init() {
+  constructor() {
+    this.init();
+  }
+
+  private async init() {
     console.log(LOG_TAG, 'Initializing storage service');
     const dbReq = indexedDB.open(IDB_NAME, INDEXED_DB_VERSION);
 
@@ -78,9 +82,11 @@ export class StorageService {
   }
 
 
-  public getAll(soupName: string, key:string|null  = null, index:string|null = null, direction:string = 'next', usePrimary: boolean = false ):Promise<any[]> {
+  public async getAll(soupName: string, key:string|null  = null, index:string|null = null, direction:string = 'next', usePrimary: boolean = false ):Promise<any[]> {
     // TODO Multi-org
     console.log('getAll', soupName, key, index, direction, usePrimary);
+    await this.waitForDB();
+    console.log('DB is ready, proceeding with getAll');
     return new Promise(async (resolve, reject) => {
 
     const transaction = this.db.transaction([soupName]);
@@ -166,8 +172,33 @@ export class StorageService {
     });  
   }
   
- 
-
+  /**
+   * We just wait to make sure our IDB is ready for operations
+   * @param attempt - to prevent infinite loop in case of some weird IDB issue, we will give up after 10 attempts
+   * @returns 
+   */
+  private async waitForDB(attempt: number = 1): Promise<void> {
+    console.log(LOG_TAG, `waitForDB attempt ${attempt}`, this.db);
+    if (attempt > 10) {
+      console.error(LOG_TAG, 'waitForDB, max attempts reached, giving up');
+      return;
+    }
+    if (this.db) {
+      console.log(LOG_TAG, 'waitForDB, returning');
+      return;
+    } else {
+      // const checkDbInterval = setInterval(() => {
+        return new Promise(resolve => setTimeout(() => {
+          if (this.db) {
+            // clearInterval(checkDbInterval);
+            console.log(LOG_TAG, 'DB is now available');
+            resolve();
+          } else {
+            resolve(this.waitForDB(attempt + 1));
+          }
+        }, 100));
+    }
+  }
 
 
 }

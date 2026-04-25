@@ -9,6 +9,13 @@
         </ion-button>
       }
     </ion-buttons>
+    <ion-buttons slot="end">
+      @if (!inProgress) {
+        <ion-button (click)="toggleCamera()">
+          <ion-icon slot="icon-only" name="camera-reverse" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
