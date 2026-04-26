@@ -14,6 +14,10 @@ const INDEXED_DB_VERSION = 1;
 const IDB_NAME = 'ConfApp';
 
 const TABLE_SPECS: TableSpec[] = [
+  { 
+    name: 'eventUsers',
+    idbSpec : {keyPath: "email"},
+  },
   {
     name: 'leads',
     idbSpec : {keyPath: "id"},
@@ -133,6 +137,7 @@ export class StorageService {
 
   public async upsert(soupName: string, entries:any[], idField:string = 'id', usePrimary: boolean = false):Promise<any> {
     console.log(LOG_TAG, "upsert", soupName, entries, usePrimary);
+    await this.waitForDB();
     return new Promise(async (resolve, reject) => {
 
     setTimeout(() => {

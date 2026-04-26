@@ -43,7 +43,7 @@ export class SponsorsService {
       const cachedSponsors = await this.storageService.getAll('sponsors') as Sponsor[];
       console.log('Cached sponsors:', cachedSponsors);
       for (const sponsorData of cachedSponsors) {
-        for (let i = 0; i < sponsorData.tiers.length; i++) {
+        for (let i = 0; i < sponsorData.tiers?.length; i++) {
           tieredSponsors[sponsorData.tiers[i] as keyof typeof tieredSponsors][sponsorData.order] = sponsorData;
         }
       }
@@ -56,7 +56,7 @@ export class SponsorsService {
         const sponsorData = doc.data() as Sponsor;
         console.log('Sponsor data:', sponsorData);
         this.storageService.upsert('sponsors', [sponsorData], 'name');
-        for (let i = 0; i < sponsorData.tiers.length; i++) {
+        for (let i = 0; i < sponsorData.tiers?.length; i++) {
           tieredSponsors[sponsorData.tiers[i] as keyof typeof tieredSponsors][sponsorData.order] = sponsorData;
           // tieredSponsors[sponsorData.tiers[i as a] as any]?.push( sponsorData);
         }

@@ -9,6 +9,7 @@
         </ion-button>
       }
     </ion-buttons>
+    <ion-title>New Lead</ion-title>
     <ion-buttons slot="end">
       @if (!inProgress) {
         <ion-button (click)="toggleCamera()">
@@ -21,7 +22,20 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
     <ion-loading message="Starting the scanner..." duration="30000" [isOpen]="isLoading"></ion-loading>
+    <ion-loading message="Saving lead..." duration="4000" [isOpen]="isSavingLead"></ion-loading>
     <ngx-scanner-qrcode #action="scanner" (event)="handleScan($event, action)" [ngClass]="scanComplete  ? 'scanComplete' : '' "></ngx-scanner-qrcode>
+    @if (lead) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{lead.user?.firstname}} {{lead.user?.lastname}}</ion-card-title>
+          <ion-card-subtitle>{{lead.user?.company}}</ion-card-subtitle>
+        </ion-card-header>
+      
+        <ion-card-content>
+          <ion-textarea [(ngModel)]="lead.notes" label-placement="floating" label="Notes" placeholder="Add some notes here"></ion-textarea>
+        </ion-card-content>
+      </ion-card>
+    }
     <div>
       <p>There will be a form here for adding notes, and will show the user's name and company once the scan has been completed.My thinking is to put the id+name+company in the QR code data so that this can show up straight away.</p>
       <p>Saved leads will be saved locally to the device, as well as being sent to the backend.</p>

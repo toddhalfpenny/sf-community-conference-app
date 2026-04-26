@@ -30,6 +30,7 @@ interface AppPage {
   icon: string;
 }
 
+const LOCAL_DEV = false;
 
 @Component({
   selector: 'app-root',
@@ -125,6 +126,7 @@ export class AppComponent {
   protected appPages: any[] = [];
 
   constructor() {
+    (<any>window).LOCAL_DEV = location.href.includes('localhost') && LOCAL_DEV;
     addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle });
     this.authubscription = this.authenticationService.getUser().subscribe(user => {
       console.log('User in AppComponent:', user);
@@ -132,7 +134,7 @@ export class AppComponent {
         console.log('Event user in AppComponent:', eventUser);
         this.appPages = this.attendeePages; // Default to attendee pages
         if (user) {
-          if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.type === UserType.Exhibitor || eventUser?.type === UserType['Exhibitor-Admin']) {
+          if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.sponsorAdmin || eventUser?.boothStaff) {
             this.appPages = [...this.appPages, ...this.exhibitorPages];
           }
           this.appPages.push(

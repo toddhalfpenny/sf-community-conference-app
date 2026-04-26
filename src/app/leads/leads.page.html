@@ -12,12 +12,17 @@
     <h2>My Leads</h2>
     <ion-list>
     @for (lead of leads; track $index) {
-      <ion-item detail>
-        <ion-label>
-          <h2>{{ lead.firstname }} {{lead.lastname}}</h2>
-          <p>{{ lead.company }}</p>
-        </ion-label>
-      </ion-item>
+      @if (lead.status !== 2) {
+        <ion-item detail>
+          <ion-label>
+            <h2>{{ lead.user?.firstname }} {{lead.user?.lastname}}</h2>
+            <p>{{ lead.user?.company }}</p>
+          </ion-label>
+          @if (lead.status === 0) {
+            <ion-badge slot="end">Pending sync</ion-badge>
+          }
+        </ion-item>
+      }
     }
   </ion-list>
 </ion-content>

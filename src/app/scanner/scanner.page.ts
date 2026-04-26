@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonTextarea, IonTitle } from '@ionic/angular/standalone';
 import { close, cameraReverse } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { NgxScannerQrcodeComponent, LOAD_WASM, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
@@ -16,7 +16,7 @@ const DEVICE_SCAN_TOKEN = 'lastUsedScannerDeviceId';
   templateUrl: './scanner.page.html',
   styleUrls: ['./scanner.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxScannerQrcodeComponent, IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter]
+  imports: [CommonModule, FormsModule, NgxScannerQrcodeComponent, IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonTextarea, IonTitle]
 })
 export class ScannerPage implements OnDestroy{
 
@@ -30,6 +30,7 @@ export class ScannerPage implements OnDestroy{
   
   protected isLoading: boolean = true;
   protected inProgress:boolean = false;
+  protected isSavingLead: boolean = false;
   protected lead!: Lead;
   protected scanComplete: boolean = false;
 
@@ -47,11 +48,27 @@ export class ScannerPage implements OnDestroy{
   }
   
   ngAfterViewInit(): void {
-    this.scanner?.isReady.subscribe((res: any) => {
-      // this.handle(this.action, 'start');
-      console.log('Scanner is ready:', res);
-      this.startScanner();
-    });
+    this.isSavingLead = false;
+    if (!(<any>window).LOCAL_DEV) {
+      this.scanner?.isReady.subscribe((res: any) => {
+        // this.handle(this.action, 'start');
+        console.log('Scanner is ready:', res);
+        this.startScanner();
+      });
+    } else {
+      // DUMMMY LEAD FOR LOCAL DEV
+      console.log('Running in local dev mode, skipping scanner initialization');
+      setTimeout(() => {        
+        this.isLoading = false;
+      }, 300);
+      const dummyUser = { "id": 9001, "firstname": "Bob", "lastname": "Smith", "company": "Shirtforce"};
+      this.lead = {
+        id: 'tmp',
+        user: dummyUser,
+      }
+      this.inProgress = true;
+      this.scanComplete = true;
+    }
   }
 
   protected async cancel() {
@@ -88,36 +105,22 @@ export class ScannerPage implements OnDestroy{
     this.scanner.stop();
     this.inProgress = true;
     this.scanComplete = true;
-    this.lead = JSON.parse(event[0].value) as Lead;
+    this.lead = {
+      id: 'tmp',
+      user: JSON.parse(event[0].value),
+    }
   }
 
   protected async save() {
-    // TODO save and navigate to leads page
+    this.isSavingLead = true;
     const newLead  = await this.leadsService.newLead(this.lead);
+    this.isSavingLead = false;
     console.log('New lead saved:', newLead);
-    this.router.navigate(['/leads']);
+    setTimeout(() => {
+      this.router.navigate(['/leads']);
+    }, 100);
   }
 
-  // protected async startScanner() {
-  //   this.scanner.devices.subscribe(async (devices) => {
-  //     this.devices = devices;
-  //     console.log('Available devices:', devices);
-  //     if (devices.length > 1) {
-  //       // this.scanner.playDevice(devices[2].deviceId);
-  //       // this.currDeviceIdx = 2;
-  //     }
-  //     if (this.devices.length === 0) {
-  //       console.warn('No camera devices found.');
-  //       this.isLoading = false;
-  //       return;
-  //     } else {
-  //       // await this.scanner.stop();
-  //       // await this.scanner.start();
-  //       this.isLoading = false;
-  //       return;
-  //     }
-  //   });
-  // }
 
   async startScanner() {
     setTimeout(() => {
