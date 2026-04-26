@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      @if (!isEditing) {
+        <ion-back-button></ion-back-button>
+      } @else {
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
+    <ion-title> {{ lead?.user?.firstname}} {{ lead?.user?.lastname}}</ion-title>
+    <ion-buttons slot="end">
+      @if (!isEditing) {
+        <ion-button (click)="edit()" disabled>
+          <ion-icon slot="icon-only" name="create" ></ion-icon> 
+        </ion-button>
+      } @else {
+        <ion-button (click)="save()">
+          <ion-icon slot="icon-only" name="save" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <p>NOTE: at the moment this is a read only page. Nothing you edit here will be saved.</p>
+  @if (lead) {
+    <ion-card>
+      <ion-list>
+        <ion-item>
+          <ion-input label="First name" labelPlacement="stacked" [value]="lead.user?.firstname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Last name" labelPlacement="stacked"[value]="lead.user?.firstname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Company" labelPlacement="stacked" [value]="lead.user?.company"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea label="Notes" labelPlacement="stacked" rows=5 [value]="lead.notes"></ion-textarea>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+    <ion-card id="lead-meta">
+      <ion-item>
+        <ion-label>Scanned on</ion-label>
+        <ion-text>{{ lead.createdDate | date: 'short' }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Sync Status</ion-label>
+        <ion-text>{{ lead.status === 0 ? 'Pending' : 'Synced' }}</ion-text>
+      </ion-item>
+      @if (lead.syncError) {
+        <ion-item>
+          <ion-label>Scanned on</ion-label>
+          <ion-text>{{ lead.createdDate | date: 'short' }}</ion-text>
+        </ion-item>
+      }
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" color="danger" (click)="delete()" disabled>Delete</ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button expand="block" color="primary" (click)="sync()" disabled="">Sync</ion-button>
+          </ion-col>
+        </ion-row>
+    </ion-card>
+  }
+</ion-content>

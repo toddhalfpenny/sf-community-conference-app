@@ -1,0 +1,15 @@
+<ion-list>
+@for (lead of leads; track $index) {
+  @if (lead.status !== 2 && (searchTerm === '' || lead.user?.firstname?.toLowerCase()?.includes(searchTerm.toLowerCase()) || lead.user?.lastname?.toLowerCase()?.includes(searchTerm.toLowerCase()) || lead.user?.company?.toLowerCase()?.includes(searchTerm.toLowerCase()))) {
+    <ion-item detail [routerLink]="['/leads/' + lead.id]">
+      <ion-label>
+        <h2>{{ lead.user?.firstname }} {{lead.user?.lastname}}</h2>
+        <p>{{ lead.user?.company }}</p>
+      </ion-label>
+      @if (lead.status === 0) {
+        <ion-badge slot="end">Pending sync</ion-badge>
+      }
+    </ion-item>
+  }
+}
+</ion-list>

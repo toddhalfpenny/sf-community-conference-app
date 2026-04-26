@@ -9,6 +9,7 @@ import {
   setDoc,
   doc,
   Firestore,
+  getDoc,
 } from '@angular/fire/firestore';
 import { Lead, SyncStatus } from './lead.model';
 import { StorageService } from '../storage/storage-service';
@@ -25,6 +26,38 @@ export class LeadService {
   private readonly userService = inject(UserService);
   private readonly firestore = inject(Firestore);
   private user = this.userService.getUser();
+
+  async getLead(leadId: string, forceRefresh: boolean = false) {
+    if (!forceRefresh) {
+      const cachedLead = (await this.storageService.get('leads', leadId))[0] as Lead;
+      if (cachedLead) {
+        console.log(LOG_TAG, 'Fetched lead from storage', cachedLead);
+        return cachedLead;
+      } else {
+        return null;
+      }
+    }
+
+    // If not in cache or forceRefresh is true, fetch from Firestore
+    try {
+      const docRef = doc(this.firestore, "leads", leadId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const lead = docSnap.data() as Lead;
+        console.log(LOG_TAG, 'Fetched lead from Firestore', lead);
+        // Cache the lead locally
+        await this.storageService.upsert('leads', [lead], 'id');
+        return lead;
+      } else {
+        console.warn(LOG_TAG, 'No such lead in Firestore:', leadId);
+        return null;
+      }
+    } catch (error) {
+      console.error(LOG_TAG, 'Error fetching lead from Firestore:', error);
+      throw error;
+    }
+  
+  }
 
   async getMyLeads() {
     const myCachedLeads = await this.storageService.getAll('leads') as Lead[];
@@ -58,8 +91,10 @@ export class LeadService {
         setTimeout(() => {
           return lead;
         }, 1000);
-      }).catch((error) => {
+      }).catch(async (error) => {
         console.error(LOG_TAG, 'Error saving lead to Firestore:', error);
+        lead.syncError = error.message;
+        await this.storageService.upsert('leads', [lead], 'id');
         return lead;
       });
     } catch (error) {

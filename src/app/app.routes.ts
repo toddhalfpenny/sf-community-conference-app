@@ -52,7 +52,11 @@ export const routes: Routes = [
     loadComponent: () => import('./leads/leads.page').then( m => m.LeadsPage)
   },
   {
+    path: 'leads/:leadId',
+    loadComponent: () => import('./leads/lead.page').then( m => m.LeadPage)
+  },
+  {
     path: 'scanner',
     loadComponent: () => import('./scanner/scanner.page').then( m => m.ScannerPage)
-  },
+  }
 ];

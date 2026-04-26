@@ -9,6 +9,7 @@ export interface Lead {
   notes?: string;
   sponsorId?: string;
   status?: SyncStatus;
+  syncError?: string;
 }
 
 export enum SyncStatus {

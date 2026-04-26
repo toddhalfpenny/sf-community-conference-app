@@ -3,28 +3,22 @@
     <ion-buttons slot="end">
       <ion-menu-button mode="md"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Leads</ion-title>
+    <ion-title>{{ header }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar show-clear-button="focus"
+      [debounce]="400" 
+      (ionInput)="handleSearchChange($event)">
+    </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <app-leads-list
+    [leads]="leads"
+    [searchTerm]="searchTerm"
+  ></app-leads-list>
 
-    <h2>My Leads</h2>
-    <ion-list>
-    @for (lead of leads; track $index) {
-      @if (lead.status !== 2) {
-        <ion-item detail>
-          <ion-label>
-            <h2>{{ lead.user?.firstname }} {{lead.user?.lastname}}</h2>
-            <p>{{ lead.user?.company }}</p>
-          </ion-label>
-          @if (lead.status === 0) {
-            <ion-badge slot="end">Pending sync</ion-badge>
-          }
-        </ion-item>
-      }
-    }
-  </ion-list>
 </ion-content>
 
 <ion-footer>

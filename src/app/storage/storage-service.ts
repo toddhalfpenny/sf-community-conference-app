@@ -85,6 +85,36 @@ export class StorageService {
     return;
   }
 
+  public async get(soupName: string, key:any, index = "Id", order:string = 'ascending', usePrimary: boolean = false ):Promise<any[]> {
+    console.log(LOG_TAG, 'get', soupName, key, index, order, usePrimary);
+
+    await this.waitForDB();
+    return new Promise(async (resolve, reject) => {
+      const transaction = this.db.transaction([soupName]);
+      const objectStore = transaction.objectStore(soupName);
+      let cursorToOpen;
+      let entries:any[] = [];
+      const direction = (order === 'ascending') ? 'next' : 'prev';
+    
+      try { // See if there is an index defined, if not default to the primary
+        const myIndex = objectStore.index(index);
+        cursorToOpen = myIndex.openCursor(key, direction);
+      }catch (e) {
+        cursorToOpen = objectStore.openCursor(key, direction);
+      }
+
+      cursorToOpen.onsuccess = (event:any) => {
+        const cursor = event.target.result;
+        if(cursor) {
+          entries.push(cursor.value);
+          cursor.continue();
+        } else {
+          resolve(entries);
+        }
+      }
+    });
+  }
+
 
   public async getAll(soupName: string, key:string|null  = null, index:string|null = null, direction:string = 'next', usePrimary: boolean = false ):Promise<any[]> {
     // TODO Multi-org
