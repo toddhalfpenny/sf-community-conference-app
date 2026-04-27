@@ -1,15 +1,18 @@
 <h2>Our Sponsors</h2>
-<p><em>(will be an ordered + categorised list of sponsor cards)</em></p>
 @if (sponsorList) {
 
   @for(tier of tiers; track $index) {
-    <h2>{{tier}}</h2>
-    <ion-list>
+    <h3>{{tier}}</h3>
+    <ion-list lines="none">
       @for(sponsor of sponsorList[tier]; track $index) {
         @if (sponsor) {
-          <ion-item>
+          <div class="sponsor">
+          @if (sponsor.logoUrl) {
+              <img [src]="`/assets/sponsor-logos/${sponsor.logoUrl}`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
+          } @else {  
             {{ sponsor.name }}
-          </ion-item>
+          }
+        </div>
         }
       } 
     </ion-list>
