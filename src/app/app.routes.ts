@@ -24,8 +24,16 @@ export const routes: Routes = [
     loadComponent: () => import('./speakers/speakers.page').then( m => m.SpeakersPage)
   },
   {
+    path: 'speaker/:speakerId',
+    loadComponent: () => import('./speakers/speaker.page').then( m => m.SpeakerPage)
+  },
+  {
     path: 'sponsors',
     loadComponent: () => import('./sponsors/sponsors.page').then( m => m.SponsorsPage)
+  },
+  {
+    path: 'sponsor/:sponsorId',
+    loadComponent: () => import('./sponsors/sponsor.page').then( m => m.SponsorPage)
   },
   {
     path: 'contest',
@@ -58,5 +66,5 @@ export const routes: Routes = [
   {
     path: 'scanner',
     loadComponent: () => import('./scanner/scanner.page').then( m => m.ScannerPage)
-  }
+  },
 ];

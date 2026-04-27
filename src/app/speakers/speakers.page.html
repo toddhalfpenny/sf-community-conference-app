@@ -3,9 +3,16 @@
     <ion-buttons slot="end">
       <ion-menu-button mode="md"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Speakers</ion-title>
+    <ion-title>Our wonderful speakers</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true">
+  @if (speakers) {
+    <ion-list>
+      @for (speaker of speakers; track $index) {
+        <app-speaker-card [speaker]="speaker"></app-speaker-card>
+      }
+    </ion-list>
+  }
 </ion-content>

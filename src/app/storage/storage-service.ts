@@ -23,10 +23,14 @@ const TABLE_SPECS: TableSpec[] = [
     idbSpec : {keyPath: "id"},
   },
   {
+    name: 'speakers',
+    idbSpec : {keyPath: "id"},
+  },
+  {
     name: 'sponsors',
     idbSpec : {keyPath: "name"},
     indexes: [
-      // {path: 'name', type: 'string', unique: true}
+      {path: 'id', type: 'string', unique: true}
     ]
   }
 ]

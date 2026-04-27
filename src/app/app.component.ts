@@ -50,6 +50,7 @@ const LOCAL_DEV = true;
     IonToolbar,
     RouterLink
   ],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
 
@@ -146,7 +147,7 @@ export class AppComponent {
             },
             {
               type: 'page',
-              title: 'profile',
+              title: 'Profile',
               url: '/profile',
               icon: 'person'
             },

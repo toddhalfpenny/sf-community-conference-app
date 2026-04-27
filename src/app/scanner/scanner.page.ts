@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonTextarea, IonTitle } from '@ionic/angular/standalone';
+import { AlertController, IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonHeader, IonLoading, IonToolbar, IonFooter, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent, IonTextarea, IonTitle } from '@ionic/angular/standalone';
 import { close, cameraReverse } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { NgxScannerQrcodeComponent, LOAD_WASM, ScannerQRCodeResult } from 'ngx-scanner-qrcode';
@@ -34,7 +34,7 @@ export class ScannerPage implements OnDestroy{
   protected lead!: Lead;
   protected scanComplete: boolean = false;
 
-  constructor() {
+  constructor(private alertController: AlertController) {
     addIcons({ cameraReverse, close });}
 
   ngOnDestroy(): void {
@@ -72,10 +72,10 @@ export class ScannerPage implements OnDestroy{
   }
 
   protected async cancel() {
-    const alert = document.createElement('ion-alert');
-    alert.header = 'Cancel?';
-    alert.message = 'Cancelling this lead collection will lose any unsaved data.';
-    alert.buttons = [
+    const alert = await this.alertController.create({
+      header :'Cancel?',
+      message :'Cancelling this lead collection will lose any unsaved data.',
+      buttons :[
       {
         text: 'Cancel',
         role: 'cancel',
@@ -91,10 +91,7 @@ export class ScannerPage implements OnDestroy{
           this.location.back();
         },
       },
-    ];
-
-
-    document.body.appendChild(alert);
+    ]});
     await alert.present();
   }
 

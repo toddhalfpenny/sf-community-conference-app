@@ -1,0 +1,27 @@
+<div class="speaker" [class]="showBio ? 'single': ''" [routerLink]="['/speaker', speaker.id]">
+  <ion-avatar >
+    <img [src]="`/assets/speakers/${speaker.id}.jpg`" alt="{{ speaker.firstname }} photo">
+  </ion-avatar>
+  <h1>{{ speaker.firstname }} {{ speaker.lastname }}</h1>
+  <h2>{{ speaker.title }}</h2>
+  
+  @if (showBio){
+    <div class="bio" [innerHTML]="speaker.bio"></div>
+  }
+  <div class="speaker-links">
+    @if (speaker.linkedInUrl) {
+      <a [href]="speaker.linkedInUrl" target="_blank" rel="noopener noreferrer">
+        <ion-button fill="outline">
+          <ion-icon slot="icon-only" name="logo-Linkedin"></ion-icon>
+        </ion-button>
+      </a>
+    }
+    @if (speaker.trailblazerUrl) {
+      <a [href]="speaker.trailblazerUrl" target="_blank" rel="noopener noreferrer">
+        <ion-button fill="outline">
+          <ion-icon slot="icon-only" name="trail-sign"></ion-icon>
+        </ion-button>
+      </a>
+    }
+  </div>
+</div>

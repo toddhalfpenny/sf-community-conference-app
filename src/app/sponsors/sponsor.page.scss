@@ -1,0 +1,11 @@
+.sponsor-bio {
+  font-family: unset;
+  text-wrap: pretty;
+}
+.sponsor-links {
+  display: flex;
+  justify-content: center;
+  a {
+    margin: 0.5em;
+  }
+}

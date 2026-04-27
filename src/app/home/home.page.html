@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>London's Calling</ion-title>
+    <ion-title class="londons-calling"><span class="lc-big">L</span><span class="lc-o">o</span>ndon's <span class="lc-big">C</span>alling</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button mode="md"></ion-menu-button>
     </ion-buttons>
@@ -8,10 +8,22 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-img src="assets/lc-skyline.png" class="home-logo"></ion-img>
+  <p class="tagline">The World's Largest Community Led Event for Salesforce Professionals</p>
+  <hr>
   @if (user === null) {
-    <ion-button expand="block" fill="clear" routerLink="/auth/login">
+    <ion-button expand="block" routerLink="/auth/login">
       Login
     </ion-button>
+  } @else {
+    @if (eventUser) {
+      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button routerLink="/scanner">
+          <ion-icon name="scan-circle"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+    }
   }
-  <app-sponsor-list></app-sponsor-list>
+  <app-sponsor-list [showTitle]="true"></app-sponsor-list>
 </ion-content>
+

@@ -1,4 +1,7 @@
-<h2>Our Sponsors</h2>
+
+@if (showTitle) {
+  <h2>Our Sponsors</h2>
+}
 @if (sponsorList) {
 
   @for(tier of tiers; track $index) {
@@ -8,9 +11,32 @@
         @if (sponsor) {
           <div class="sponsor">
           @if (sponsor.logoUrl) {
-              <img [src]="`/assets/sponsor-logos/${sponsor.logoUrl}`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
+              <img [routerLink]="`/sponsor/${sponsor.id}`" [src]="`/assets/sponsor-logos/${sponsor.logoUrl}`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
           } @else {  
             {{ sponsor.name }}
+          }
+          @if (showDetails) {
+            <div class="sponsor-details">
+              @if (sponsor.bio) {
+                <pre class="sponsor-bio">{{ sponsor.bio }}</pre>
+              }
+              <div class="sponsor-links">
+                @if (sponsor.landingPageUrl) {
+                  <a [href]="sponsor.landingPageUrl" target="_blank" rel="noopener noreferrer">
+                    <ion-button fill="outline">
+                      <ion-icon slot="icon-only" name="globe"></ion-icon>
+                    </ion-button>
+                  </a>
+                }
+                @if (sponsor.linkedInUrl) {
+                  <a [href]="sponsor.linkedInUrl" target="_blank" rel="noopener noreferrer">
+                    <ion-button fill="outline">
+                      <ion-icon slot="icon-only" name="logo-Linkedin"></ion-icon>
+                    </ion-button>
+                  </a>
+                }
+              </div>
+            </div>
           }
         </div>
         }

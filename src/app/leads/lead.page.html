@@ -12,11 +12,11 @@
     <ion-title> {{ lead?.user?.firstname}} {{ lead?.user?.lastname}}</ion-title>
     <ion-buttons slot="end">
       @if (!isEditing) {
-        <ion-button (click)="edit()" disabled>
+        <ion-button (click)="edit()">
           <ion-icon slot="icon-only" name="create" ></ion-icon> 
         </ion-button>
       } @else {
-        <ion-button (click)="save()">
+        <ion-button  [disabled]="!leadForm.valid" (click)="save()">
           <ion-icon slot="icon-only" name="save" ></ion-icon> 
         </ion-button>
       }
@@ -24,22 +24,22 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
-  <p>NOTE: at the moment this is a read only page. Nothing you edit here will be saved.</p>
+<ion-content [fullscreen]="true">
+  <form [formGroup]="leadForm">
   @if (lead) {
     <ion-card>
       <ion-list>
         <ion-item>
-          <ion-input label="First name" labelPlacement="stacked" [value]="lead.user?.firstname"></ion-input>
+          <ion-input errorText="First name is required" required label="First name" labelPlacement="stacked" formControlName="firstname"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-input label="Last name" labelPlacement="stacked"[value]="lead.user?.firstname"></ion-input>
+          <ion-input errorText="Last name is required" required label="Last name" labelPlacement="stacked" formControlName="lastname"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-input label="Company" labelPlacement="stacked" [value]="lead.user?.company"></ion-input>
+          <ion-input label="Company" labelPlacement="stacked" formControlName="company"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-textarea label="Notes" labelPlacement="stacked" rows=5 [value]="lead.notes"></ion-textarea>
+          <ion-textarea label="Notes" labelPlacement="stacked" formControlName="notes"></ion-textarea>
         </ion-item>
       </ion-list>
     </ion-card>
@@ -47,6 +47,10 @@
       <ion-item>
         <ion-label>Scanned on</ion-label>
         <ion-text>{{ lead.createdDate | date: 'short' }}</ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label>Last modified</ion-label>
+        <ion-text>{{ lead.modifiedDate | date: 'short' }}</ion-text>
       </ion-item>
       <ion-item>
         <ion-label>Sync Status</ion-label>
@@ -63,9 +67,10 @@
             <ion-button expand="block" color="danger" (click)="delete()" disabled>Delete</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button expand="block" color="primary" (click)="sync()" disabled="">Sync</ion-button>
+            <ion-button expand="block" color="primary" (click)="sync()" [disabled]="isEditing">Sync</ion-button>
           </ion-col>
         </ion-row>
     </ion-card>
   }
+  </form>
 </ion-content>

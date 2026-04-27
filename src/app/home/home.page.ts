@@ -2,11 +2,12 @@ import { Component, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonFab, IonIcon, IonImg } from '@ionic/angular/standalone';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Subscription } from 'rxjs';
 import { SponsorListComponent } from '../sponsors/sponsor-list/sponsor-list.component';
 import { UserService } from '../user/user-service';
+import { User } from '../user/user.model';
 
 @Component({
   selector: 'app-home',
@@ -24,7 +25,10 @@ import { UserService } from '../user/user-service';
     RouterLink,
     CommonModule,
     FormsModule,
-    SponsorListComponent
+    SponsorListComponent,
+    IonFab,
+    IonIcon,
+    IonImg
 ]
 })
 export class HomePage implements OnDestroy {
@@ -34,15 +38,18 @@ export class HomePage implements OnDestroy {
   private authubscription?: Subscription;
 
   protected user: any;
+  protected eventUser?: User | null;
 
   constructor() { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.authubscription = this.authenticationService.getUser().subscribe(user => {
       this.user = user;
     });
-    // const eventUser = this.userService.getUser();
-    // console.log('Event user from UserService:', eventUser);
+    setTimeout(async () => {
+      this.eventUser = await this.userService.getUser();
+      console.log('Event user from UserService:', this.eventUser);
+    }, 600);
   }
 
   ngOnDestroy(): void {

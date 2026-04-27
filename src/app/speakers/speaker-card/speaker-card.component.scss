@@ -1,0 +1,47 @@
+.speaker {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin: 16px 8px;
+  padding: 1em;
+  text-align: center;
+  h1 {
+    font-size: 1.5em;
+    margin: 0.5em 0;
+    color: #235789;
+  }
+  h2 {
+    font-size: 1em;
+    margin: 0.5em 0;
+    color: #555;
+  }
+  &.single, &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+    border-color: #235789;
+  }
+  .bio {
+    line-height: 1.3em;
+    margin: 1em 0;
+    text-align: left;
+    text-wrap: pretty;
+  }
+}
+
+ion-avatar {
+  // --border-radius: 32px;
+  border-color: #235789;
+  border: 3px solid #235789;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.speaker-links {
+  display: flex;
+  justify-content: center;
+  a {
+    margin: 0.5em;
+  }
+}

@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{ sponsor?.name}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  @if (sponsor) {
+    <div class="sponsor">
+      @if (sponsor.logoUrl) {
+          <img [src]="`/assets/sponsor-logos/${sponsor.logoUrl}`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
+      } @else {  
+        {{ sponsor.name }}
+      }
+      <div class="sponsor-details">
+        @if (sponsor.bio) {
+          <pre class="sponsor-bio">{{ sponsor.bio }}</pre>
+        }
+        <div class="sponsor-links">
+          @if (sponsor.landingPageUrl) {
+            <a [href]="sponsor.landingPageUrl" target="_blank" rel="noopener noreferrer">
+              <ion-button fill="outline">
+                <ion-icon slot="icon-only" name="globe"></ion-icon>
+              </ion-button>
+            </a>
+          }
+          @if (sponsor.linkedInUrl) {
+            <a [href]="sponsor.linkedInUrl" target="_blank" rel="noopener noreferrer">
+              <ion-button fill="outline">
+                <ion-icon slot="icon-only" name="logo-Linkedin"></ion-icon>
+              </ion-button>
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</ion-content>
