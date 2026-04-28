@@ -14,7 +14,7 @@ import {
   IonSplitPane,
   IonToolbar
  } from '@ionic/angular/standalone';
-import { book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, diamond } from 'ionicons/icons';
+import { book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Subscription } from 'rxjs';
 
@@ -109,6 +109,20 @@ export class AppComponent {
       icon: 'megaphone'
     }
   ];
+  private readonly adminPages: AppPage[] = [
+    {
+      type: 'seperator',
+      title: '',
+      url: '',
+      icon: ''
+    },
+    {
+      type: 'page',
+      title: 'Admin',
+      url: '/admin',
+      icon: 'hammer'
+    }
+  ];
   private readonly exhibitorPages: AppPage[] = [
     {
       type: 'seperator',
@@ -128,7 +142,7 @@ export class AppComponent {
 
   constructor() {
     (<any>window).LOCAL_DEV = location.href.includes('localhost') && LOCAL_DEV;
-    addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle });
+    addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer });
     this.authubscription = this.authenticationService.getUser().subscribe(user => {
       console.log('User in AppComponent:', user);
       this.userService.setUser(user?.email || '').then(eventUser => {
@@ -137,6 +151,9 @@ export class AppComponent {
         if (user) {
           if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.sponsorAdmin || eventUser?.boothStaff) {
             this.appPages = [...this.appPages, ...this.exhibitorPages];
+          }
+          if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin) {
+            this.appPages = [...this.appPages, ...this.adminPages];
           }
           this.appPages.push(
             {

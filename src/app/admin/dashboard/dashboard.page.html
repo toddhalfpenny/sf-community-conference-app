@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Admin Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button mode="md"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1>Manage Content</h1>
+  <ion-list>
+    <ion-item disabled ="/admin/users">
+      <ion-icon name="people-circle" slot="start"></ion-icon>
+      <ion-label>Users</ion-label>
+    </ion-item>
+    <ion-item routerLink="/admin/speakers">
+      <ion-icon name="people" slot="start"></ion-icon>
+      <ion-label>Speakers</ion-label>
+    </ion-item>
+    <ion-item disabled routerLink="/admin/sessions">
+      <ion-icon name="calendar" slot="start"></ion-icon>
+      <ion-label>Sessions</ion-label>
+    </ion-item>
+    <ion-item disabled routerLink="/admin/sponsors">
+      <ion-icon name="diamond-outline" slot="start"></ion-icon>
+      <ion-label>Sponsors</ion-label>
+    </ion-item>
+    <ion-item disabled routerLink="/admin/contest">
+      <ion-icon name="game-controller" slot="start"></ion-icon>
+      <ion-label>Contest</ion-label>
+    </ion-item>
+    <ion-item disabled routerLink="/admin/announcements">
+      <ion-icon name="megaphone" slot="start"></ion-icon>
+      <ion-label>Announcements</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

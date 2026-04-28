@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Manage Speakers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1>Import Speakers</h1>
+  <input type="file" id="speakers" name="speakers" accept="text/csv" #speakerInput />
+  <ion-button (click)="importSpeakers()">Import</ion-button>
+  <hr/>
+  <h1>Existing Speakers</h1>
+  <ion-list>
+    @for (speaker of speakers; track $index) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{speaker.firstname}} {{speaker.lastname}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+        </ion-card-content>
+      </ion-card>
+    }
+  </ion-list>
+</ion-content>
