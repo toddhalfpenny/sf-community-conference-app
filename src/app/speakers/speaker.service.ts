@@ -81,10 +81,6 @@ export class SpeakerService {
     }
   }
 
-  getTiers() : string[] {
-    return ['Platinum', 'Gold', 'Demo Jam', 'Stairs'];
-  }
-
 
   private sortSpeakers(speakers: Speaker[]): Speaker[] {
     return speakers.sort((a, b) => {

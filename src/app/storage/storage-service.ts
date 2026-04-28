@@ -23,6 +23,10 @@ const TABLE_SPECS: TableSpec[] = [
     idbSpec : {keyPath: "id"},
   },
   {
+    name: 'sessions',
+    idbSpec : {keyPath: "id"},
+  },
+  {
     name: 'speakers',
     idbSpec : {keyPath: "id"},
   },
@@ -82,6 +86,20 @@ export class StorageService {
     }
   }
 
+  public async clearTTL() {
+    localStorage.removeItem('sessions_fetched');
+    localStorage.removeItem('speakers_fetched');
+    localStorage.removeItem('sponsors_fetched');
+    localStorage.removeItem('eventuser_fetched');
+  }
+
+
+  public async clearLocalData() {
+    await this.waitForDB();
+    this.clearTTL()
+    return Promise.all(TABLE_SPECS.map(spec => this.clearTable(spec.name)));
+  }
+  
   public async clearTable(tableName: string): Promise<any> {
     const transaction = this.db.transaction([tableName], "readwrite");
     const objectStore = transaction.objectStore(tableName);

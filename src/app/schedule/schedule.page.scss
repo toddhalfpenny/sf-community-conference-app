@@ -1,0 +1,29 @@
+h1 {
+  margin-left: 16px
+}
+
+ion-list {
+  border: 1px solid var(--ion-color-lc-blue);
+  border-radius: 16px;
+  margin: 8px;
+  padding: 0;
+}
+
+details summary {
+  background-color: #f9f9f9 ;
+  border: 1px solid #ddd;
+  padding: 1em;
+  &.currentHour {
+    background-color: var(--ion-color-lc-blue);
+    color: white;
+  }
+}
+
+details summary::marker,
+:is(::-webkit-details-marker) {
+  content: "+ ";
+}
+
+details[open] summary::marker {
+  content: "− ";
+}

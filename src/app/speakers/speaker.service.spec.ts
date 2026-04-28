@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SpeakerService } from './speaker-service';
+import { SpeakerService } from './speaker.service';
 
 describe('SpeakerService', () => {
   let service: SpeakerService;

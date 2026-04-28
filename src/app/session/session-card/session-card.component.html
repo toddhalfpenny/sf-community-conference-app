@@ -1,0 +1,50 @@
+<div class="session format-{{session.format}}" >
+  <!-- <ion-avatar >
+    <img [src]="`/assets/sessions/${session.id}.jpg`" alt="{{ session.firstname }} photo">
+  </ion-avatar> -->
+  <div id="meta">
+    <span id="timing">
+      <ion-icon name="time"></ion-icon>
+      {{ session.startDateTime.seconds *1000| date : "shortTime" }} - {{ session.endDateTime.seconds * 1000| date : "shortTime" }}
+    </span>
+    <div class="actions">
+      <ion-button size="small" fill="outline">
+        <ion-icon slot="icon-only" name="calendar"></ion-icon>
+      </ion-button>
+      <ion-button size="small" fill="outline">
+        <ion-icon slot="icon-only" name="share-social"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+  <h1>{{ session.title }}</h1>
+  <div class="abstract" [innerHTML]="session.abstract"></div>
+  <div class="speaker">
+    @for (speaker of session.speakers; track speaker.id) {
+      <div class="speaker">
+        <ion-avatar >
+          <img [src]="`/assets/speakers/${speaker.id}.jpg`" alt="{{ speaker.name }} photo">
+        </ion-avatar>
+        <p class="name">{{ speaker.name }}</p>
+      </div>
+    }
+  </div>
+  <p class="room">
+    {{ session.room }}
+  </p>
+  <div id="tags">
+    @if(session.isBeginner) {
+      <ion-chip>
+        <ion-label>beginner</ion-label>
+      </ion-chip>
+    }
+    @if(session.isIntermediate) {
+      <ion-chip>
+        <ion-label>intermediate</ion-label>
+      </ion-chip>
+    }
+    @if(session.isAdvanced) {
+      <ion-chip>
+        <ion-label>advanced</ion-label>
+      </ion-chip>
+    }
+</div>

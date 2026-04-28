@@ -7,5 +7,19 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true" >
+  <h1>5th June 2026</h1>
+  <ion-list lines="none">
+    @for (sessionHour of agenda; track $index) {
+      <details open class="session-hour">
+        @for (session of sessionHour; track session.id) {
+          @if ($index === 0) {
+            <summary [class]="session.startDateTime.seconds == timeNow ? 'currentHour' : ''">{{ session.startDateTime.seconds| date : "shortTime"}}</summary>
+          } @else {
+            <app-session-card [session]="session"></app-session-card>
+          }
+        }
+      </details>
+    }
+  </ion-list>
 </ion-content>

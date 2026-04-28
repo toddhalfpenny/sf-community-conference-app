@@ -1,0 +1,84 @@
+.session {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin: 16px 8px;
+  padding: 1em 0.5em;
+  h1 {
+    font-size: 1.2em;
+    margin: 0.5em 0;
+    color: var(--ion-color-lc-blue);
+  }
+  &.single, &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+    border-color: var(--ion-color-lc-blue);
+  }
+  .abstract {
+    color: #555;
+    font-size: 0.9em;
+    line-height: 1.3em;
+    margin: 1em 0;
+    text-align: left;
+    text-wrap: pretty;
+  }
+  &.format-3 {
+    // Break
+    background-color: darkgray;
+    h1, .timing {
+      color: white;
+    }
+  }
+}
+
+#meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  #timing {
+    color: #555;
+    font-size: 0.9em;
+    margin-top: 0;
+    ion-icon {
+      font-size: 1.3em;
+      vertical-align: middle;
+      margin-right: 0.3em;
+    }
+  }
+  .actions {
+    ion-button {
+      margin-right: 0.5em;
+    }
+  }
+}
+
+.room {
+  color: #555;
+  font-size: 0.9em;
+  // margin-bottom: 0;
+}
+
+
+.speaker {
+  display: flex;
+  align-items: center;
+  margin-top: 0.5em;
+  .name {
+    margin-left: 1em;
+    font-weight: bold;
+    color: var(--ion-color-lc-blue);
+  }
+}
+ion-avatar {
+  // --border-radius: 32px;
+  border-color: var(--ion-color-lc-blue);
+  border: 3px solid var(--ion-color-lc-blue);
+  width: 50px;
+  height: 50px;
+}
+
+#tags ion-chip {
+  font-size: 0.8em;
+}

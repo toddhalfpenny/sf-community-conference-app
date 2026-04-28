@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList, IonAvatar, IonButton, IonIcon } from '@ionic/angular/standalone';
 import { logoLinkedin, trailSign } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { SpeakerService } from  './speaker-service';
+import { SpeakerService } from  './speaker.service';
 import { type Speaker } from './speaker.model';
 import { SpeakerCardComponent } from './speaker-card/speaker-card.component';
 

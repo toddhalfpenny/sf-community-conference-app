@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton } from '@ionic/angular/standalone';
 import { SpeakerCardComponent } from "./speaker-card/speaker-card.component";
 import { ActivatedRoute } from '@angular/router';
-import { SpeakerService } from './speaker-service';
+import { SpeakerService } from './speaker.service';
 import { type Speaker } from './speaker.model';
 
 @Component({

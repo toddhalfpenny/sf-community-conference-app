@@ -8,4 +8,26 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-alert
+    [isOpen]="showAlert"
+    [header]="alertHeader"
+    [message]="alertMessage"
+    [buttons]="alertButtons"
+    (didDismiss)="showAlert = false"
+  ></ion-alert>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Settings</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button expand="block" fill="outline" color="danger" (click)="clearTTL()">
+        <ion-icon slot="start" name="trash-bin"></ion-icon>
+        Clear Cache TTL
+      </ion-button>
+      <ion-button expand="block" fill="outline" color="danger" (click)="clearLocalData()">
+        <ion-icon slot="start" name="trash"></ion-icon>
+        Purge local data (except auth)
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

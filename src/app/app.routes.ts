@@ -67,4 +67,8 @@ export const routes: Routes = [
     path: 'scanner',
     loadComponent: () => import('./scanner/scanner.page').then( m => m.ScannerPage)
   },
+  {
+    path: 'session/:sessionId',
+    loadComponent: () => import('./session/session.page').then( m => m.SessionPage)
+  },
 ];
