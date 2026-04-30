@@ -5,9 +5,12 @@ import {
   Firestore,
   doc,
   getDoc,
+  setDoc
 } from '@angular/fire/firestore';
 import { Speaker } from './speaker.model';
 import { StorageService } from '../storage/storage-service';
+
+const LOG_TAG = 'speaker.servce';
 
 const SPEAKERS_DB_CONF = {
   TTL: 1000 * 60 * 60, // 1 hour
@@ -21,6 +24,7 @@ const SPEAKERS_DB_CONF = {
 export class SpeakerService {
   private readonly firestore = inject(Firestore);
   private readonly storageService = inject(StorageService);
+
 
   
   async getSpeakerById(speakerId: string, forceRefresh: boolean = false) {
@@ -79,6 +83,21 @@ export class SpeakerService {
       this.storageService.updateFetchedTime(SPEAKERS_DB_CONF.FETCHED_KEY);
       return this.sortSpeakers(speakers);
     }
+  }
+
+  public async upsertSpeakers(speakers: Speaker[]) { 
+    let errors: any[] = [];
+    for (const speaker of speakers) {
+      console.log(LOG_TAG, 'Upserting speaker', speaker.firstname, speaker.lastname);
+      setDoc(doc(this.firestore, "speakers", speaker.id), speaker).then(async (res) => {
+        console.log(LOG_TAG, 'Lead saved to Firestore', res);
+        await this.storageService.upsert('speakers', [speaker], 'id');
+      }).catch(async (error) => {
+        console.error(LOG_TAG, 'Error saving lead to Firestore:', error);
+        errors.push({speaker, error});
+      });
+    }
+    return errors;
   }
 
 

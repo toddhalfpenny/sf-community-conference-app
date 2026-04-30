@@ -7,5 +7,5 @@ export interface Speaker {
   trailblazerUrl?: string; // The URL of the sponsor's Trailblazer profile.
   bio?: string; // A short bio of the sponsor.
   mvp?: boolean; // Whether the speaker is a Microsoft MVP.
-  cta?: string;
+  cta?: boolean;
 }
