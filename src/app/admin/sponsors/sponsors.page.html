@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Manage Sponsors</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1>Import Sponsors</h1>
+  <input type="file" id="sponsors" name="sponsors" accept="text/xls" #sponsorInput />
+  <ion-button (click)="importSponsors()">Import</ion-button>
+  <hr/>
+  <h1>Existing Sponsors</h1>
+  <ion-list>
+    @for (sponsor of sponsors; track $index) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{sponsor.name}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+        </ion-card-content>
+      </ion-card>
+    }
+  </ion-list>
+</ion-content>

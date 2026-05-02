@@ -79,4 +79,12 @@ export const routes: Routes = [
     path: 'admin/speakers',
     loadComponent: () => import('./admin/speakers/speakers.page').then( m => m.SpeakersPage)
   },
+  {
+    path: 'admin/sessions',
+    loadComponent: () => import('./admin/sessions/sessions.page').then( m => m.SessionsPage)
+  },
+  {
+    path: 'admin/sponsors',
+    loadComponent: () => import('./admin/sponsors/sponsors.page').then( m => m.SponsorsPage)
+  },
 ];

@@ -6,5 +6,6 @@ export interface Sponsor {
   tiers: string[]; // The tiers of the sponsor (e.g. "Platinum", "Gold", "Silver").
   landingPageUrl?: string; // The URL of the sponsor's landing page.
   linkedInUrl?: string; // The URL of the sponsor's LinkedIn profile.
+  instagramUrl?: string; // The URL of the sponsor's Instagram profile.
   bio?: string; // A short bio of the sponsor.
 }

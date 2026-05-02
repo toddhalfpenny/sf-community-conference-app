@@ -10,11 +10,7 @@
       @for(sponsor of sponsorList[tier]; track $index) {
         @if (sponsor) {
           <div class="sponsor">
-          @if (sponsor.logoUrl) {
-              <img [routerLink]="`/sponsor/${sponsor.id}`" [src]="`/assets/sponsor-logos/${sponsor.logoUrl}`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
-          } @else {  
-            {{ sponsor.name }}
-          }
+            <img [routerLink]="`/sponsor/${sponsor.id}`" [src]="`/assets/sponsor-logos/${sponsor.id}.png`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
           @if (showDetails) {
             <div class="sponsor-details">
               @if (sponsor.bio) {

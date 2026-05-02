@@ -25,8 +25,8 @@
   }
   &.format-3 {
     // Break
-    background-color: darkgray;
-    h1, .timing {
+    background-color: var(--ion-color-lc-blue);
+    h1, #meta #timing {
       color: white;
     }
   }
@@ -59,6 +59,7 @@
   font-size: 0.9em;
   // margin-bottom: 0;
 }
+
 
 
 .speaker {

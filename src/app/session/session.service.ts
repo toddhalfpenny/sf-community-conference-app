@@ -8,6 +8,7 @@ import {
   Firestore,
   doc,
   getDoc,
+  setDoc
 } from '@angular/fire/firestore';
 import { Session, SessionFormat } from './session.model';
 import { StorageService } from '../storage/storage-service';
@@ -30,20 +31,26 @@ export class SessionService {
    */
   async getAgenda(): Promise<Session[][]> {
     let sortedSessions = (await this.getSessions()).sort((a, b) => {
-      if (a.startDateTime < b.startDateTime) {
+      if (a.startDateTime.seconds < b.startDateTime.seconds) {
         return -1;
       }
-      if (a.startDateTime > b.startDateTime) {
+      if (a.startDateTime.seconds > b.startDateTime.seconds) {
         return 1;
       }
-      // names must be equal
-      const nameA = a.speakers[0].name?.toUpperCase();
-      const nameB = b.speakers[0].name.toUpperCase();
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
+      
+      // times must be equal
+      if (a.room && b.room) {
+        const roomA = a.room.toUpperCase();
+        const roomB = b.room.toUpperCase();
+        if (roomA.toUpperCase().includes('PORTER TUN')) {
+          return -1;
+        }
+        if (roomA < roomB) {
+          return -1;
+        }
+        if (roomA > roomB) {
+          return 1;
+        }
       }
       // names must be equal
       return 0;
@@ -137,6 +144,21 @@ export class SessionService {
         // return this.sortSessions(sessions);
         return sessions;
       }
+    }
+
+    public async upsertSessions(sessions: Session[]) { 
+      let errors: any[] = [];
+      for (const session of sessions) {
+        console.log('Upserting session', session.title);
+        setDoc(doc(this.firestore, "sessions", session.id), session).then(async (res) => {
+          console.log('Lead saved to Firestore', res);
+          await this.storageService.upsert('sessions', [session], 'id');
+        }).catch(async (error) => {
+          console.error('Error saving lead to Firestore:', error);
+          errors.push({session, error});
+        });
+      }
+      return errors;
     }
 
 

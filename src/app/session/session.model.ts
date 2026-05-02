@@ -5,12 +5,10 @@ export interface Session {
   room: string;
   startDateTime: {seconds: number}; // ISO 8601 format
   endDateTime: {seconds: number}; // ISO 8601 format 
-  format: SessionFormat;
+  format?: SessionFormat;
   status: SessionStatus;
   speakers: {id: string, name: string}[]; // Array of speaker objects with id and name  ;
-  isBeginner: boolean;
-  isIntermediate: boolean;
-  isAdvanced: boolean;
+  tags?: string[]; // Optional array of tags for the session
 }
 
 export enum SessionFormat {

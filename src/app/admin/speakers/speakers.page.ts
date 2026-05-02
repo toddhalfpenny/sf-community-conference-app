@@ -2,9 +2,22 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
+import { tabletojson } from 'tabletojson';
 import { SpeakerService } from  '../../speakers/speaker.service';
 import { UtilService } from 'src/app/utils/util-service';
 import { type Speaker } from '../../speakers/speaker.model';
+
+const SESSION_XLS_COLUMN_MAP: any = {
+  'id': 'Contact ID',
+  'firstname': 'First Name',
+  'lastname': 'Last Name',
+  'title': 'Title',
+  'mvp': 'MVP',
+  'cta': 'CTA',
+  'linkedInUrl': 'LinkedIn Address',
+  'trailblazerUrl': 'Trailblazer ID',
+  'bio': 'Biography',
+}
 
 @Component({
   selector: 'app-speakers',
@@ -41,21 +54,26 @@ export class SpeakersPage implements OnInit {
       console.log('File content:', e.target.result);
       if (!e.target.result) return;
       const data = e.target.result as string;
-      let csvToRowArray = data.split("\n");
-      for (let index = 1; index < csvToRowArray.length - 1; index++) {
-        let row = this.utilService.CSVtoArray(csvToRowArray[index]) as string[];
-        const speaker: Speaker = {
-          id: row[0],
-          firstname: row[1],
-          lastname: row[2],
-          title: row[3],
-          mvp: row[4].toLowerCase() === 'true',
-          cta: row[5].toLocaleLowerCase() === 'true',
-          linkedInUrl: row[6],
-          trailblazerUrl: row[7],
-          bio: row[8]
+
+      const converted = tabletojson.convert(data)[0];
+      console.log('Converted CSV to JSON:', converted.length, 'rows');
+
+      for (let index = 0; index < converted.length; index++) {
+        let row = converted[index];
+        if (row) {
+          const speaker: Speaker = {
+            id: row[SESSION_XLS_COLUMN_MAP.id],
+            firstname: row[SESSION_XLS_COLUMN_MAP.firstname],
+            lastname: row[SESSION_XLS_COLUMN_MAP.lastname],
+            title: row[SESSION_XLS_COLUMN_MAP.title],
+            mvp: (row[SESSION_XLS_COLUMN_MAP.mvp] ?? '').toLowerCase() === '1',
+            cta: (row[SESSION_XLS_COLUMN_MAP.cta] ?? '').toLocaleLowerCase() === '1',
+            linkedInUrl: row[SESSION_XLS_COLUMN_MAP.linkedInUrl],
+            trailblazerUrl: row[SESSION_XLS_COLUMN_MAP.trailblazerUrl],
+            bio: row[SESSION_XLS_COLUMN_MAP.bio],
+          }
+          speakerArray.push(speaker);
         }
-        speakerArray.push(speaker);
       }
       console.log(speakerArray);
       await this.speakerService.upsertSpeakers(speakerArray);

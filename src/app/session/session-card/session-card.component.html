@@ -18,9 +18,9 @@
   </div>
   <h1>{{ session.title }}</h1>
   <div class="abstract" [innerHTML]="session.abstract"></div>
-  <div class="speaker">
+  <div class="speakers">
     @for (speaker of session.speakers; track speaker.id) {
-      <div class="speaker">
+      <div class="speaker" routerLink="/speaker/{{ speaker.id }}">
         <ion-avatar >
           <img [src]="`/assets/speakers/${speaker.id}.jpg`" alt="{{ speaker.name }} photo">
         </ion-avatar>
@@ -32,7 +32,12 @@
     {{ session.room }}
   </p>
   <div id="tags">
-    @if(session.isBeginner) {
+    @for (tag of session.tags; track tag) {
+      <ion-chip>
+        <ion-label>{{ tag }}</ion-label>
+      </ion-chip>
+    }
+    <!-- @if(session.isBeginner) {
       <ion-chip>
         <ion-label>beginner</ion-label>
       </ion-chip>
@@ -46,5 +51,5 @@
       <ion-chip>
         <ion-label>advanced</ion-label>
       </ion-chip>
-    }
+    } -->
 </div>

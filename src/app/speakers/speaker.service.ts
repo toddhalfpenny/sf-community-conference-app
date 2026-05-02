@@ -59,7 +59,7 @@ export class SpeakerService {
     }
   }
 
-  async getSpeakers(): Promise<any> {
+  async getSpeakers(): Promise<Speaker[]> {
     console.log('Fetching speakers from Firestore...');
 
     const shouldRefresh = this.storageService.shouldRefresh(SPEAKERS_DB_CONF.FETCHED_KEY, SPEAKERS_DB_CONF.TTL);

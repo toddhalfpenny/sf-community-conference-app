@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Manage Sessions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1>Import Sessions</h1>
+  <input type="file" id="sessions" name="sessions" accept="text/xls" #sessionInput />
+  <ion-button (click)="importSessions()">Import</ion-button>
+  <hr/>
+  <h1>Existing Sessions</h1>
+  <ion-list>
+    @for (session of sessions; track $index) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{session.title}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+        </ion-card-content>
+      </ion-card>
+    }
+  </ion-list>
+</ion-content>

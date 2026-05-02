@@ -45,6 +45,9 @@ ion-avatar {
   a {
     margin: 0.5em;
   }
+  div:first-of-type, div:last-of-type {
+    width: 25%;
+  }
 }
 
 ion-chip {
