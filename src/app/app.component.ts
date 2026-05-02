@@ -187,6 +187,12 @@ export class AppComponent {
             },
             {
               type: 'page',
+              title: 'Profile',
+              url: '/profile',
+              icon: 'person'
+            },
+            {
+              type: 'page',
               title: 'Login',
               url: '/auth/login',
               icon: 'log-in'

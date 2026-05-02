@@ -14,9 +14,17 @@ const INDEXED_DB_VERSION = 1;
 const IDB_NAME = 'ConfApp';
 
 const TABLE_SPECS: TableSpec[] = [
+  {
+    name: 'annoucements',
+    idbSpec : {keyPath: "id"},
+  },
   { 
     name: 'eventUsers',
     idbSpec : {keyPath: "email"},
+  },
+  { 
+    name: 'faqs',
+    idbSpec : {keyPath: "id"},
   },
   {
     name: 'leads',
@@ -96,7 +104,21 @@ export class StorageService {
   public async clearLocalData() {
     await this.waitForDB();
     this.clearTTL()
-    return Promise.all(TABLE_SPECS.map(spec => this.clearTable(spec.name)));
+    // return Promise.all(TABLE_SPECS.map(spec => this.clearTable(spec.name)));
+    this.db.close();
+    Promise.all(TABLE_SPECS.map(spec => this.clearTable(spec.name)));
+
+
+    const DBDeleteRequest = window.indexedDB.deleteDatabase("ConfApp");
+    DBDeleteRequest.onerror = (event) => {
+      console.error("Error deleting database.");
+    };
+
+    DBDeleteRequest.onsuccess = (event) => {
+      console.log("Database deleted successfully");
+
+      console.log(event); // should be undefined
+    };
   }
   
   public async clearTable(tableName: string): Promise<any> {
