@@ -49,6 +49,7 @@ export class SponsorsPage implements OnInit {
     const sponsorArray: Sponsor[] = [];
     const file = this.sponsorInput.nativeElement.files[0];
     console.log('Importing sponsors from file:', file);
+    const timeNow = new Date();
     if (!file) return;
     const reader = new FileReader();
     reader.onload = async (e: any) => {
@@ -77,6 +78,7 @@ export class SponsorsPage implements OnInit {
             linkedInUrl: this.parseUrl(row[SESSION_XLS_COLUMN_MAP.linkedInUrl] ?? ''),
             // instagramUrl: row[SESSION_XLS_COLUMN_MAP.instagramUrl] ?? '',
             bio: row[SESSION_XLS_COLUMN_MAP.bio],
+            lastModified: timeNow,
           }
           sponsorArray.push(sponsor);
         }
@@ -84,7 +86,7 @@ export class SponsorsPage implements OnInit {
       console.log(sponsorArray);
       await this.sponsorService.upsertSponsors(sponsorArray);
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'ISO-8859-4');
     this.sponsorInput.nativeElement.value = '';
   }
 

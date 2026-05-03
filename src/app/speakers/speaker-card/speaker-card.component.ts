@@ -4,17 +4,20 @@ import { IonAvatar, IonButton, IonIcon, IonChip } from "@ionic/angular/standalon
 import { logoLinkedin, trailSign } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { type Speaker } from '../speaker.model';
+import { Session } from 'src/app/session/session.model';
+import { SessionCardComponent } from "src/app/session/session-card/session-card.component";
 
 @Component({
   selector: 'app-speaker-card',
   templateUrl: './speaker-card.component.html',
   styleUrls: ['./speaker-card.component.scss'],
   standalone: true,
-  imports: [RouterLink, IonAvatar, IonButton, IonIcon, IonChip],
+  imports: [RouterLink, IonAvatar, IonButton, IonIcon, IonChip, SessionCardComponent],
 })
 export class SpeakerCardComponent  implements OnInit {
 
   @Input({required: true}) speaker!: Speaker;
+  @Input() sessions: Session[]| undefined = [];
   @Input() showBio: boolean = false;
 
   constructor() {

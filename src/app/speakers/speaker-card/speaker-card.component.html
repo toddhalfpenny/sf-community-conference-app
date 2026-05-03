@@ -37,3 +37,11 @@
     </div>
   </div>
 </div>
+@if (sessions && sessions.length > 0) {
+  <div class="sessions">
+    <h2>Sessions</h2>
+    @for (session of sessions; track session.id) {
+      <app-session-card [session]="session" [showSpeakers]="false"></app-session-card>
+    }
+  </div>
+}

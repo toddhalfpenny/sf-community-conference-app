@@ -8,4 +8,8 @@ export interface Sponsor {
   linkedInUrl?: string; // The URL of the sponsor's LinkedIn profile.
   instagramUrl?: string; // The URL of the sponsor's Instagram profile.
   bio?: string; // A short bio of the sponsor.
+  customTitle?: string; // A custom title for the speaker, if any.
+  customBio?: string; // A custom bio for the speaker, if any.
+  customLandingPageUrl?: string; // A custom landing page URL for the speaker, if any.
+  lastModified?: Date; // The timestamp of the last modification to the speaker's data.
 }

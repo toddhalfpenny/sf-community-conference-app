@@ -159,6 +159,11 @@ export class StorageService {
   }
 
 
+  public getLastFetchedTime(token: string): Date {
+    return new Date(parseInt(localStorage.getItem(token) ?? '0'));
+  }
+
+
   public async getAll(soupName: string, key:string|null  = null, index:string|null = null, direction:string = 'next', usePrimary: boolean = false ):Promise<any[]> {
     // TODO Multi-org
     console.log('getAll', soupName, key, index, direction, usePrimary);
@@ -210,7 +215,12 @@ export class StorageService {
 
   public async upsert(soupName: string, entries:any[], idField:string = 'id', usePrimary: boolean = false):Promise<any> {
     console.log(LOG_TAG, "upsert", soupName, entries, usePrimary);
+    if (!entries || entries.length === 0) {
+      console.warn(LOG_TAG, "upsert called with empty entries array, skipping");
+      return;
+    }
     await this.waitForDB();
+    console.log(LOG_TAG, "DB is ready, proceeding with upsert");
     return new Promise(async (resolve, reject) => {
 
     setTimeout(() => {

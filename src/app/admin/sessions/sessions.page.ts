@@ -59,6 +59,7 @@ export class SessionsPage implements OnInit {
     const sessionArray: Session[] = [];
     const file = this.sessionInput.nativeElement.files[0];
     console.log('Importing sessions from file:', file);
+    const timeNow = new Date();
     if (!file) return;
     const reader = new FileReader();
     reader.onload = async (e: any) => {
@@ -98,9 +99,9 @@ export class SessionsPage implements OnInit {
             }
           }
           console.log("speakers", speakers );
-          const startTime = row[SESSION_XLS_COLUMN_MAP.time].split('-')[0].trim();
+          const startTime = row[SESSION_XLS_COLUMN_MAP.time].split('-')[0].trim().replace('.', ':');  
           const startDateTime = new Date(`2026-06-05T${startTime}:00+01:00`).getTime() / 1000;;
-          const endTime = row[SESSION_XLS_COLUMN_MAP.time].split('-')[1].trim();
+          const endTime = row[SESSION_XLS_COLUMN_MAP.time].split('-')[1].trim().replace('.', ':');  
           const endDateTime = new Date(`2026-06-05T${endTime}:00+01:00`).getTime()/1000;
           const session: Session = {
             id: row[SESSION_XLS_COLUMN_MAP.id],
@@ -112,7 +113,8 @@ export class SessionsPage implements OnInit {
             status: SessionStatus.Published,
             speakers: speakers,
             format: row[SESSION_XLS_COLUMN_MAP.isWorkshop] === '1' ? SessionFormat.Workshop : SessionFormat.Session,
-            tags: []
+            tags: [],
+            lastModified: timeNow,
           }
           if (row[SESSION_XLS_COLUMN_MAP.isAi] === '1') {
             session.tags?.push('AI');
@@ -138,7 +140,7 @@ export class SessionsPage implements OnInit {
       console.log(sessionArray);
       await this.sessionService.upsertSessions(sessionArray);
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'ISO-8859-4');
     this.sessionInput.nativeElement.value = '';
   }
 

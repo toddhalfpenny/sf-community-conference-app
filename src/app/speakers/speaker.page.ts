@@ -5,7 +5,9 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton 
 import { SpeakerCardComponent } from "./speaker-card/speaker-card.component";
 import { ActivatedRoute } from '@angular/router';
 import { SpeakerService } from './speaker.service';
+import { SessionService } from '../session/session.service'
 import { type Speaker } from './speaker.model';
+import { type Session } from '../session/session.model';
 
 @Component({
   selector: 'app-speaker',
@@ -19,8 +21,10 @@ export class SpeakerPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private readonly location = inject(Location);
   private readonly speakerService = inject(SpeakerService);
+  private readonly sessionService = inject(SessionService);
   
   protected speaker?: Speaker;
+  protected sessions?: Session[];
 
   constructor() { }
 
@@ -29,6 +33,8 @@ export class SpeakerPage implements OnInit {
   async ionViewWillEnter() {
     const speakerId = this.activatedRoute.snapshot.paramMap.get('speakerId') as string;
     this.speaker = await this.speakerService.getSpeakerById(speakerId) as Speaker;
+    this.sessions = await this.sessionService.getSpeakerSessions(speakerId) as Session[];
+    console.log('sessions', this.sessions);
   }
 
 }

@@ -8,4 +8,7 @@ export interface Speaker {
   bio?: string; // A short bio of the sponsor.
   mvp?: boolean; // Whether the speaker is a Microsoft MVP.
   cta?: boolean;
+  customTitle?: string; // A custom title for the speaker, if any.
+  customBio?: string; // A custom bio for the speaker, if any.
+  lastModified?: Date; // The timestamp of the last modification to the speaker's data.
 }

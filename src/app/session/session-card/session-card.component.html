@@ -18,16 +18,18 @@
   </div>
   <h1>{{ session.title }}</h1>
   <div class="abstract" [innerHTML]="session.abstract"></div>
-  <div class="speakers">
-    @for (speaker of session.speakers; track speaker.id) {
-      <div class="speaker" routerLink="/speaker/{{ speaker.id }}">
-        <ion-avatar >
-          <img [src]="`/assets/speakers/${speaker.id}.jpg`" alt="{{ speaker.name }} photo">
-        </ion-avatar>
-        <p class="name">{{ speaker.name }}</p>
-      </div>
-    }
-  </div>
+  @if (showSpeakers) {
+    <div class="speakers">
+      @for (speaker of session.speakers; track speaker.id) {
+        <div class="speaker" routerLink="/speaker/{{ speaker.id }}">
+          <ion-avatar >
+            <img [src]="`/assets/speakers/${speaker.id}.jpg`" alt="{{ speaker.name }} photo">
+          </ion-avatar>
+          <p class="name">{{ speaker.name }}</p>
+        </div>
+      }
+    </div>
+  }
   <p class="room">
     {{ session.room }}
   </p>

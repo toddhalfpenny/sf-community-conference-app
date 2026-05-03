@@ -8,14 +8,17 @@ import {
   Firestore,
   doc,
   getDoc,
-  setDoc
+  setDoc,
+  query,
+  where
 } from '@angular/fire/firestore';
 import { Session, SessionFormat } from './session.model';
 import { StorageService } from '../storage/storage-service';
 
 const SESSIONS_DB_CONF = {
-  TTL: 1000 * 60 * 60, // 1 hour
-  // TTL: 1000 * 30, // 30 seconds
+  // TTL: 1000 * 60 * 60, // 1 hour
+  // TTL: 1000 * 30 * 10, // 10 minutes
+  TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'sessions_fetched',
 }
 
@@ -99,7 +102,7 @@ export class SessionService {
 
     // If not in cache or forceRefresh is true, fetch from Firestore
     try {
-      const docRef = doc(this.firestore, "sponors", sessionId);
+      const docRef = doc(this.firestore, "session", sessionId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const session = docSnap.data() as Session;
@@ -119,7 +122,7 @@ export class SessionService {
   }
 
    async getSessions(): Promise<Session[]> {
-      console.log('Fetching sessions from Firestore...');
+      console.log('Fetching sessions...');
   
       const shouldRefresh = this.storageService.shouldRefresh(SESSIONS_DB_CONF.FETCHED_KEY, SESSIONS_DB_CONF.TTL);
       console.log('shouldRefresh', shouldRefresh);
@@ -130,19 +133,37 @@ export class SessionService {
         console.log('Cached sessions:', cachedSessions);
         // return this.sortSessions(cachedSessions);s
         return cachedSessions;
-      } else {
-        const querySnapshot = await getDocs(collection(this.firestore, 'sessions'));
-        await this.storageService.clearTable('sessions');
-        let sessions: Session[] = [];
-        querySnapshot.forEach((doc) => {
+      } else {        
+        const lastRefreshed = this.storageService.getLastFetchedTime(SESSIONS_DB_CONF.FETCHED_KEY);
+        const collRef = collection(this.firestore, 'sessions');
+        const q = query(collRef, where("lastModified", ">", lastRefreshed));
+        const querySnapshot = await getDocs(q);
+        const updatedSessions = querySnapshot.docs.map((doc) => {
           const sessionData = doc.data() as Session;
           sessionData.id = doc.id;
-          sessions.push(sessionData);
+          return sessionData;
         });
-        await this.storageService.upsert('sessions', sessions, 'id');
+        await this.storageService.upsert('sessions', updatedSessions, 'id');
         this.storageService.updateFetchedTime(SESSIONS_DB_CONF.FETCHED_KEY);
-        // return this.sortSessions(sessions);
+        const sessions = await this.storageService.getAll('sessions') as Session[];
         return sessions;
+      }
+    }
+
+
+    public async getSpeakerSessions(speakerId: string): Promise<Session[]> {
+      try {
+        const allSessions = await this.getSessions();
+        return allSessions.filter(session => {
+          if (session.speakers && (session.speakers.find((speaker) => speaker.id === speakerId))) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      } catch (error) {
+        console.error('Error fetching speaker sessions:', error);
+        return [];
       }
     }
 

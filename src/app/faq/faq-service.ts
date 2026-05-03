@@ -5,6 +5,8 @@ import {
   Firestore,
   doc,
   getDoc,
+  query,
+  where,
 } from '@angular/fire/firestore';
 import { StorageService } from '../storage/storage-service';
 import { FAQ } from './faq.model';
@@ -12,7 +14,8 @@ import { FAQ } from './faq.model';
 const LOG_TAG = 'faq.servce';
 
 const FAQ_DB_CONF = {
-  TTL: 1000 * 60 * 60, // 1 hour
+  // TTL: 1000 * 60 * 60, // 1 hour
+  TTL: 1000 * 30 * 10, // 10 minutes
   // TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'faqs_fetched',
 }
@@ -35,17 +38,20 @@ export class FaqService {
       console.log('Cached faqs:', cachedFaqs);
       return cachedFaqs.sort((a, b) => a.order - b.order);
     } else {
-      const querySnapshot = await getDocs(collection(this.firestore, 'faqs'));
-      await this.storageService.clearTable('faqs');
-      let faqs: FAQ[] = [];
-      querySnapshot.forEach((doc) => {
+      const lastRefreshed = this.storageService.getLastFetchedTime(FAQ_DB_CONF.FETCHED_KEY);
+      const collRef = collection(this.firestore, 'faqs'); 
+      const q = query(collRef, where("lastModified", ">", lastRefreshed));
+      const querySnapshot = await getDocs(q);
+      this.storageService.updateFetchedTime(FAQ_DB_CONF.FETCHED_KEY);
+      console.log(LOG_TAG, 'Fetched sponsors from Firestore, querySnapshot:', querySnapshot.docs.length);
+      const updatedFaqs: FAQ[] = querySnapshot.docs.map((doc) => {
         const faqData = doc.data() as FAQ;
         faqData.id = doc.id;
-        faqs.push(faqData);
+        return faqData;
       });
-      await this.storageService.upsert('faqs', faqs, 'id');
-      this.storageService.updateFetchedTime(FAQ_DB_CONF.FETCHED_KEY);
-      return faqs.sort((a, b) => a.order - b.order);
+      await this.storageService.upsert('faqs', updatedFaqs, 'id');
+      const faqs = await this.storageService.getAll('faqs') as FAQ[];
+      return faqs;
     }
   }
 

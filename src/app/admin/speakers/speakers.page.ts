@@ -48,6 +48,7 @@ export class SpeakersPage implements OnInit {
     const speakerArray: Speaker[] = [];
     const file = this.speakerInput.nativeElement.files[0];
     console.log('Importing speakers from file:', file);
+    const timeNow= new Date();
     if (!file) return;
     const reader = new FileReader();
     reader.onload = async (e: any) => {
@@ -65,12 +66,13 @@ export class SpeakersPage implements OnInit {
             id: row[SESSION_XLS_COLUMN_MAP.id],
             firstname: row[SESSION_XLS_COLUMN_MAP.firstname],
             lastname: row[SESSION_XLS_COLUMN_MAP.lastname],
-            title: row[SESSION_XLS_COLUMN_MAP.title],
+            // title: '', // Title is only to be 
             mvp: (row[SESSION_XLS_COLUMN_MAP.mvp] ?? '').toLowerCase() === '1',
             cta: (row[SESSION_XLS_COLUMN_MAP.cta] ?? '').toLocaleLowerCase() === '1',
             linkedInUrl: row[SESSION_XLS_COLUMN_MAP.linkedInUrl],
             trailblazerUrl: row[SESSION_XLS_COLUMN_MAP.trailblazerUrl],
             bio: row[SESSION_XLS_COLUMN_MAP.bio],
+            lastModified: timeNow
           }
           speakerArray.push(speaker);
         }
@@ -78,7 +80,7 @@ export class SpeakersPage implements OnInit {
       console.log(speakerArray);
       await this.speakerService.upsertSpeakers(speakerArray);
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'ISO-8859-4');
     this.speakerInput.nativeElement.value = '';
   }
 

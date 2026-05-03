@@ -5,7 +5,9 @@ import {
   Firestore,
   doc,
   getDoc,
-  setDoc
+  setDoc,
+  query,
+  where
 } from '@angular/fire/firestore';
 import { Speaker } from './speaker.model';
 import { StorageService } from '../storage/storage-service';
@@ -13,8 +15,9 @@ import { StorageService } from '../storage/storage-service';
 const LOG_TAG = 'speaker.servce';
 
 const SPEAKERS_DB_CONF = {
-  TTL: 1000 * 60 * 60, // 1 hour
-  // TTL: 1000 * 30, // 30 seconds
+  // TTL: 1000 * 60 * 60, // 1 hour
+  // TTL: 1000 * 30 * 10, // 10 minutes
+  TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'speakers_fetched',
 }
 
@@ -60,28 +63,37 @@ export class SpeakerService {
   }
 
   async getSpeakers(): Promise<Speaker[]> {
-    console.log('Fetching speakers from Firestore...');
+    try {
+      console.log('Fetching speakers from Firestore...');
 
-    const shouldRefresh = this.storageService.shouldRefresh(SPEAKERS_DB_CONF.FETCHED_KEY, SPEAKERS_DB_CONF.TTL);
-    console.log('shouldRefresh', shouldRefresh);
+      const shouldRefresh = this.storageService.shouldRefresh(SPEAKERS_DB_CONF.FETCHED_KEY, SPEAKERS_DB_CONF.TTL);
+      console.log('shouldRefresh', shouldRefresh);
 
-    if (!shouldRefresh) {
-      console.log('Using cached speakers data');
-      const cachedSpeakers = await this.storageService.getAll('speakers') as Speaker[];
-      console.log('Cached speakers:', cachedSpeakers);
-      return this.sortSpeakers(cachedSpeakers);
-    } else {
-      const querySnapshot = await getDocs(collection(this.firestore, 'speakers'));
-      await this.storageService.clearTable('speakers');
-      let speakers: Speaker[] = [];
-      querySnapshot.forEach((doc) => {
-        const speakerData = doc.data() as Speaker;
-        speakerData.id = doc.id;
-        speakers.push(speakerData);
-      });
-      await this.storageService.upsert('speakers', speakers, 'id');
-      this.storageService.updateFetchedTime(SPEAKERS_DB_CONF.FETCHED_KEY);
-      return this.sortSpeakers(speakers);
+      if (!shouldRefresh) {
+        console.log('Using cached speakers data');
+        const cachedSpeakers = await this.storageService.getAll('speakers') as Speaker[];
+        console.log('Cached speakers:', cachedSpeakers);
+        return this.sortSpeakers(cachedSpeakers);
+      } else {
+        const lastRefreshed = this.storageService.getLastFetchedTime(SPEAKERS_DB_CONF.FETCHED_KEY);
+        const collRef = collection(this.firestore, 'speakers');
+        const q = query(collRef, where("lastModified", ">", lastRefreshed));
+        const querySnapshot = await getDocs(q);
+        console.log(LOG_TAG, 'Fetched speakers from Firestore, querySnapshot:', querySnapshot.docs.length);
+        const speakersToUpdate = querySnapshot.docs.map((doc) => {
+          const speakerData = doc.data() as Speaker;
+          speakerData.id = doc.id;
+          return speakerData;
+        });
+        await this.storageService.upsert('speakers', speakersToUpdate, 'id');
+        this.storageService.updateFetchedTime(SPEAKERS_DB_CONF.FETCHED_KEY);
+        const speakers = await this.storageService.getAll('speakers') as Speaker[];
+        console.log('Cached speakers:', speakers);
+        return this.sortSpeakers(speakers);
+      }
+    } catch (error) {
+      console.error('Error fetching speakers from Firestore:', error);
+      throw error;
     }
   }
 

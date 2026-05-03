@@ -5,7 +5,9 @@ import {
   Firestore,
   doc,
   getDoc,
-  setDoc
+  query,
+  setDoc,
+  where
 } from '@angular/fire/firestore';
 import { Sponsor } from './sponsor.model';
 import { StorageService } from '../storage/storage-service';
@@ -13,7 +15,8 @@ import { StorageService } from '../storage/storage-service';
 const LOG_TAG = 'sponsor.servce';
 
 const SPONSORS_DB_CONF = {
-  TTL: 1000 * 60 * 60, // 1 hour
+  // TTL: 1000 * 60 * 60, // 1 hour
+  TTL: 1000 * 30 * 10, // 10 minutes
   // TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'sponsors_fetched',
 }
@@ -65,19 +68,23 @@ export class SponsorsService {
     if (!shouldRefresh) {
       console.log('Using cached sponsors data');
       const cachedSponsors = await this.storageService.getAll('sponsors') as Sponsor[];
-      console.log('Cached sponsors:', cachedSponsors);
       return cachedSponsors;
     } else {
-      const querySnapshot = await getDocs(collection(this.firestore, 'sponsors'));
-      await this.storageService.clearTable('sponsors');
+      const lastRefreshed = this.storageService.getLastFetchedTime(SPONSORS_DB_CONF.FETCHED_KEY);
+      const collRef = collection(this.firestore, 'sponsors');
+      const q = query(collRef, where("lastModified", ">", lastRefreshed));
+      const querySnapshot = await getDocs(q);
       this.storageService.updateFetchedTime(SPONSORS_DB_CONF.FETCHED_KEY);
-      return querySnapshot.docs.map((doc) => {
+      console.log(LOG_TAG, 'Fetched sponsors from Firestore, querySnapshot:', querySnapshot.docs.length);
+      const sponsorsToUpdate = querySnapshot.docs.map((doc) => {
         const sponsorData = doc.data() as Sponsor;
         sponsorData.id = doc.id;
         console.log('Sponsor data:', sponsorData);
-        this.storageService.upsert('sponsors', [sponsorData], 'id');
         return sponsorData;
       });
+      await this.storageService.upsert('sponsors', sponsorsToUpdate, 'id');
+      const sponors = await this.storageService.getAll('sponsors') as Sponsor[];
+      return sponors;
     }
   }
 

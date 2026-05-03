@@ -17,6 +17,7 @@ import { addIcons } from 'ionicons';
 export class SessionCardComponent  implements OnInit {
 
   @Input({required: true}) session!: Session;
+  @Input() showSpeakers: boolean = true;
   constructor() {
     addIcons({ calendar, shareSocial, time, location });
   }
