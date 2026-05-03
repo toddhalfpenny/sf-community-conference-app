@@ -63,6 +63,7 @@ export class SpeakerService {
   }
 
   async getSpeakers(): Promise<Speaker[]> {
+    // TODO Implement forceRefresh and allStatuses options like sessions service (for admin view)
     try {
       console.log('Fetching speakers from Firestore...');
 

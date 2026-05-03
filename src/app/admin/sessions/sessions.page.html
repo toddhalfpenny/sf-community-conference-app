@@ -2,6 +2,12 @@
   <ion-toolbar>
     <ion-title>Manage Sessions</ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar show-clear-button="focus"
+      [debounce]="400" 
+      (ionInput)="handleSearchChange($event)">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
@@ -12,13 +18,14 @@
   <h1>Existing Sessions</h1>
   <ion-list>
     @for (session of sessions; track $index) {
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>{{session.title}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-        </ion-card-content>
-      </ion-card>
+      @if (searchTerm === '' || session.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{session.title}}</ion-card-title>
+          </ion-card-header>
+          <ion-button fill="clear"[routerLink]="['/admin/session/' + session.id]">Edit</ion-button>
+        </ion-card>
+      }
     }
   </ion-list>
 </ion-content>

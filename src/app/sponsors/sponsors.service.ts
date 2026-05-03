@@ -62,6 +62,7 @@ export class SponsorsService {
   }
 
   async getRawSponsors(): Promise<Sponsor[]> {
+    // TODO Implement forceRefresh and allStatuses options like sessions service (for admin view)
     const shouldRefresh = this.storageService.shouldRefresh(SPONSORS_DB_CONF.FETCHED_KEY, SPONSORS_DB_CONF.TTL);
     console.log('shouldRefresh', shouldRefresh);
 

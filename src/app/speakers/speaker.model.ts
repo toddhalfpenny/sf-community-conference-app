@@ -11,4 +11,10 @@ export interface Speaker {
   customTitle?: string; // A custom title for the speaker, if any.
   customBio?: string; // A custom bio for the speaker, if any.
   lastModified?: Date; // The timestamp of the last modification to the speaker's data.
+  status: SpeakerStatus; // The status of the speaker (e.g., Draft, Published).
+}
+
+export enum SpeakerStatus {
+  'Draft' = 0,
+  'Published' = 1,
 }

@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard, IonCardHeader, IonCardTitle, IonButton, IonSearchbar } from '@ionic/angular/standalone';
 import { tabletojson } from 'tabletojson';
 import { SessionService } from '../../session/session.service'
 import { SpeakerService } from  '../../speakers/speaker.service';
@@ -33,7 +34,7 @@ const SESSION_XLS_COLUMN_MAP: any = {
   templateUrl: './sessions.page.html',
   styleUrls: ['./sessions.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton]
+  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonCard, IonCardHeader, IonCardTitle, IonButton, IonSearchbar]
 })
 export class SessionsPage implements OnInit {
   @ViewChild('sessionInput') sessionInput!: any;
@@ -44,6 +45,7 @@ export class SessionsPage implements OnInit {
   private sessionArray: Session[] = [];
 
   protected sessions: Session[] = [];
+  protected searchTerm : string = '';
 
   constructor() { }
 
@@ -51,7 +53,7 @@ export class SessionsPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.sessions = await this.sessionService.getSessions();
+    this.sessions = await this.sessionService.getSessions({forceRefresh: true, allStatuses: true});
   }
 
   public async importSessions() {
@@ -140,19 +142,15 @@ export class SessionsPage implements OnInit {
       console.log(sessionArray);
       await this.sessionService.upsertSessions(sessionArray);
     };
-    reader.readAsText(file, 'ISO-8859-4');
+    reader.readAsText(file);
+    // reader.readAsText(file, 'ISO-8859-4');
     this.sessionInput.nativeElement.value = '';
   }
 
 
-  private getCsvColCount(csv: string): number {
-    const lines = csv.split("\n");
-    if (lines.length > 0) {
-      const firstLine = lines[0];
-      const columns = this.utilService.CSVtoArray(firstLine) as string[];
-      return columns.length;
-    }
-    return 0;
+  protected handleSearchChange(event: any) {
+    console.log("handleSearchChange", event);
+    this.searchTerm = event.detail.value.toLowerCase();
   }
   
 }

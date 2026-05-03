@@ -213,8 +213,8 @@ export class StorageService {
     localStorage.setItem(token, Date.now().toString());
   }
 
-  public async upsert(soupName: string, entries:any[], idField:string = 'id', usePrimary: boolean = false):Promise<any> {
-    console.log(LOG_TAG, "upsert", soupName, entries, usePrimary);
+  public async upsert(soupName: string, entries:any[], idField:string = 'id', allStatuses: boolean = false):Promise<any> {
+    console.log(LOG_TAG, "upsert", soupName, entries, allStatuses);
     if (!entries || entries.length === 0) {
       console.warn(LOG_TAG, "upsert called with empty entries array, skipping");
       return;
@@ -224,8 +224,6 @@ export class StorageService {
     return new Promise(async (resolve, reject) => {
 
     setTimeout(() => {
-      // let db = (usePrimary) ? this.dbPrimary : this.db; 
-      // console.log("db", db);
       const transaction = this.db.transaction([soupName], "readwrite");
       const objectStore = transaction.objectStore(soupName);
       entries.forEach(row => {
@@ -234,17 +232,30 @@ export class StorageService {
           let request;
           const existingRec = event.target.result;
           if (existingRec) {
-            request = objectStore.put(row);
+            if (!allStatuses && row.status === 0 ) {
+              // Delete existing entry
+              request = objectStore.delete(row[idField]);
+            } else {
+              request = objectStore.put(row);
+            }
           } else {
-            request = objectStore.add(row);
+            if (!allStatuses && row.status === 0 ) {
+              // Don't add the entry if status is 0
+              console.log(`Skipping adding new entry with status 0 for id ${row[idField]}`);
+              resolve(null);
+            } else {
+              request = objectStore.add(row);
+            }
           }
-          request.onsuccess = (event:any) => {
-            console.log("IDB upsert res", event.target.result);
-            resolve(event.target.result);
-          };
-          request.onerror = (event:any) => {
-            console.error("IDB upsert error", event);
-            reject(event);
+          if (request) {
+            request.onsuccess = (event:any) => {
+              console.log("IDB upsert res", event.target.result);
+              resolve(event.target.result);
+            };
+            request.onerror = (event:any) => {
+              console.error("IDB upsert error", event);
+              reject(event);
+            }
           }
         }
       });

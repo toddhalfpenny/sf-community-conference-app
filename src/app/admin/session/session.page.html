@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      @if (!sessionForm.dirty) {
+        <ion-back-button></ion-back-button>
+      } @else {
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
+    <ion-title>Editing Session</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  [disabled]="!sessionForm.valid" (click)="save()">
+        <ion-icon slot="icon-only" name="save" ></ion-icon> 
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="sessionForm">
+  @if (session) {
+    <ion-card>
+      <ion-list>
+        <ion-item>
+          <ion-input errorText="Title name is required" required label="Title" labelPlacement="stacked" formControlName="title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea rows="15" label="Abstract" labelPlacement="stacked" formControlName="abstract"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Room" labelPlacement="stacked" formControlName="room"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Start Time" labelPlacement="stacked" type="time" formControlName="startTime"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="End Time" labelPlacement="stacked" type="time" formControlName="endTime"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Status</ion-label>
+          <ion-select formControlName="status" ngDefaultControl (ionChange)="onStatusChange($event)">
+            @for (item of SessionStatusOptions; track $index) {
+              <ion-select-option [value]="item.value">
+                {{item.label}} | {{item.value}}
+              </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  }
+  </form>
+</ion-content>

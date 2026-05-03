@@ -5,7 +5,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard, IonCardH
 import { tabletojson } from 'tabletojson';
 import { SpeakerService } from  '../../speakers/speaker.service';
 import { UtilService } from 'src/app/utils/util-service';
-import { type Speaker } from '../../speakers/speaker.model';
+import { SpeakerStatus, type Speaker } from '../../speakers/speaker.model';
 
 const SESSION_XLS_COLUMN_MAP: any = {
   'id': 'Contact ID',
@@ -72,7 +72,8 @@ export class SpeakersPage implements OnInit {
             linkedInUrl: row[SESSION_XLS_COLUMN_MAP.linkedInUrl],
             trailblazerUrl: row[SESSION_XLS_COLUMN_MAP.trailblazerUrl],
             bio: row[SESSION_XLS_COLUMN_MAP.bio],
-            lastModified: timeNow
+            lastModified: timeNow,
+            status: SpeakerStatus.Published,
           }
           speakerArray.push(speaker);
         }

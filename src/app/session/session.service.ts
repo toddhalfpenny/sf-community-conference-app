@@ -17,8 +17,10 @@ import { StorageService } from '../storage/storage-service';
 
 const SESSIONS_DB_CONF = {
   // TTL: 1000 * 60 * 60, // 1 hour
-  // TTL: 1000 * 30 * 10, // 10 minutes
-  TTL: 1000 * 30, // 30 seconds
+  TTL: 1000 * 30 * 10, // 10 minutes
+  // TTL: 1000 * 30, // 30 seconds
+  // ADMIN_TTL: 1000 * 60 * 1, // 1 minute
+  ADMIN_TTL: 1000 * 30 * 10, // 10 minutes
   FETCHED_KEY: 'sessions_fetched',
 }
 
@@ -121,10 +123,10 @@ export class SessionService {
     }
   }
 
-   async getSessions(): Promise<Session[]> {
+   async getSessions(options: {forceRefresh?: boolean, allStatuses?: boolean} = {}): Promise<Session[]> {
       console.log('Fetching sessions...');
   
-      const shouldRefresh = this.storageService.shouldRefresh(SESSIONS_DB_CONF.FETCHED_KEY, SESSIONS_DB_CONF.TTL);
+      const shouldRefresh = this.storageService.shouldRefresh(SESSIONS_DB_CONF.FETCHED_KEY, options.forceRefresh ? SESSIONS_DB_CONF.ADMIN_TTL : SESSIONS_DB_CONF.TTL);
       console.log('shouldRefresh', shouldRefresh);
   
       if (!shouldRefresh) {
@@ -136,14 +138,16 @@ export class SessionService {
       } else {        
         const lastRefreshed = this.storageService.getLastFetchedTime(SESSIONS_DB_CONF.FETCHED_KEY);
         const collRef = collection(this.firestore, 'sessions');
-        const q = query(collRef, where("lastModified", ">", lastRefreshed));
+        const q = options.forceRefresh ?
+          query(collRef):
+          query(collRef, where("lastModified", ">", lastRefreshed));
         const querySnapshot = await getDocs(q);
         const updatedSessions = querySnapshot.docs.map((doc) => {
           const sessionData = doc.data() as Session;
           sessionData.id = doc.id;
           return sessionData;
         });
-        await this.storageService.upsert('sessions', updatedSessions, 'id');
+        await this.storageService.upsert('sessions', updatedSessions, 'id', options.allStatuses);
         this.storageService.updateFetchedTime(SESSIONS_DB_CONF.FETCHED_KEY);
         const sessions = await this.storageService.getAll('sessions') as Session[];
         return sessions;
@@ -167,13 +171,13 @@ export class SessionService {
       }
     }
 
-    public async upsertSessions(sessions: Session[]) { 
+    public async upsertSessions(sessions: Session[], allStatuses: boolean = false): Promise<any[]> { 
       let errors: any[] = [];
       for (const session of sessions) {
-        console.log('Upserting session', session.title);
+        console.log('Upserting session', session);
         setDoc(doc(this.firestore, "sessions", session.id), session).then(async (res) => {
           console.log('Lead saved to Firestore', res);
-          await this.storageService.upsert('sessions', [session], 'id');
+          await this.storageService.upsert('sessions', [session], 'id', allStatuses);
         }).catch(async (error) => {
           console.error('Error saving lead to Firestore:', error);
           errors.push({session, error});

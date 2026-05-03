@@ -84,6 +84,10 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/sessions/sessions.page').then( m => m.SessionsPage)
   },
   {
+    path: 'admin/session/:sessionId',
+    loadComponent: () => import('./admin/session/session.page').then( m => m.SessionPage)
+  },
+  {
     path: 'admin/sponsors',
     loadComponent: () => import('./admin/sponsors/sponsors.page').then( m => m.SponsorsPage)
   },
