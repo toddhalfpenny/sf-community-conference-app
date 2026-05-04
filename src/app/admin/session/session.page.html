@@ -20,7 +20,7 @@
 
 <ion-content [fullscreen]="true">
   <form [formGroup]="sessionForm">
-  @if (session) {
+  <!-- @if (session) { -->
     <ion-card>
       <ion-list>
         <ion-item>
@@ -39,17 +39,43 @@
           <ion-input label="End Time" labelPlacement="stacked" type="time" formControlName="endTime"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label>Status</ion-label>
+          <ion-label labelPlacement="stacked" >Status</ion-label>
           <ion-select formControlName="status" ngDefaultControl (ionChange)="onStatusChange($event)">
             @for (item of SessionStatusOptions; track $index) {
               <ion-select-option [value]="item.value">
-                {{item.label}} | {{item.value}}
+                {{item.label}}
               </ion-select-option>
             }
           </ion-select>
         </ion-item>
+        <ion-item>
+          <ion-label labelPlacement="stacked" >Speakers</ion-label>
+          @if (session) {
+            <div>
+              @for (speaker of session.speakers; track speaker.id) {
+                <div>{{ speaker.name}}</div>
+              }
+            </div>
+          }
+        </ion-item>
+        <ion-button expand="block" shape="rounded" id="select-speakers">Select Speakers</ion-button>
       </ion-list>
     </ion-card>
-  }
+  <!-- } -->
   </form>
+  <!-- @if (session) { -->
+    <ion-modal trigger="select-speakers" #modal>
+      <ng-template>
+        <app-typeahead
+          class="ion-page"
+          title="Select Speakers"
+          [items]="allSpeakers"
+          [itemType]="'Speaker'"
+          [selectedItems]="selectedSpeakerIds"
+          (selectionChange)="speakerSelectionChanged($event)"
+          (selectionCancel)="modal.dismiss()"
+        ></app-typeahead>
+      </ng-template>
+    </ion-modal>
+  <!-- } -->
 </ion-content>
