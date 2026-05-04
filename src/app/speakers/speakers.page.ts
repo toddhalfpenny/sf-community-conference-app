@@ -7,6 +7,8 @@ import { addIcons } from 'ionicons';
 import { SpeakerService } from  './speaker.service';
 import { type Speaker } from './speaker.model';
 import { SpeakerCardComponent } from './speaker-card/speaker-card.component';
+import { UserService } from '../user/user-service';
+import { User } from '../user/user.model';
 
 @Component({
   selector: 'app-speakers',
@@ -17,6 +19,8 @@ import { SpeakerCardComponent } from './speaker-card/speaker-card.component';
 })
 export class SpeakersPage implements OnInit {
   private readonly speakerService = inject(SpeakerService);
+  private readonly userService = inject(UserService);
+  protected user!: User| null;
 
   protected speakers: Speaker[] = [];
 
@@ -29,6 +33,7 @@ export class SpeakersPage implements OnInit {
 
   async ionViewWillEnter() {
     this.speakers = await this.speakerService.getSpeakers();
+    this.user = await this.userService.getUser();
   }
 
 }

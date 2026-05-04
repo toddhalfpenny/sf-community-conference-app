@@ -11,7 +11,7 @@
   @if (speakers) {
     <ion-list>
       @for (speaker of speakers; track $index) {
-        <app-speaker-card [speaker]="speaker"></app-speaker-card>
+        <app-speaker-card [speaker]="speaker" [user]="user"></app-speaker-card>
       }
     </ion-list>
   }

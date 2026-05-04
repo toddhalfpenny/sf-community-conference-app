@@ -6,6 +6,7 @@ import { addIcons } from 'ionicons';
 import { type Speaker } from '../speaker.model';
 import { Session } from 'src/app/session/session.model';
 import { SessionCardComponent } from "src/app/session/session-card/session-card.component";
+import { User } from 'src/app/user/user.model';
 
 @Component({
   selector: 'app-speaker-card',
@@ -19,6 +20,7 @@ export class SpeakerCardComponent  implements OnInit {
   @Input({required: true}) speaker!: Speaker;
   @Input() sessions: Session[]| undefined = [];
   @Input() showBio: boolean = false;
+  @Input() user: User | null = null;
 
   constructor() {
     addIcons({ logoLinkedin, trailSign });
