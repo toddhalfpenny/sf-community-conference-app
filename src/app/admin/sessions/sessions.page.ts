@@ -142,8 +142,8 @@ export class SessionsPage implements OnInit {
       console.log(sessionArray);
       await this.sessionService.upsertSessions(sessionArray);
     };
-    reader.readAsText(file);
-    // reader.readAsText(file, 'ISO-8859-4');
+    // reader.readAsText(file);
+    reader.readAsText(file, 'ISO-8859-4');
     this.sessionInput.nativeElement.value = '';
   }
 
