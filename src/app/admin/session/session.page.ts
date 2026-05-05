@@ -8,7 +8,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonInput, IonItem, IonTextarea, IonCard, IonLabel, IonText, IonRow, IonCol, IonSelectOption, IonModal } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonInput, IonItem, IonTextarea, IonCard, IonLabel, IonText, IonRow, IonCol, IonSelectOption, IonModal, IonSelect } from '@ionic/angular/standalone';
 import { create, close, save } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Session, SessionStatus } from '../../session/session.model'
@@ -23,7 +23,7 @@ import { Speaker } from 'src/app/speakers/speaker.model';
   templateUrl: './session.page.html',
   styleUrls: ['./session.page.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonInput, IonItem, IonTextarea, IonCard, IonLabel, IonSelectOption, IonModal, TypeaheadComponent]
+  imports: [FormsModule, ReactiveFormsModule, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonInput, IonItem, IonTextarea, IonCard, IonLabel, IonSelectOption, IonModal, TypeaheadComponent, IonSelect]
 })
 export class SessionPage implements OnInit {
 

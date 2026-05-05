@@ -138,9 +138,10 @@ export class SessionService {
       } else {        
         const lastRefreshed = this.storageService.getLastFetchedTime(SESSIONS_DB_CONF.FETCHED_KEY);
         const collRef = collection(this.firestore, 'sessions');
-        const q = options.forceRefresh ?
-          query(collRef):
-          query(collRef, where("lastModified", ">", lastRefreshed));
+        // const q = options.forceRefresh ?
+        //   query(collRef):
+        //   query(collRef, where("lastModified", ">", lastRefreshed));
+        const q = query(collRef, where("lastModified", ">", lastRefreshed));
         const querySnapshot = await getDocs(q);
         const updatedSessions = querySnapshot.docs.map((doc) => {
           const sessionData = doc.data() as Session;

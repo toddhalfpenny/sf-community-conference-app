@@ -107,8 +107,8 @@ export class SessionsPage implements OnInit {
           const endDateTime = new Date(`2026-06-05T${endTime}:00+01:00`).getTime()/1000;
           const session: Session = {
             id: row[SESSION_XLS_COLUMN_MAP.id],
-            title: row[SESSION_XLS_COLUMN_MAP.title],
-            abstract: row[SESSION_XLS_COLUMN_MAP.abstract],
+            title: row[SESSION_XLS_COLUMN_MAP.title].replaceAll(/(?<=\p{L})\?(?=\p{L})/gu, "'"),
+            abstract: row[SESSION_XLS_COLUMN_MAP.abstract].replaceAll(/(?<=\p{L})\?(?=\p{L})/gu, "'"),
             room: row[SESSION_XLS_COLUMN_MAP.room],
             startDateTime: {seconds: startDateTime},
             endDateTime: {seconds: endDateTime},
