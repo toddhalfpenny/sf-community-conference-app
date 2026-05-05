@@ -10,12 +10,23 @@ import {
   doc,
   Firestore,
   getDoc,
+  collection,
+  where,
+  query,
+  getDocs,
 } from '@angular/fire/firestore';
 import { Lead, SyncStatus } from './lead.model';
 import { StorageService } from '../storage/storage-service';
 import { UserService } from '../user/user-service';
 
 const LOG_TAG = 'lead.servce';
+
+const lead_DB_CONF = {
+  // TTL: 1000 * 60 * 60, // 1 hour
+  TTL: 1000 * 30 * 5, // 5 minutes
+  // TTL: 1000 * 30, // 30 seconds
+  FETCHED_KEY: 'leads_fetched',
+}
 
 @Injectable({
   providedIn: 'root',
@@ -59,10 +70,31 @@ export class LeadService {
   
   }
 
-  async getMyLeads() {
-    const myCachedLeads = await this.storageService.getAll('leads') as Lead[];
-    console.log(LOG_TAG, 'Fetched my leads from storage', myCachedLeads);
-    return myCachedLeads;
+  async getLeads(sponsorId: any) {
+    const shouldRefresh = this.storageService.shouldRefresh(lead_DB_CONF.FETCHED_KEY, lead_DB_CONF.TTL);
+    console.log('shouldRefresh', shouldRefresh);
+
+    if (!shouldRefresh) {
+      console.log('Using cached leads data');
+      const cachedleads = await this.storageService.getAll('leads') as Lead[];
+      return cachedleads;
+    } else {
+      const lastRefreshed = this.storageService.getLastFetchedTime(lead_DB_CONF.FETCHED_KEY);
+      const collRef = collection(this.firestore, 'leads');
+      const q = query(collRef, where("lastModified", ">", lastRefreshed), where("sponsorId", "==", sponsorId));
+      const querySnapshot = await getDocs(q);
+      this.storageService.updateFetchedTime(lead_DB_CONF.FETCHED_KEY);
+      console.log(LOG_TAG, 'Fetched leads from Firestore, querySnapshot:', querySnapshot.docs.length);
+      const leadsToUpdate = querySnapshot.docs.map((doc) => {
+        const leadData = doc.data() as Lead;
+        leadData.id = doc.id;
+        console.log('Lead data:', leadData);
+        return leadData;
+      });
+      await this.storageService.upsert('leads', leadsToUpdate, 'id', true);
+      const leads = await this.storageService.getAll('leads') as Lead[];
+      return leads;
+    }
   }
 
   async newLead(lead: Lead) {
@@ -72,7 +104,7 @@ export class LeadService {
       lead.createdById = this.user?.id,
       lead.sponsorId = this.user?.sponsorAdmin ?? this.user?.boothStaff;
       lead.createdDate = new Date();
-      lead.modifiedDate = new Date();
+      lead.lastModified = new Date();
       lead.status = SyncStatus.pending;
       // Write locally
       await this.storageService.upsert('leads', [lead], 'id');
@@ -107,7 +139,7 @@ export class LeadService {
 
   public async saveLead(lead: Lead) {
     console.log(LOG_TAG, 'Saving lead', lead);
-    lead.modifiedDate = new Date();
+    lead.lastModified = new Date();
     await this.storageService.upsert('leads', [lead], 'id');
     await this.syncOutstanding();
     return;

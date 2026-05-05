@@ -6,7 +6,7 @@ export interface Lead {
   createdDate?: Date;
   createdById?: number;
   user?: User;
-  modifiedDate?: Date;
+  lastModified?: Date;
   notes?: string;
   sponsorId?: string;
   status?: SyncStatus;

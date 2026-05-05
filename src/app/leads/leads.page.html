@@ -18,11 +18,20 @@
     [leads]="leads"
     [searchTerm]="searchTerm"
   ></app-leads-list>
-
+  <a #downloadlink download="leads.csv" style="display: none;"></a>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" shape="round" color="primary" size="large" routerLink="/scanner">
-    <ion-icon slot="start" name="scan-circle"></ion-icon>
-  </ion-button>
+  <ion-row>
+    <ion-col>
+      <ion-button [disabled]="leads.length === 0" (click)="exportLeads()" expand="block" shape="round" color="primary" size="large">
+        Export
+      </ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button expand="block" shape="round" color="primary" size="large" routerLink="/scanner">
+        <ion-icon slot="start" name="scan-circle"></ion-icon>
+      </ion-button>
+    </ion-col>
+    </ion-row>
 </ion-footer>

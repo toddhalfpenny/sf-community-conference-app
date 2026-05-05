@@ -8,4 +8,13 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  @if( leads ) {
+    <h1>Total entries: {{ leads.length }}</h1>
+    <p>Note, there can be a delay in entries appearing here</p>
+    <ion-list>
+      @for (lead of leads; track lead.id) {
+        <img [src]="`/assets/sponsor-logos/${lead.sponsorId}.png`" />
+      }
+    </ion-list>
+  }
 </ion-content>

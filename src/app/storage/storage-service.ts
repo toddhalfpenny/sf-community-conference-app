@@ -18,6 +18,10 @@ const TABLE_SPECS: TableSpec[] = [
     name: 'annoucements',
     idbSpec : {keyPath: "id"},
   },
+  {
+    name: 'contestEntries',
+    idbSpec : {keyPath: "id"},
+  },
   { 
     name: 'eventUsers',
     idbSpec : {keyPath: "email"},
