@@ -91,4 +91,12 @@ export const routes: Routes = [
     path: 'admin/sponsors',
     loadComponent: () => import('./admin/sponsors/sponsors.page').then( m => m.SponsorsPage)
   },
+  {
+    path: 'admin/users',
+    loadComponent: () => import('./admin/users/users.page').then( m => m.UsersPage)
+  },
+  {
+    path: 'admin/user',
+    loadComponent: () => import('./admin/user/user.page').then( m => m.UserPage)
+  },
 ];

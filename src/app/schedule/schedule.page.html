@@ -16,7 +16,11 @@
           @if ($index === 0) {
             <summary [class]="session.startDateTime.seconds == timeNow ? 'currentHour' : ''">{{ session.startDateTime.seconds| date : "shortTime"}}</summary>
           } @else {
-            <app-session-card [session]="session"></app-session-card>
+            <app-session-card
+              [session]="session"
+              [favourites]="user?.myAgendaSessions"
+              (favouriteToggled)="toggleFavourite($event)"
+            ></app-session-card>
           }
         }
       </details>

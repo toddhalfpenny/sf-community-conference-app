@@ -10,17 +10,21 @@ import {
   getDoc,
   setDoc,
   query,
-  where
+  where,
+  updateDoc,
+  increment
 } from '@angular/fire/firestore';
 import { Session, SessionFormat } from './session.model';
 import { StorageService } from '../storage/storage-service';
+
+const LOG_TAG = 'session.servce';
 
 const SESSIONS_DB_CONF = {
   // TTL: 1000 * 60 * 60, // 1 hour
   TTL: 1000 * 30 * 10, // 10 minutes
   // TTL: 1000 * 30, // 30 seconds
-  // ADMIN_TTL: 1000 * 60 * 1, // 1 minute
-  ADMIN_TTL: 1000 * 30 * 10, // 10 minutes
+  ADMIN_TTL: 1000 * 60 * 1, // 1 minute
+  // ADMIN_TTL: 1000 * 30 * 10, // 10 minutes
   FETCHED_KEY: 'sessions_fetched',
 }
 
@@ -66,7 +70,7 @@ export class SessionService {
     for (const session of sortedSessions) {
       const sessionStartDateTime = new Date(session.startDateTime.seconds * 1000);
       // const sessionEndDateTime = new Date(session.endDateTime.seconds * 1000);
-      console.log('Processing session', sessionStartDateTime, sessionStartDateTime.getHours(), lastHour);
+      // console.log('Processing session', sessionStartDateTime, sessionStartDateTime.getHours(), lastHour);
       if (sessionStartDateTime.getHours() > lastHour) {
         console.log('New hour detected', sessionStartDateTime.getHours());
         lastHour = sessionStartDateTime.getHours();
@@ -172,11 +176,19 @@ export class SessionService {
       }
     }
 
+    public async toggleFavourite(sessionId: string, isFavourite: boolean): Promise<void> {
+      const sessionDoc = doc(this.firestore, "sessions", sessionId);
+      await updateDoc(sessionDoc, {
+        likes: increment(isFavourite ? 1 : -1) 
+      });
+      console.log(`Toggled favourite for session ${sessionId}: ${isFavourite}`);
+    }
+
     public async upsertSessions(sessions: Session[], allStatuses: boolean = false): Promise<any[]> { 
       let errors: any[] = [];
       for (const session of sessions) {
         console.log('Upserting session', session);
-        setDoc(doc(this.firestore, "sessions", session.id), session).then(async (res) => {
+        setDoc(doc(this.firestore, "sessions", session.id), session, {merge: true}).then(async (res) => {
           console.log('Lead saved to Firestore', res);
           await this.storageService.upsert('sessions', [session], 'id', allStatuses);
         }).catch(async (error) => {

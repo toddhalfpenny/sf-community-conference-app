@@ -19,6 +19,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  @if (session) { 
+    <p class="ion-padding">Likes: {{session.likes}}</p>
+  }
   <form [formGroup]="sessionForm">
   <!-- @if (session) { -->
     <ion-card>

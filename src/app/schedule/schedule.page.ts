@@ -5,6 +5,8 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar,
 import { SessionService } from '../session/session.service';
 import { Session } from '../session/session.model';
 import { SessionCardComponent } from "../session/session-card/session-card.component";
+import  { UserService } from '../user/user-service';
+import { User } from '../user/user.model';
 
 @Component({
   selector: 'app-schedule',
@@ -16,8 +18,10 @@ import { SessionCardComponent } from "../session/session-card/session-card.compo
 export class SchedulePage implements OnInit {
 
   private readonly sessionService = inject(SessionService);
+  private readonly userService = inject(UserService);
   protected agenda?: Session[][];
   protected timeNow: Number = 0;
+  protected user!: User | null;
   
   constructor() { 
     let timeNow = new Date();
@@ -29,9 +33,17 @@ export class SchedulePage implements OnInit {
 
   ngOnInit() {
   }
-    async ionViewWillEnter() {
-      this.agenda = await this.sessionService.getAgenda();
-      console.log('Fetched agenda', this.agenda);
-    }
+
+  async ionViewWillEnter() {
+    this.user = await this.userService.getUser() as User;
+    this.agenda = await this.sessionService.getAgenda();
+    console.log('Fetched agenda', this.agenda);
+  }
+
+  protected async toggleFavourite(event: any) {
+    console.log('Toggling favourite for session', event);
+    this.sessionService.toggleFavourite(event.sessionId, event.isFavourite);
+    this.userService.toggleFavourite(event.sessionId, event.isFavourite);
+  }
 
 }

@@ -7,10 +7,14 @@ import {
   doc,
   docData,
   Firestore,
+  setDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { User, UserType } from './user.model';
 import { StorageService } from '../storage/storage-service';
+
+const LOG_TAG = 'user.servce';
 
 const EVENTUSER_DB_CONF = {
   TTL: 1000 * 60 * 60, // 1 hour
@@ -89,6 +93,39 @@ export class UserService {
       return Promise.resolve(null);
     }
   }
+
+  public async toggleFavourite(sessionId: string, isFavourite: boolean): Promise<void> {
+    if (!this.user) {
+      console.error('No user set. Cannot toggle favourite.');
+      // TODO use local storage to save this action and sync when user logs in
+      return;
+    }
+    const updatedFavourites = isFavourite
+      ? [...(this.user.myAgendaSessions || []), sessionId]
+      : (this.user.myAgendaSessions || []).filter(id => id !== sessionId);
+
+    this.user.myAgendaSessions = updatedFavourites;
+    this.storageService.upsert('eventUsers', [this.user], 'email');
+    const userDocRef = doc(this.firestore, `eventusers/${this.user.email}`);
+    await updateDoc(userDocRef, { myAgendaSessions: updatedFavourites });
+  }
+
+
+  public async upsertUsers(users: User[]) { 
+    let errors: any[] = [];
+    for (const user of users) {
+      console.log(LOG_TAG, 'Upserting user', user.firstname, user.lastname);
+      setDoc(doc(this.firestore, "eventusers", user.email as string), user, {merge:true}).then(async (res) => {
+        console.log(LOG_TAG, 'User saved to Firestore', res);
+        // await this.storageService.upsert('users', [user], 'id');
+      }).catch(async (error) => {
+        console.error(LOG_TAG, 'Error saving lead to Firestore:', error);
+        errors.push({user, error});
+      });
+    }
+    return errors;
+  }
+
 
 
   private async createGuestUser(email: string): Promise<User> {

@@ -103,7 +103,7 @@ export class SpeakerService {
     for (const speaker of speakers) {
       console.log(LOG_TAG, 'Upserting speaker', speaker.firstname, speaker.lastname);
       setDoc(doc(this.firestore, "speakers", speaker.id), speaker).then(async (res) => {
-        console.log(LOG_TAG, 'Lead saved to Firestore', res);
+        console.log(LOG_TAG, 'Speaker saved to Firestore', res);
         await this.storageService.upsert('speakers', [speaker], 'id');
       }).catch(async (error) => {
         console.error(LOG_TAG, 'Error saving lead to Firestore:', error);

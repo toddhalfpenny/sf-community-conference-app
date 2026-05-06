@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { type Session } from '../session.model';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ActionSheetController, IonAvatar, IonChip, IonLabel, IonIcon, IonButton, IonActionSheet } from "@ionic/angular/standalone";
-import { close, calendar, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft } from 'ionicons/icons';
+import { close, calendar, heart, heartOutline, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
 
@@ -17,7 +17,11 @@ import { addIcons } from 'ionicons';
 export class SessionCardComponent  implements OnInit {
 
   @Input({required: true}) session!: Session;
+  @Input() favourites: string[] | undefined = [];
   @Input() showSpeakers: boolean = true;
+  @Output() favouriteToggled = new EventEmitter<{sessionId:string, isFavourite: boolean}>();
+
+  protected isFavourite: boolean  = false;
 
   protected readonly addToCalendarButtons = [
     {
@@ -50,10 +54,12 @@ export class SessionCardComponent  implements OnInit {
   constructor(
     private actionSheetCtrl: ActionSheetController
   ) {
-    addIcons({ close, calendar, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft });
+    addIcons({ close, calendar, heart, heartOutline, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isFavourite = this.favourites ? this.favourites.includes(this.session.id!) : false;
+  }
 
   protected async showAddToCalendar() {
     console.log('Showing add to calendar options');
@@ -76,8 +82,12 @@ export class SessionCardComponent  implements OnInit {
 
     console.log('Opening Google Calendar URL:', url);
     window.open(url, '_blank');
-    
+  }
 
+  protected toggleFavourite() {
+    console.log('Toggling favourite for session', this.session.id);
+      this.isFavourite = !this.isFavourite;
+      this.favouriteToggled.emit({sessionId: this.session.id, isFavourite: this.isFavourite});
   }
 
   /** Creates a ics link for a calendar link */

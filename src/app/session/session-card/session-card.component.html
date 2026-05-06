@@ -8,6 +8,9 @@
       {{ session.startDateTime.seconds *1000| date : "shortTime" }} - {{ session.endDateTime.seconds * 1000| date : "shortTime" }}
     </span>
     <div class="actions">
+      <ion-button size="small" fill="outline" (click)="toggleFavourite()">
+        <ion-icon slot="icon-only" [name]="isFavourite ? 'heart' : 'heart-outline'"></ion-icon>
+      </ion-button>
       <ion-button size="small" fill="outline" (click)="showAddToCalendar()">
         <ion-icon slot="icon-only" name="calendar"></ion-icon>
       </ion-button>
@@ -54,4 +57,5 @@
         <ion-label>advanced</ion-label>
       </ion-chip>
     } -->
+    </div>
 </div>

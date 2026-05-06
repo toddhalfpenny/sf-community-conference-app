@@ -5,6 +5,7 @@ export interface Session {
   room: string;
   startDateTime: {seconds: number}; // ISO 8601 format
   endDateTime: {seconds: number}; // ISO 8601 format 
+  likes?: number; // Optional number of likes for the session
   format?: SessionFormat;
   status: SessionStatus;
   speakers: {id: string, name: string}[]; // Array of speaker objects with id and name  ;
