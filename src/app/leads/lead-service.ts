@@ -104,7 +104,7 @@ export class LeadService {
       lead.createdById = this.user?.id,
       lead.sponsorId = this.user?.sponsorAdmin ?? this.user?.boothStaff;
       lead.createdDate = new Date();
-      lead.lastModified = new Date();
+      lead.lastModified = new Date(); 
       lead.status = SyncStatus.pending;
       // Write locally
       await this.storageService.upsert('leads', [lead], 'id');
@@ -127,7 +127,7 @@ export class LeadService {
       }).catch(async (error) => {
         console.error(LOG_TAG, 'Error saving lead to Firestore:', error);
         lead.syncError = error.message;
-        await this.storageService.upsert('leads', [lead], 'id');
+        await this.storageService.upsert('leads', [lead], 'id', true);
         return lead;
       });
     } catch (error) {
@@ -140,7 +140,7 @@ export class LeadService {
   public async saveLead(lead: Lead) {
     console.log(LOG_TAG, 'Saving lead', lead);
     lead.lastModified = new Date();
-    await this.storageService.upsert('leads', [lead], 'id');
+    await this.storageService.upsert('leads', [lead], 'id', true);
     await this.syncOutstanding();
     return;
   }
@@ -151,7 +151,7 @@ export class LeadService {
     console.log(LOG_TAG, 'Outstanding leads to sync', outstandingLeads);
     for (const lead of outstandingLeads) {
       try {
-        await setDoc(doc(this.firestore, "leads", lead.id), lead);
+        await setDoc(doc(this.firestore, "leads", lead.id), lead, {merge: true});
         lead.status = SyncStatus.synced;
         await this.storageService.upsert('leads', [lead], 'id');
         console.log(LOG_TAG, 'Lead synced to Firestore', lead);

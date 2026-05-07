@@ -3,10 +3,10 @@ import { User } from '../user/user.model';
 
 export interface Lead {
   id: string;
-  createdDate?: Date;
+  createdDate?: Date | {seconds: number, nanoseconds: number};
   createdById?: number;
   user?: User;
-  lastModified?: Date;
+  lastModified?: Date | {seconds: number, nanoseconds: number};
   notes?: string;
   sponsorId?: string;
   status?: SyncStatus;

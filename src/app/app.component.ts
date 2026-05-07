@@ -30,7 +30,7 @@ interface AppPage {
   icon: string;
 }
 
-const LOCAL_DEV = true;
+const LOCAL_DEV = false;
 
 @Component({
   selector: 'app-root',

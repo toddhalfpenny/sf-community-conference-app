@@ -9,6 +9,12 @@ import { NgxScannerQrcodeComponent, LOAD_WASM, ScannerQRCodeResult } from 'ngx-s
 import { Lead } from '../leads/lead.model';
 import { LeadService } from '../leads/lead-service';
 
+interface ScannerResult {
+  i: any,
+  f?: string
+  l?: string
+}
+
 const DEVICE_SCAN_TOKEN = 'lastUsedScannerDeviceId';
 
 @Component({
@@ -61,10 +67,14 @@ export class ScannerPage implements OnDestroy{
       setTimeout(() => {        
         this.isLoading = false;
       }, 300);
-      const dummyUser = { "id": 9001, "firstname": "Bob", "lastname": "Smith", "company": "Shirtforce"};
+      const dummyUser = { i: 9001, f: "Bob", l: "Smith"};
       this.lead = {
         id: 'tmp',
-        user: dummyUser,
+        user: {
+          id: dummyUser.i,
+          firstname: dummyUser.f,
+          lastname: dummyUser.l
+        }
       }
       this.inProgress = true;
       this.scanComplete = true;
@@ -102,9 +112,14 @@ export class ScannerPage implements OnDestroy{
     this.scanner.stop();
     this.inProgress = true;
     this.scanComplete = true;
+    const ScannerResult = JSON.parse(event[0].value) as ScannerResult;
     this.lead = {
       id: 'tmp',
-      user: JSON.parse(event[0].value),
+      user: {
+        id: ScannerResult.i,
+        firstname: ScannerResult.f ?? '',
+        lastname: ScannerResult.l ?? ''
+      }
     }
   }
 

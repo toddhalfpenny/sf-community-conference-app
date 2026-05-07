@@ -39,6 +39,8 @@ export class LeadPage implements OnInit {
   });
 
   protected lead?: Lead;
+  protected createdDate!: Date;
+  protected lastModified!: Date;
 
   constructor() {
     addIcons({ close, create, save});
@@ -50,10 +52,20 @@ export class LeadPage implements OnInit {
   async ionViewWillEnter() {
     const leadId = this.activatedRoute.snapshot.paramMap.get('leadId') as string;
     this.lead = await this.leadsService.getLead(leadId) as Lead;
+    if (this.lead.createdDate instanceof Date) {
+      this.createdDate = new Date(this.lead.createdDate as any);
+    } else {
+      this.createdDate = this.lead.createdDate?.seconds ? new Date(this.lead.createdDate.seconds * 1000 as any) : new Date();
+    }
+    if (this.lead.lastModified instanceof Date) {
+      this.lastModified = new Date(this.lead.lastModified as any);
+    } else {
+      this.lastModified = this.lead.lastModified?.seconds ? new Date(this.lead.lastModified.seconds * 1000 as any) : new Date();
+    }
     this.leadForm.setValue({
-      firstname: this.lead.user?.firstname,
-      lastname: this.lead.user?.lastname,
-      company: this.lead.user?.company,
+      firstname: this.lead.user?.firstname ?? '',
+      lastname: this.lead.user?.lastname ?? '',
+      company: this.lead.user?.company ?? '',
       notes: this.lead.notes ?? ''
     });
   }
@@ -97,6 +109,7 @@ export class LeadPage implements OnInit {
     this.isEditing = false;
     const updatedLead: Lead = {
       id: this.lead?.id ?? '',
+      createdDate: this.lead?.createdDate,
       user : {
         firstname: this.leadForm.value.firstname,
         lastname: this.leadForm.value.lastname,

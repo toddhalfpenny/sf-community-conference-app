@@ -63,7 +63,7 @@ export class UserService {
         console.log('User data received:', user);
         if (user) {
           user.email = email; // Ensure email is set
-          await this.storageService.upsert('eventUsers', [user], 'email');
+          await this.storageService.upsert('eventUsers', [user], 'id');
           this.user = user;
           return this.user;
         } else {

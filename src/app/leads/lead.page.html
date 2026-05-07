@@ -30,6 +30,10 @@
     <ion-card>
       <ion-list>
         <ion-item>
+          <ion-label>Id:</ion-label>
+          <ion-text>{{ lead.id }}</ion-text>
+        </ion-item>
+        <ion-item>
           <ion-input errorText="First name is required" required label="First name" labelPlacement="stacked" formControlName="firstname"></ion-input>
         </ion-item>
         <ion-item>
@@ -46,11 +50,11 @@
     <ion-card id="lead-meta">
       <ion-item>
         <ion-label>Scanned on</ion-label>
-        <ion-text>{{ lead.createdDate | date: 'short' }}</ion-text>
+        <ion-text>{{ createdDate | date: 'short' }}</ion-text>
       </ion-item>
       <ion-item>
         <ion-label>Last modified</ion-label>
-        <ion-text>{{ lead.lastModified | date: 'short' }}</ion-text>
+        <ion-text>{{ lastModified | date: 'short' }}</ion-text>
       </ion-item>
       <ion-item>
         <ion-label>Sync Status</ion-label>
@@ -59,7 +63,7 @@
       @if (lead.syncError) {
         <ion-item>
           <ion-label>Scanned on</ion-label>
-          <ion-text>{{ lead.createdDate | date: 'short' }}</ion-text>
+          <ion-text>{{ createdDate | date: 'short' }}</ion-text>
         </ion-item>
       }
         <ion-row>

@@ -56,7 +56,7 @@ export class LeadsPage implements OnInit {
     }
 
     const csvContent = this.leads.map((e: Lead) => {
-      return `${e.user?.firstname},${e.user?.lastname},${e.user?.company}`;
+      return `${e.user?.id},${e.user?.firstname},${e.user?.lastname},${e.user?.company}`;
     }).join('\n');
     // const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
