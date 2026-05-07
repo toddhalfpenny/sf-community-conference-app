@@ -24,7 +24,7 @@ const TABLE_SPECS: TableSpec[] = [
   },
   { 
     name: 'eventUsers',
-    idbSpec : {keyPath: "email"},
+    idbSpec : {keyPath: "id"},
   },
   { 
     name: 'faqs',

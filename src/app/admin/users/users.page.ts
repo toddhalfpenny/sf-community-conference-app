@@ -7,18 +7,6 @@ import { UserService } from  '../../user/user-service';
 import { UtilService } from 'src/app/utils/util-service';
 import { UserType, type User } from '../../user/user.model';
 
-const USER_XLS_COLUMN_MAP: any = {
-  'id': 'Contact ID',
-  'firstname': 'First Name',
-  'lastname': 'Last Name',
-  'title': 'Title',
-  'mvp': 'MVP',
-  'cta': 'CTA',
-  'linkedInUrl': 'LinkedIn Address',
-  'trailblazerUrl': 'Trailblazer ID',
-  'bio': 'Biography',
-}
-
 @Component({
   selector: 'app-users',
   templateUrl: './users.page.html',
@@ -66,7 +54,9 @@ export class UsersPage implements OnInit {
             lastname: row[1],
             email: row[2],
             type: this.getType(row[3]),
-            company: row[4],
+            id: row[4],
+            company: row[5],
+            lastModified: timeNow,
           }
           userArray.push(user);
         }

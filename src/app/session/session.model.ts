@@ -10,7 +10,7 @@ export interface Session {
   status: SessionStatus;
   speakers: {id: string, name: string}[]; // Array of speaker objects with id and name  ;
   tags?: string[]; // Optional array of tags for the session
-  lastModified?: Date; // The timestamp of the last modification to the speaker's data.
+  lastModified?: Date; // The timestamp of the last modification to the session's data.
 }
 
 export enum SessionFormat {
