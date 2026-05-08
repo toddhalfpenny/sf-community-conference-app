@@ -22,3 +22,16 @@ export enum UserType {
   'Admin' = 91,
   'Super-Admin' = 92,
 }
+
+export interface AppUser {
+  email: string;
+  canManageAdmins: boolean;
+  canManageSponsorAdmins: boolean;
+  canManageSponsorStaff: boolean;
+  canManageSessions: boolean;
+  canManageUsers: boolean;
+  canManageSpeakers: boolean;
+  canManageAnnouncements: boolean;
+  canManageFAQs: boolean;
+  canUpsertLeads: boolean;
+}

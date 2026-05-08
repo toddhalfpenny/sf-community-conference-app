@@ -5,16 +5,12 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <h1>Import Users</h1>
-  <input type="file" id="users" name="users" accept="text/xls" #userInput />
-  <ion-button (click)="importUsers()">Import</ion-button>
-  <hr/>
   <h1>Existing users</h1>
   <ion-list>
     @for (user of users; track $index) {
       <ion-card>
         <ion-card-header>
-          <ion-card-title>{{user.firstname}} {{user.lastname}}</ion-card-title>
+          <ion-card-title>{{user.email}}</ion-card-title>
         </ion-card-header>
         <ion-card-content>
         </ion-card-content>

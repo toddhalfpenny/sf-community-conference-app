@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Manage Attendees</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1>Import Attendees</h1>
+  <input type="file" id="attendees" name="attendees" accept="text/xls" #attendeeInput />
+  <ion-button (click)="importAttendees()">Import</ion-button>
+  <hr/>
+  <h1>Existing attendees</h1>
+  <ion-list>
+    @for (attendee of attendees; track $index) {
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>{{attendee.firstname}} {{attendee.lastname}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+        </ion-card-content>
+      </ion-card>
+    }
+  </ion-list>
+</ion-content>

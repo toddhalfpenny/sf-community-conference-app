@@ -1,6 +1,7 @@
 /**
  * user.service
  * 
+ * NOTE: "user" functions are for attendees, "appuser" functions are for admins, crew, sponsors, etc. This is to avoid confusion with the different data models and Firestore collections.
  */
 import { inject, Injectable } from '@angular/core';
 import {
@@ -15,7 +16,7 @@ import {
   where,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { User, UserType } from './user.model';
+import { AppUser, User, UserType } from './user.model';
 import { StorageService } from '../storage/storage-service';
 
 const LOG_TAG = 'user.servce';
@@ -25,6 +26,11 @@ const EVENTUSER_DB_CONF = {
   // TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'eventuser_fetched',
 }
+const APPUSER_DB_CONF = {
+  TTL: 1000 * 30, // 30 seconds
+  FETCHED_KEY: 'appuser_fetched',
+}
+
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +41,10 @@ export class UserService {
 
   private user: User | null = null;
 
+
+  /*********************************************************************
+   * U S E R    B I T S
+   ********************************************************************/
   public getUser(): User | null {
     return this.user;
   }
@@ -178,7 +188,6 @@ export class UserService {
   }
 
 
-
   private async createGuestUser(email: string): Promise<User> {
     const guestUser: User = {
       id: "guest",
@@ -189,4 +198,26 @@ export class UserService {
     await this.storageService.upsert('eventUsers', [guestUser], 'id');
     return guestUser;
   } 
+
+
+  /*********************************************************************
+   * A P P U S E R    B I T S
+   ********************************************************************/
+
+  async getAppUsers(options: {forceRefresh?: boolean} = {}): Promise<AppUser[]> {
+    console.log('Fetching app users...');
+     
+    const lastRefreshed = this.storageService.getLastFetchedTime(APPUSER_DB_CONF.FETCHED_KEY);
+    const collRef = collection(this.firestore, 'userperms');
+    // const q = query(collRef, where("lastModified", ">", lastRefreshed));
+    const q = query(collRef);
+    const querySnapshot = await getDocs(q);
+    const appUsers = querySnapshot.docs.map((doc) => {
+      const appUserData = doc.data() as AppUser;
+      appUserData.email = doc.id;
+      return appUserData;
+    });
+    this.storageService.updateFetchedTime(APPUSER_DB_CONF.FETCHED_KEY);
+    return appUsers;
+  }
 }
