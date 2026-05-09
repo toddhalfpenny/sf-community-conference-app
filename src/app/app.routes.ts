@@ -96,7 +96,7 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/attendees/attendees.page').then( m => m.AttendeesPage)
   },
   {
-    path: 'admin/attendee',
+    path: 'admin/attendee/:attendeeId',
     loadComponent: () => import('./admin/attendee/attendee.page').then( m => m.AttendeePage)
   },
   {
@@ -104,7 +104,7 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/users/users.page').then( m => m.UsersPage)
   },
   {
-    path: 'admin/user',
+    path: 'admin/user/:userId',
     loadComponent: () => import('./admin/user/user.page').then( m => m.UserPage)
   },
 ];

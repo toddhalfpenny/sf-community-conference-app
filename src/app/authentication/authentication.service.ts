@@ -11,32 +11,36 @@ import {
 } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
 import { UserService } from '../user/user-service';
+import { StorageService } from '../storage/storage-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
   private readonly auth = inject(Auth);
+  private readonly storageService = inject(StorageService);
   private readonly userService = inject(UserService);
   
   public getUser(): Observable<User | null> {
     return user(this.auth);
   }
 
-  public login(email: string, password: string): Observable<UserCredential> {
-    signInWithEmailAndPassword(this.auth, email, password).then((credential) => {
+  public async login(email: string, password: string): Promise<UserCredential> {
+    try {
+      const credential = await signInWithEmailAndPassword(this.auth, email, password);
       console.log('Login successful:', credential);
-      return this.userService.setUser(credential.user.email!);
-    }).then((user) => {
-      console.log('User data retrieved from Firestore:', user);
-      return from(new Promise<void>((resolve) => resolve()));
-    }).catch((error) => {
+      await this.userService.setUser(credential.user.email!);
+      console.log('User data retrieved from Firestore');
+      return credential;
+    } catch (error: any) {
       console.error('Login error:', error);
-    });
-    return from(signInWithEmailAndPassword(this.auth, email, password));
+      throw new Error(`Login failed: ${error.message}`);
+    }
   }
   
   public logout(): Observable<void> {
+    this.storageService.clearTable('eventUsers');
+    this.storageService.clearTable('leads');
     return from(signOut(this.auth));
   }
   
@@ -44,8 +48,13 @@ export class AuthenticationService {
     return from(createUserWithEmailAndPassword(this.auth, email, password));
   }
   
-  public resetPassword(email: string): Observable<void> {
-    return from(sendPasswordResetEmail(this.auth, email));
+  public async resetPassword(email: string): Promise<void> {
+    try {
+      await sendPasswordResetEmail(this.auth, email);
+      return;
+    } catch (error: any) {
+      throw new Error(`resetPassword error: ${error.message}`);
+    }
   }
   
 }

@@ -5,6 +5,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <ion-button expand="block" [routerLink]="['/admin/user/new']">Create User</ion-button>
   <h1>Existing users</h1>
   <ion-list>
     @for (user of users; track $index) {
@@ -14,6 +15,7 @@
         </ion-card-header>
         <ion-card-content>
         </ion-card-content>
+        <ion-button fill="clear" [routerLink]="['/admin/user/' + user.userId]" [state]="{user: user}">Edit</ion-button>
       </ion-card>
     }
   </ion-list>

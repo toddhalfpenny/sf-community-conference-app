@@ -48,6 +48,13 @@ export class UserService {
   public getUser(): User | null {
     return this.user;
   }
+
+  public async getUserByEmail(email: string): Promise<User | null> {
+    const collRef = collection(this.firestore, 'eventusers');
+    const q = query(collRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.length > 0 ? (querySnapshot.docs[0].data() as User) : null; 
+  }
   
   public async setUser(email: string): Promise<User | null> {
     const cachedUser = (await this.storageService.getAll('eventUsers'))[0] as User;
@@ -96,64 +103,6 @@ export class UserService {
     }
   }
   
-  public async setUserDEPRECATED(email: string): Promise<User | null> {
-    const cachedUser = (await this.storageService.getAll('eventUsers'))[0] as User;
-    console.log('cachedUser:', cachedUser);
-    const shouldRefresh = this.storageService.shouldRefresh(EVENTUSER_DB_CONF.FETCHED_KEY, EVENTUSER_DB_CONF.TTL);
-    console.log('cachedUser:', cachedUser);
-
-    if (cachedUser && cachedUser.email === email && !shouldRefresh) {
-      console.log('Using cached user data:', cachedUser);
-      this.user = cachedUser;
-      return Promise.resolve(this.user);
-    }
-
-    console.log('Fetching user from Firestore', email);
-    if (email) {
-      // TODO CHECK eventuser cache, timeout etc
-      const userDocRef = doc(this.firestore, `eventusers/${email}`);
-      console.log('Document reference created:', userDocRef);
-      const userData$ = docData(userDocRef) as Observable<User>;
-      this.storageService.updateFetchedTime(EVENTUSER_DB_CONF.FETCHED_KEY);
-      return new Promise(async (resolve, reject) => {
-        userData$.subscribe({
-          next: (user) => {
-            console.log('User data received:', user);
-            if (user) {
-              user.email = email; // Ensure email is set
-              this.storageService.upsert('eventUsers', [user], 'email').then(() => {
-                this.user = user;
-                resolve(this.user);
-              }).catch((error) => {
-                console.error('Error creating guest user:', error);
-                reject(error);
-              });
-            } else {
-              if (cachedUser) {
-                console.log('Using cached user data:', cachedUser);
-                this.user = cachedUser;
-                resolve(this.user);
-              } else {
-                this.createGuestUser(email).then((guestUser) => {
-                  this.user = guestUser;
-                  resolve(this.user);
-                }).catch((error) => {
-                  console.error('Error creating guest user:', error);
-                  reject(error);
-                });
-              }
-            }
-          },
-          error: (error) => {
-            console.error('Error fetching user data:', error);
-            reject(error);
-          }
-        });
-      });
-    } else {
-      return Promise.resolve(null);
-    }
-  }
 
   public async toggleFavourite(sessionId: string, isFavourite: boolean): Promise<void> {
     if (!this.user) {
@@ -204,7 +153,7 @@ export class UserService {
    * A P P U S E R    B I T S
    ********************************************************************/
 
-  async getAppUsers(options: {forceRefresh?: boolean} = {}): Promise<AppUser[]> {
+  public async getAppUsers(_options: {forceRefresh?: boolean} = {}): Promise<AppUser[]> {
     console.log('Fetching app users...');
      
     const lastRefreshed = this.storageService.getLastFetchedTime(APPUSER_DB_CONF.FETCHED_KEY);
@@ -220,4 +169,46 @@ export class UserService {
     this.storageService.updateFetchedTime(APPUSER_DB_CONF.FETCHED_KEY);
     return appUsers;
   }
+
+  public async upsertAppUsers(users: {appUser: AppUser, sponsorId: string | null}[]): Promise<any[]> { 
+    let errors: any[] = [];
+    for (const user of users) {
+      console.log(LOG_TAG, 'Upserting app user', user.appUser.email, user);
+      const eventUser = await this.getUserByEmail(user.appUser.email);
+      if (eventUser) {
+        user.appUser.userId = eventUser.id as string; // Link app user to event user by email
+        setDoc(doc(this.firestore, "userperms", user.appUser.email), user.appUser, {merge:true}).then(async (res) => {
+          console.log(LOG_TAG, 'App user saved to Firestore', res);
+          
+          // Conditionally update event user with any new sponsor;
+          // if (eventUser.boothStaff !== user.sponsorId || eventUser.sponsorAdmin !== user.sponsorId) {
+            console.log(LOG_TAG, 'Updating event user with new sponsor access', user.sponsorId);
+            let updatedEventUser: User = {}
+            if (user.appUser.canManageSponsorStaff) {
+              updatedEventUser.sponsorAdmin = user.sponsorId ?? "";
+            } else {
+              updatedEventUser.sponsorAdmin = ""
+            }
+            if (user.appUser.canUpsertLeads) {
+              updatedEventUser.boothStaff = user.sponsorId ?? ""
+            } else {
+              updatedEventUser.boothStaff = ""
+            }
+            updatedEventUser.lastModified = new Date();
+            console.log(LOG_TAG, 'Updated event user data', updatedEventUser);
+            await setDoc(doc(this.firestore, "eventusers", eventUser.id as string), updatedEventUser, {merge:true});
+          // }
+
+        }).catch(async (error) => {
+          console.error(LOG_TAG, 'Error saving userperms to Firestore:', error);
+          errors.push({user, error});
+        });
+      } else {
+        console.error(LOG_TAG, 'Cannot create app user without corresponding event user:', user.appUser.email);
+        errors.push({user, error: 'No corresponding event user'});
+      }
+    }
+    return errors;
+  }
+
 }

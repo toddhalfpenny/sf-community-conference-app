@@ -147,6 +147,7 @@ export class AppComponent {
       console.log('User in AppComponent:', user);
       this.userService.setUser(user?.email || '').then(eventUser => {
         console.log('Event user in AppComponent:', eventUser);
+        this.appPages = []; // Clear existing pages before setting new ones
         this.appPages = this.attendeePages; // Default to attendee pages
         if (user) {
           if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.sponsorAdmin || eventUser?.boothStaff) {

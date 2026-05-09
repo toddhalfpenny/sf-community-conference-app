@@ -8,6 +8,20 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-alert
+    [isOpen]="isFailedLoginAlertOpen"
+    header="Login Failed"
+    message="Login failed. Please check your credentials and try again."
+    [buttons]="failedLoginAlertButtons"
+    (didDismiss)="isFailedLoginAlertOpen = false"
+  ></ion-alert>
+  <ion-alert
+    [isOpen]="isResetCredsAlertOpen"
+    header="Reset Credentials"
+    [message]="resetCredsAlertMessage"
+    [buttons]="resetCredsAlertButtons"
+    (didDismiss)="isResetCredsAlertOpen = false"
+  ></ion-alert>
   @if (currentPage === 'logout') {
     <ion-button expand="block" fill="clear" (click)="logout()">
       {{actionButtonText}}

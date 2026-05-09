@@ -2,20 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import {
-  IonBackButton,
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-} from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, IonAlert } from '@ionic/angular/standalone';
 import { Subscription, tap } from 'rxjs';
 import { AuthFormComponent } from './auth-form/auth-form.component';
 import { AuthenticationService } from './authentication.service';
 
-
+const LOG_TAG = 'authentication.page';
 
 export interface UserCredentials {
   email: string;
@@ -38,8 +30,9 @@ export interface UserCredentials {
     CommonModule,
     FormsModule,
     AuthFormComponent,
-    RouterLink
-  ],
+    RouterLink,
+    IonAlert
+],
 })
 export class AuthenticationPage implements OnDestroy {
   /**
@@ -92,6 +85,27 @@ export class AuthenticationPage implements OnDestroy {
 
   private activeSubscription?: Subscription;
 
+  protected isFailedLoginAlertOpen: boolean = false;
+  protected failedLoginAlertButtons = [
+    {
+      text: 'OK',
+      role: 'cancel'
+    },
+  ];
+  protected isResetCredsAlertOpen: boolean = false;
+  protected resetCredsAlertButtons = [
+    {
+      text: 'OK',
+      role: 'cancel',
+      handler: () => {
+        this.router.navigateByUrl('auth/login');
+      }
+      
+    },
+  ];
+  protected resetCredsAlertMessage = 'If your email is registered, you will receive instructions to reset your password.';
+
+
   ngOnDestroy(): void {
     this.activeSubscription?.unsubscribe();
   }
@@ -118,11 +132,14 @@ export class AuthenticationPage implements OnDestroy {
     }
   }
 
-  login({ email, password }: UserCredentials) {
-    this.activeSubscription = this.authenticationService
-      .login(email, password as string)
-      .pipe(tap(() => this.router.navigateByUrl('')))
-      .subscribe();
+  async login({ email, password }: UserCredentials) {
+    try {
+      const res = await this.authenticationService.login(email, password as string);
+      this.router.navigateByUrl('');
+    } catch (error) {
+      console.error(LOG_TAG, 'Login error:', error);
+      this.isFailedLoginAlertOpen = true;
+    }
   }
 
   logout() {
@@ -139,10 +156,15 @@ export class AuthenticationPage implements OnDestroy {
       .subscribe();
   }
   
-  resetPassword({ email }: UserCredentials) {
-    this.activeSubscription = this.authenticationService
-      .resetPassword(email)
-      .pipe(tap(() => this.router.navigateByUrl('auth/login')))
-      .subscribe();
+  async resetPassword({ email }: UserCredentials) {
+    try {
+      const res = await this.authenticationService.resetPassword(email);
+      this.resetCredsAlertMessage = 'If your email is registered, you will receive instructions to reset your password.';
+      this.isResetCredsAlertOpen = true;
+    } catch (error) {
+      console.error(LOG_TAG, 'Login error:', error);
+      this.resetCredsAlertMessage = 'There was an issue resetting your password. Please try again.';
+      this.isResetCredsAlertOpen = true;
+    }
   }
 }

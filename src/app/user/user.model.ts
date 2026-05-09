@@ -25,13 +25,15 @@ export enum UserType {
 
 export interface AppUser {
   email: string;
-  canManageAdmins: boolean;
-  canManageSponsorAdmins: boolean;
-  canManageSponsorStaff: boolean;
-  canManageSessions: boolean;
-  canManageUsers: boolean;
-  canManageSpeakers: boolean;
-  canManageAnnouncements: boolean;
-  canManageFAQs: boolean;
-  canUpsertLeads: boolean;
+  userId: any;
+  isActive: boolean;
+  canManageAdmins?: boolean;
+  canManageSponsorAdmins?: boolean;
+  canManageSponsorStaff?: boolean;
+  canManageSessions?: boolean;
+  canManageUsers?: boolean;
+  canManageSpeakers?: boolean;
+  canManageAnnouncements?: boolean;
+  canManageFAQs?: boolean;
+  canUpsertLeads?: boolean;
 }
