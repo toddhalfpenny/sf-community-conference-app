@@ -17,7 +17,7 @@ import {
   updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { AppUser, User, UserType } from './user.model';
 import { StorageService } from '../storage/storage-service';
 
@@ -50,6 +50,10 @@ export class UserService {
   private readonly storageService = inject(StorageService);
 
   private user: User | null = null;
+
+  private _user = new Subject<User| null>();
+
+  public user$ = this._user.asObservable();
 
 
   /*********************************************************************
@@ -123,6 +127,7 @@ export class UserService {
     if (cachedUser && cachedUser.email === email && !shouldRefresh) {
       console.log('Using cached user data:', cachedUser);
       this.user = cachedUser;
+      this._user.next(this.user);
       return this.user;
     }
 
@@ -140,15 +145,18 @@ export class UserService {
           user.email = email; // Ensure email is set
           await this.storageService.upsert('user', [user], 'id');
           this.user = user;
+          this._user.next(this.user);
           return this.user;
         } else {
           if (cachedUser) {
             console.log('Using cached user data:', cachedUser);
             this.user = cachedUser;
+            this._user.next(this.user);
             return this.user;
           } else {
             const guestUser = await this.createGuestUser(email);
             this.user = guestUser;
+            this._user.next(this.user);
             return this.user;
           }
         }
@@ -173,6 +181,7 @@ export class UserService {
       : (this.user.myAgendaSessions || []).filter(id => id !== sessionId);
 
     this.user.myAgendaSessions = updatedFavourites;
+    this._user.next(this.user);
     this.storageService.upsert('user', [this.user], 'id');
     const userDocRef = doc(this.firestore, `eventusers/${this.user.id}`);
     await setDoc(userDocRef, { myAgendaSessions: updatedFavourites }, {merge: true});

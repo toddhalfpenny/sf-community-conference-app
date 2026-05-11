@@ -57,7 +57,7 @@ export class AppComponent {
   private readonly storageService = inject(StorageService);
   private readonly authenticationService = inject(AuthenticationService);
   private readonly userService = inject(UserService);
-  private authubscription?: Subscription;
+  private authSubscription?: Subscription;
 
   private readonly attendeePages: AppPage[] = [
     {
@@ -143,7 +143,7 @@ export class AppComponent {
   constructor() {
     (<any>window).LOCAL_DEV = location.href.includes('localhost') && LOCAL_DEV;
     addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer });
-    this.authubscription = this.authenticationService.getUser().subscribe(user => {
+    this.authSubscription = this.authenticationService.getUser().subscribe(user => {
       console.log('User in AppComponent:', user);
       this.userService.setUser(user?.email || '').then(eventUser => {
         console.log('Event user in AppComponent:', eventUser);
