@@ -26,6 +26,13 @@ const EVENTUSER_DB_CONF = {
   // TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'eventuser_fetched',
 }
+
+const USER_DB_CONF = {
+  TTL: 1000 * 60 * 60, // 1 hour
+  // TTL: 1000 * 30, // 30 seconds
+  FETCHED_KEY: 'user_fetched',
+}
+
 const APPUSER_DB_CONF = {
   TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'appuser_fetched',
@@ -45,8 +52,49 @@ export class UserService {
   /*********************************************************************
    * U S E R    B I T S
    ********************************************************************/
+
+  /**
+   * 
+   * @returns The currently set user, or null if no user is set. Note that this does not guarantee the user data is fresh - use getUserByEmail or setUser to ensure you have the latest data from Firestore.
+   */
   public getUser(): User | null {
     return this.user;
+  }
+
+  public async getUsers(): Promise<User[]> {
+    // TODO Implement forceRefresh and allStatuses options like sessions service (for admin view)
+    try {
+      console.log('Fetching eventusers from Firestore...');
+
+      const shouldRefresh = this.storageService.shouldRefresh(EVENTUSER_DB_CONF.FETCHED_KEY, EVENTUSER_DB_CONF.TTL);
+      console.log('shouldRefresh', shouldRefresh);
+
+      if (!shouldRefresh) {
+        console.log('Using cached users data');
+        const cachedusers = await this.storageService.getAll('eventUsers') as User[];
+        console.log('Cached users:', cachedusers);
+        return this.sortUsers(cachedusers);
+      } else {
+        const lastRefreshed = this.storageService.getLastFetchedTime(EVENTUSER_DB_CONF.FETCHED_KEY);
+        const collRef = collection(this.firestore, 'eventusers');
+        const q = query(collRef, where("lastModified", ">", lastRefreshed));
+        const querySnapshot = await getDocs(q);
+        console.log(LOG_TAG, 'Fetched eventUsers from Firestore, querySnapshot:', querySnapshot.docs.length);
+        const usersToUpdate = querySnapshot.docs.map((doc) => {
+          const userData = doc.data() as User;
+          userData.id = doc.id;
+          return userData;
+        });
+        await this.storageService.upsert('eventUsers', usersToUpdate, 'id');
+        this.storageService.updateFetchedTime(EVENTUSER_DB_CONF.FETCHED_KEY);
+        const users = await this.storageService.getAll('eventUsers') as User[];
+        console.log('Cached eventUsers:', users);
+        return this.sortUsers(users);
+      }
+    } catch (error) {
+      console.error('Error fetching users from Firestore:', error);
+      throw error;
+    }
   }
 
   public async getUserByEmail(email: string): Promise<User | null> {
@@ -57,9 +105,9 @@ export class UserService {
   }
   
   public async setUser(email: string): Promise<User | null> {
-    const cachedUser = (await this.storageService.getAll('eventUsers'))[0] as User;
+    const cachedUser = (await this.storageService.getAll('user'))[0] as User;
     console.log('cachedUser:', cachedUser);
-    const shouldRefresh = this.storageService.shouldRefresh(EVENTUSER_DB_CONF.FETCHED_KEY, EVENTUSER_DB_CONF.TTL);
+    const shouldRefresh = this.storageService.shouldRefresh(USER_DB_CONF.FETCHED_KEY, USER_DB_CONF.TTL);
     console.log('cachedUser:', cachedUser);
 
     if (cachedUser && cachedUser.email === email && !shouldRefresh) {
@@ -76,11 +124,11 @@ export class UserService {
         const querySnapshot = await getDocs(q);
         const user = querySnapshot.docs.length > 0 ? (querySnapshot.docs[0].data() as User) : null; 
 
-        this.storageService.updateFetchedTime(EVENTUSER_DB_CONF.FETCHED_KEY);
+        this.storageService.updateFetchedTime(USER_DB_CONF.FETCHED_KEY);
         console.log('User data received:', user);
         if (user) {
           user.email = email; // Ensure email is set
-          await this.storageService.upsert('eventUsers', [user], 'id');
+          await this.storageService.upsert('user', [user], 'id');
           this.user = user;
           return this.user;
         } else {
@@ -147,6 +195,21 @@ export class UserService {
     await this.storageService.upsert('eventUsers', [guestUser], 'id');
     return guestUser;
   } 
+
+  private sortUsers(users: User[]): User[] {
+    return users.sort((a, b) => {
+      const nameA = a.lastname?.toUpperCase() ?? ''; // ignore upper and lowercase
+      const nameB = b.lastname?.toUpperCase() ?? ''; // ignore upper and lowercase
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      // names must be equal
+      return 0;
+    });
+  }
 
 
   /*********************************************************************

@@ -47,7 +47,11 @@ const TABLE_SPECS: TableSpec[] = [
     idbSpec : {keyPath: "id"},
     indexes: [
     ]
-  }
+  },
+  { 
+    name: 'user',
+    idbSpec : {keyPath: "id"},
+  },
 ]
 
 @Injectable({

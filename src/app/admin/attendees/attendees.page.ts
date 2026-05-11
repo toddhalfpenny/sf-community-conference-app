@@ -1,8 +1,8 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton } from '@ionic/angular/standalone';
-import { tabletojson } from 'tabletojson';
+import { RouterLink } from '@angular/router';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonButton, IonSearchbar, IonItem, IonText } from '@ionic/angular/standalone';
 import { UserService } from  '../../user/user-service';
 import { UtilService } from 'src/app/utils/util-service';
 import { UserType, type User } from '../../user/user.model';
@@ -12,7 +12,7 @@ import { UserType, type User } from '../../user/user.model';
   templateUrl: './attendees.page.html',
   styleUrls: ['./attendees.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton]
+  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonButton, IonSearchbar, IonItem, IonText]
 })
 export class AttendeesPage implements OnInit {
   @ViewChild('attendeeInput') attendeeInput!: any;
@@ -22,6 +22,7 @@ export class AttendeesPage implements OnInit {
   private attendeeArray: User[] = [];
 
   protected attendees: User[] = [];
+  protected searchTerm : string = '';
 
   constructor() { }
 
@@ -29,9 +30,16 @@ export class AttendeesPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    // this.attendees = await this.attendeeService.getUsers();
+    this.attendees = await this.attendeeService.getUsers();
   }
 
+
+  protected handleSearchChange(event: any) {
+    console.log("handleSearchChange", event);
+    this.searchTerm = event.detail.value.toLowerCase();
+  }
+
+  
   public async importAttendees() {
     const attendeeArray: User[] = [];
     const file = this.attendeeInput.nativeElement.files[0];

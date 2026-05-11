@@ -2,6 +2,13 @@
   <ion-toolbar>
     <ion-title>Manage Attendees</ion-title>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar show-clear-button="focus"
+      placeholder="Search attendees by first or last name"
+      [debounce]="400" 
+      (ionInput)="handleSearchChange($event)">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
@@ -12,13 +19,11 @@
   <h1>Existing attendees</h1>
   <ion-list>
     @for (attendee of attendees; track $index) {
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>{{attendee.firstname}} {{attendee.lastname}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-        </ion-card-content>
-      </ion-card>
+      @if (searchTerm === '' || attendee.firstname?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||attendee.lastname?.toLowerCase()?.includes(searchTerm.toLowerCase())) {
+        <ion-item detail routerLink="/admin/attendee/{{attendee.id}}">
+            <ion-text>{{attendee.firstname}} {{attendee.lastname}}</ion-text>
+        </ion-item>
+      }
     }
   </ion-list>
 </ion-content>
