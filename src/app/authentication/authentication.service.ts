@@ -10,7 +10,7 @@ import {
   UserCredential,
 } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
-import { UserService } from '../user/user-service';
+import { UserService } from '../user/user.service';
 import { StorageService } from '../storage/storage-service';
 
 @Injectable({

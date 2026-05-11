@@ -5,10 +5,12 @@
  */
 import { inject, Injectable } from '@angular/core';
 import {
+  addDoc,
   collection,
   doc,
   docData,
   Firestore,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -22,7 +24,8 @@ import { StorageService } from '../storage/storage-service';
 const LOG_TAG = 'user.servce';
 
 const EVENTUSER_DB_CONF = {
-  TTL: 1000 * 60 * 60, // 1 hour
+  // TTL: 1000 * 60 * 60, // 1 hour
+  TTL: 1000 * 60, // 1 min
   // TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'eventuser_fetched',
 }
@@ -103,6 +106,13 @@ export class UserService {
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.length > 0 ? (querySnapshot.docs[0].data() as User) : null; 
   }
+
+  public async getUserById(id: any): Promise<User | null> {
+    console.log(LOG_TAG, 'Fetching user by ID from Firestore...', id);
+    const docRef = doc(this.firestore, 'eventusers', id);
+    const docSnapshot = await getDoc(docRef);
+    return docSnapshot.exists() ? (docSnapshot.data() as User) : null; 
+  }
   
   public async setUser(email: string): Promise<User | null> {
     const cachedUser = (await this.storageService.getAll('user'))[0] as User;
@@ -163,23 +173,38 @@ export class UserService {
       : (this.user.myAgendaSessions || []).filter(id => id !== sessionId);
 
     this.user.myAgendaSessions = updatedFavourites;
-    this.storageService.upsert('eventUsers', [this.user], 'id');
+    this.storageService.upsert('user', [this.user], 'id');
     const userDocRef = doc(this.firestore, `eventusers/${this.user.id}`);
     await setDoc(userDocRef, { myAgendaSessions: updatedFavourites }, {merge: true});
   }
 
 
-  public async upsertUsers(users: User[]) { 
+  public async upsertUsers(users: User[], storeLocally: boolean = false): Promise<any[]> { 
     let errors: any[] = [];
     for (const user of users) {
       console.log(LOG_TAG, 'Upserting user', user.firstname, user.lastname);
-      setDoc(doc(this.firestore, "eventusers", user.id as string), user, {merge:true}).then(async (res) => {
-        console.log(LOG_TAG, 'User saved to Firestore', res);
-        // await this.storageService.upsert('users', [user], 'id');
-      }).catch(async (error) => {
-        console.error(LOG_TAG, 'Error saving eventusers to Firestore:', error);
-        errors.push({user, error});
-      });
+      if (!user.id) {
+        addDoc(collection(this.firestore, "eventusers"), user).then(async (res) => {
+          console.log(LOG_TAG, 'User saved to Firestore', res);
+          if (storeLocally) {
+            user.id = res.id; // Ensure the generated ID is set on the user object for local storage
+            await this.storageService.upsert('eventUsers', [user], 'id');
+          }
+        }).catch(async (error) => {
+          console.error(LOG_TAG, 'Error saving eventusers to Firestore:', error);
+          errors.push({user, error});
+        });
+      } else {
+        setDoc(doc(this.firestore, "eventusers", user.id as string), user, {merge:true}).then(async (res) => {
+          console.log(LOG_TAG, 'User saved to Firestore', res);
+          if (storeLocally) {
+            await this.storageService.upsert('eventUsers', [user], 'id');
+          }
+        }).catch(async (error) => {
+          console.error(LOG_TAG, 'Error saving eventusers to Firestore:', error);
+          errors.push({user, error});
+        });
+      }
     }
     return errors;
   }

@@ -7,7 +7,7 @@ import { addIcons } from 'ionicons';
 import { SpeakerService } from  './speaker.service';
 import { type Speaker } from './speaker.model';
 import { SpeakerCardComponent } from './speaker-card/speaker-card.component';
-import { UserService } from '../user/user-service';
+import { UserService } from '../user/user.service';
 import { User } from '../user/user.model';
 
 @Component({

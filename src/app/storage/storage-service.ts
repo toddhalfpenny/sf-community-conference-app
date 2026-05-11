@@ -102,10 +102,12 @@ export class StorageService {
   }
 
   public async clearTTL() {
+    localStorage.removeItem('appuser_fetched');
     localStorage.removeItem('sessions_fetched');
     localStorage.removeItem('speakers_fetched');
     localStorage.removeItem('sponsors_fetched');
     localStorage.removeItem('eventuser_fetched');
+    localStorage.removeItem('user_fetched');
   }
 
 

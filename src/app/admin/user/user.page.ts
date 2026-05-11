@@ -5,7 +5,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { IonAlert, IonContent, IonHeader, IonTitle, IonToggle, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonCard, IonList, IonItem, IonInput, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { create, close, save } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { UserService } from  '../../user/user-service';
+import { UserService } from  '../../user/user.service';
 import { User, type AppUser } from '../../user/user.model';
 import { Sponsor } from 'src/app/sponsors/sponsor.model';
 import { SponsorsService } from 'src/app/sponsors/sponsors.service';

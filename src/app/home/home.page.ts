@@ -6,7 +6,7 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, 
 import { AuthenticationService } from '../authentication/authentication.service';
 import { Subscription } from 'rxjs';
 import { SponsorListComponent } from '../sponsors/sponsor-list/sponsor-list.component';
-import { UserService } from '../user/user-service';
+import { UserService } from '../user/user.service';
 import { User } from '../user/user.model';
 
 @Component({

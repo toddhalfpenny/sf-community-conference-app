@@ -12,6 +12,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <ion-button expand="block" [routerLink]="['/admin/attendee/new']">Create Attendee</ion-button>
   <h1>Import Attendees</h1>
   <input type="file" id="attendees" name="attendees" accept="text/xls" #attendeeInput />
   <ion-button (click)="importAttendees()">Import</ion-button>

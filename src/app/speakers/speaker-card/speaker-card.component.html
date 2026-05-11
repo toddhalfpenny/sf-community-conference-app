@@ -41,7 +41,11 @@
   <div class="sessions">
     <h2>Sessions</h2>
     @for (session of sessions; track session.id) {
-      <app-session-card [session]="session" [showSpeakers]="false"></app-session-card>
+      <app-session-card
+        [session]="session"
+        [favourites]="user?.myAgendaSessions"
+        (favouriteToggled)="toggleFavourite($event)"
+        [showSpeakers]="false"></app-session-card>
     }
   </div>
 }

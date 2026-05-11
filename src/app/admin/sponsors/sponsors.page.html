@@ -12,13 +12,9 @@
   <h1>Existing Sponsors</h1>
   <ion-list>
     @for (sponsor of sponsors; track $index) {
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>{{sponsor.name}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-        </ion-card-content>
-      </ion-card>
+      <ion-item>
+        <ion-text>{{sponsor.name}}</ion-text>
+      </ion-item>
     }
   </ion-list>
 </ion-content>

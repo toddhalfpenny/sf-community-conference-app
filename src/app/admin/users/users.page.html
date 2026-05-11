@@ -9,14 +9,9 @@
   <h1>Existing users</h1>
   <ion-list>
     @for (user of users; track $index) {
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>{{user.email}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-        </ion-card-content>
-        <ion-button fill="clear" [routerLink]="['/admin/user/' + user.userId]" [state]="{user: user}">Edit</ion-button>
-      </ion-card>
+      <ion-item [routerLink]="['/admin/user/' + user.userId]" [state]="{user: user}" detail>
+        <ion-text>{{user.email}}</ion-text>
+      </ion-item>
     }
   </ion-list>
 </ion-content>

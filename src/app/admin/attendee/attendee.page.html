@@ -1,13 +1,57 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>Attendee</ion-title>
+    <ion-buttons slot="start">
+      @if (!userForm.dirty) {
+        <ion-back-button></ion-back-button>
+      } @else {
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
+    <ion-title>Editing Session</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  [disabled]="!userForm.valid" (click)="save()">
+        <ion-icon slot="icon-only" name="save" ></ion-icon> 
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Attendee</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  @if (attendee) { 
+  }
+  <form [formGroup]="userForm">
+  <!-- @if (session) { -->
+    <ion-card>
+      <ion-list>
+        <ion-item>
+          <ion-input errorText="Email is required" required label="Email" labelPlacement="stacked" formControlName="email"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input errorText="First name is required" required label="First name" labelPlacement="stacked" formControlName="firstname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input errorText="Last name is required" required label="Last name" labelPlacement="stacked" formControlName="lastname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Company" labelPlacement="stacked" formControlName="company"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-select labelPlacement="stacked"  label="Type" formControlName="type" ngDefaultControl>
+            @for (type of userTypes; track $index) {
+              <ion-select-option [value]="type.value">{{ type.name }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-toggle
+            justify="space-between"
+            formControlName="isActive"
+          >Active</ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  <!-- } -->
+  </form>
 </ion-content>

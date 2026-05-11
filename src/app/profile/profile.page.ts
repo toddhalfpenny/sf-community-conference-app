@@ -4,20 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonAlert } from '@ionic/angular/standalone';
 import { trashBin, trash } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { QRCodeComponent } from 'angularx-qrcode';
 import { StorageService } from '../storage/storage-service';
-import { UserService } from '../user/user-service';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonAlert]
+  imports: [QRCodeComponent, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonButton, IonCardHeader, IonCardTitle, IonCardContent, IonIcon, IonAlert]
 })
 export class ProfilePage implements OnInit {
 
   private readonly userService = inject(UserService);
   private readonly storageService = inject(StorageService);
+
+  protected user = this.userService.getUser();
 
   protected alertAction!: 'clearTTL' | 'clearLocalData';
   protected alertButtons = [
@@ -51,8 +54,8 @@ export class ProfilePage implements OnInit {
     addIcons({ trashBin, trash }); }
 
   ngOnInit() {
-      const user  = this.userService.getUser()
-      console.log('User data in ProfilePage:', user);
+      // const user  = this.userService.getUser()
+      // console.log('User data in ProfilePage:', user);
   }
 
   protected clearTTL() {

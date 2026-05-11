@@ -15,6 +15,15 @@
     [buttons]="alertButtons"
     (didDismiss)="showAlert = false"
   ></ion-alert>
+  @if (user) {
+    <ion-card>
+      <qrcode
+        [qrdata]='`{"i":"${user.id}","f":"${user.firstname}","l":"${user.lastname}"}`' [width]="256"
+        [errorCorrectionLevel]="'M'"
+        [cssClass]="'center'"
+        [colorDark]="'#9e1e21ff'"></qrcode>
+    </ion-card>
+  }
   <ion-card>
     <ion-card-header>
       <ion-card-title>Settings</ion-card-title>

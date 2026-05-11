@@ -7,7 +7,7 @@ import { addIcons } from 'ionicons';
 import { RouterLink } from '@angular/router';
 import { LeadService } from './lead-service';
 import { LeadsListComponent } from "./leads-list/leads-list.component";
-import  { UserService } from '../user/user-service';
+import  { UserService } from '../user/user.service';
 import { User } from '../user/user.model';
 import { Lead } from './lead.model';
 

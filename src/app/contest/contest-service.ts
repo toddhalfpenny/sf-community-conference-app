@@ -17,7 +17,7 @@ import {
 } from '@angular/fire/firestore';
 import { Lead, SyncStatus } from '../leads/lead.model';
 import { StorageService } from '../storage/storage-service';
-import { UserService } from '../user/user-service';
+import { UserService } from '../user/user.service';
 
 const LOG_TAG = 'contest.servce';
 

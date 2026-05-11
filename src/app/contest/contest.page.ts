@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList } from '@ionic/angular/standalone';
 import { Lead } from '../leads/lead.model';
 import { ContestService } from './contest-service';
-import  { UserService } from '../user/user-service';
+import  { UserService } from '../user/user.service';
 import { User } from '../user/user.model';
 
 @Component({

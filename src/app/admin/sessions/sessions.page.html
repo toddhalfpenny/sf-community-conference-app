@@ -19,12 +19,9 @@
   <ion-list>
     @for (session of sessions; track $index) {
       @if (searchTerm === '' || session.title.toLowerCase().includes(searchTerm.toLowerCase())) {
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>{{session.title}}</ion-card-title>
-          </ion-card-header>
-          <ion-button fill="clear"[routerLink]="['/admin/session/' + session.id]">Edit</ion-button>
-        </ion-card>
+        <ion-item detail [routerLink]="['/admin/session/' + session.id]" >
+          <ion-text>{{session.title}}</ion-text>
+        </ion-item>
       }
     }
   </ion-list>

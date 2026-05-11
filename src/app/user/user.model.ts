@@ -10,6 +10,7 @@ export interface User {
   boothStaff?: string;          //Sponsor Key
   sponsorAdmin?: string;        //Sponsor Key
   lastModified?: Date; // The timestamp of the last modification to the eventusers's data.
+  isActive?: boolean; // Whether the user is active or not. Inactive users cannot log in.
 }
 
 export enum UserType {

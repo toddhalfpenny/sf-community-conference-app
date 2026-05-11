@@ -12,13 +12,9 @@
   <h1>Existing Speakers</h1>
   <ion-list>
     @for (speaker of speakers; track $index) {
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>{{speaker.firstname}} {{speaker.lastname}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-        </ion-card-content>
-      </ion-card>
+      <ion-item>
+          <ion-text>{{speaker.firstname}} {{speaker.lastname}}</ion-text>
+      </ion-item>
     }
   </ion-list>
 </ion-content>

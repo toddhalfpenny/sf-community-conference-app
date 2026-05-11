@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonButton, IonSearchbar, IonItem, IonText } from '@ionic/angular/standalone';
-import { UserService } from  '../../user/user-service';
+import { UserService } from  '../../user/user.service';
 import { UtilService } from 'src/app/utils/util-service';
 import { UserType, type User } from '../../user/user.model';
 

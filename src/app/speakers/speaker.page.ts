@@ -6,8 +6,10 @@ import { SpeakerCardComponent } from "./speaker-card/speaker-card.component";
 import { ActivatedRoute } from '@angular/router';
 import { SpeakerService } from './speaker.service';
 import { SessionService } from '../session/session.service'
+import { UserService } from '../user/user.service';
 import { type Speaker } from './speaker.model';
 import { type Session } from '../session/session.model';
+import { type User } from '../user/user.model';
 
 @Component({
   selector: 'app-speaker',
@@ -22,6 +24,9 @@ export class SpeakerPage implements OnInit {
   private readonly location = inject(Location);
   private readonly speakerService = inject(SpeakerService);
   private readonly sessionService = inject(SessionService);
+  private readonly userService = inject(UserService);
+  
+  protected user!: User | null;
   
   protected speaker?: Speaker;
   protected sessions?: Session[];
@@ -31,6 +36,7 @@ export class SpeakerPage implements OnInit {
   ngOnInit() {
   }
   async ionViewWillEnter() {
+    this.user = await this.userService.getUser() as User;
     const speakerId = this.activatedRoute.snapshot.paramMap.get('speakerId') as string;
     this.speaker = await this.speakerService.getSpeakerById(speakerId) as Speaker;
     this.sessions = await this.sessionService.getSpeakerSessions(speakerId) as Session[];

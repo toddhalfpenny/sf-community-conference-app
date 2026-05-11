@@ -80,7 +80,7 @@ export class SessionPage implements OnInit {
       endTime: endTime,
     });
 
-    this.modal.showBackdrop
+
     this.selectedSpeakerIds = this.session.speakers?.map(s => s.id) ?? [];
     this.allSpeakers = await this.speakerService.getSpeakers();
   }

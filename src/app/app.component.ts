@@ -21,7 +21,7 @@ import { Subscription } from 'rxjs';
 import { StorageService } from './storage/storage-service';
 import { AuthenticationService } from './authentication/authentication.service';
 import { UserType } from './user/user.model';
-import { UserService } from './user/user-service';
+import { UserService } from './user/user.service';
 
 interface AppPage {
   type: 'page' | 'seperator';
