@@ -4,7 +4,7 @@
   
   "assetGroups": [
     {
-      "name": "app",
+      "name": "London's Calling",
       "installMode": "prefetch",
       "resources": {
         "files": [
