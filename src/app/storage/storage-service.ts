@@ -7,10 +7,19 @@ interface TableSpec {
 
 }
 
+interface DbVersionConfig {
+  [propName: number]: VersionSoupUpdates;
+}
+
+interface VersionSoupUpdates {
+  allSoups?: string[];
+  changedSoups?: string[];
+}
+
 const LOG_TAG = 'storage.servce';
 
 const HARD_TTL = 1000 * 30
-const INDEXED_DB_VERSION = 1;
+const INDEXED_DB_VERSION = 2;
 const IDB_NAME = 'ConfApp';
 
 const TABLE_SPECS: TableSpec[] = [
@@ -54,6 +63,34 @@ const TABLE_SPECS: TableSpec[] = [
   },
 ]
 
+const versionDBConfig: DbVersionConfig = {
+  0: {
+    allSoups: [
+      'annoucements',
+      'contestEntries',
+      'eventUsers',
+      'faqs',
+      'leads',
+      'sessions',
+      'speakers',
+      'sponsors',
+      'user'
+    ]
+  },
+  2 : {
+    changedSoups: [
+      'annoucements',
+      'contestEntries',
+      'eventUsers',
+      'leads',
+      'sessions',
+      'speakers',
+      'sponsors',
+      'user'
+    ]
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -84,29 +121,59 @@ export class StorageService {
       if (event.oldVersion === 0 && event.newVersion) {
         // new install
         for (const spec of TABLE_SPECS) {
-          console.log("Creating table", spec.name);
-          const table = db.createObjectStore(spec.name, spec.idbSpec);
-          if (spec.indexes) {
-            spec.indexes.forEach(idx => {
-              table.createIndex(idx.path, idx.path, {unique: idx.unique});
-            })
+          if (versionDBConfig[0].allSoups?.includes(spec.name)) {
+            console.log("Creating table", spec.name);
+            const table = db.createObjectStore(spec.name, spec.idbSpec);
+            if (spec.indexes) {
+              spec.indexes.forEach(idx => {
+                table.createIndex(idx.path, idx.path, {unique: idx.unique});
+              })
+            }
           }
         }
         return
       } else {
-        console.warn(`Unsupported database upgrade from version ${event.oldVersion} to ${event.newVersion}`);
-        return;
-      }
+        if (event.newVersion) {
+          console.log('dbReq versions', event.oldVersion, event.newVersion);
+          console.log("Existing DB names", db.objectStoreNames);
 
+          // Clear CACHE TTL
+          this.clearTTL();
+
+          // TODO Drop any tables that need dropping, using "changedSoups" and calculate all that were needed since last version
+
+          // Create Tables and indexes
+          for (const spec of TABLE_SPECS) {
+            if (versionDBConfig[event.newVersion].changedSoups?.includes(spec.name)) {
+              if (db.objectStoreNames.contains(spec.name)) {
+                console.log("Deleting Soup", spec.name);
+                db.deleteObjectStore(spec.name);
+              }
+              console.log("Creating Soup", spec.name);
+              const table = db.createObjectStore(spec.name, spec.idbSpec);
+              if (spec.indexes) {
+                spec.indexes.forEach(idx => {
+                  table.createIndex(idx.path, idx.path, {unique: idx.unique});
+                })
+              }
+            }
+          }
+          return
+        } else {
+          console.error('dbReq.onupgradeneeded, unknown version change', event.oldVersion, event.newVersion);
+          return;
+        }
+      }
     }
   }
 
   public async clearTTL() {
     localStorage.removeItem('appuser_fetched');
+    localStorage.removeItem('eventuser_fetched');
+    localStorage.removeItem('leads_fetched');
     localStorage.removeItem('sessions_fetched');
     localStorage.removeItem('speakers_fetched');
     localStorage.removeItem('sponsors_fetched');
-    localStorage.removeItem('eventuser_fetched');
     localStorage.removeItem('user_fetched');
   }
 
