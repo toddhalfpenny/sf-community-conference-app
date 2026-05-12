@@ -14,7 +14,7 @@ import {
   IonSplitPane,
   IonToolbar
  } from '@ionic/angular/standalone';
-import { book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer } from 'ionicons/icons';
+import { barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Subscription } from 'rxjs';
 
@@ -142,7 +142,7 @@ export class AppComponent {
 
   constructor() {
     (<any>window).LOCAL_DEV = location.href.includes('localhost') && LOCAL_DEV;
-    addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer });
+    addIcons({ barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer });
     this.authSubscription = this.authenticationService.getUser().subscribe(user => {
       console.log('User in AppComponent:', user);
       this.userService.setUser(user?.email || '').then(eventUser => {
@@ -150,6 +150,14 @@ export class AppComponent {
         this.appPages = []; // Clear existing pages before setting new ones
         this.appPages = this.attendeePages; // Default to attendee pages
         if (user) {
+          this.appPages.push(
+            {
+              type: 'page',
+              title: 'Polls',
+              url: '/polls',
+              icon: 'bar-chart'
+            },
+          )
           if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.sponsorAdmin || eventUser?.boothStaff) {
             this.appPages = [...this.appPages, ...this.exhibitorPages];
           }

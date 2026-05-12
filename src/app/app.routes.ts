@@ -107,4 +107,20 @@ export const routes: Routes = [
     path: 'admin/user/:userId',
     loadComponent: () => import('./admin/user/user.page').then( m => m.UserPage)
   },
+  {
+    path: 'polls',
+    loadComponent: () => import('./polls/polls/polls.page').then( m => m.PollsPage)
+  },
+  {
+    path: 'polls/:pollId',
+    loadComponent: () => import('./polls/poll/poll.page').then( m => m.PollPage)
+  },
+  {
+    path: 'polls',
+    loadComponent: () => import('./admin/polls/polls.page').then( m => m.PollsPage)
+  },
+  {
+    path: 'polls/:pollId',
+    loadComponent: () => import('./admin/poll/poll.page').then( m => m.PollPage)
+  },
 ];
