@@ -218,6 +218,20 @@ export class UserService {
     return errors;
   }
 
+  public async voted(pollId: string, optionId: string): Promise<void> {
+    if (!this.user) {
+      console.error('No user set. Cannot vote.');
+      // TODO use local storage to save this action and sync when user logs in
+      return;
+    }
+    const pollField = `voted_${pollId}`;
+    (<any>this.user)[pollField] = optionId;
+    this._user.next(this.user);
+    this.storageService.upsert('user', [this.user], 'id');
+    const userDocRef = doc(this.firestore, `eventusers/${this.user.id}`);
+    await setDoc(userDocRef, { [pollField]: optionId }, {merge: true});
+  }
+
 
   private async createGuestUser(email: string): Promise<User> {
     const guestUser: User = {

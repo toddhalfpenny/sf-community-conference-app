@@ -1,20 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { RouterLink } from '@angular/router';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonList, IonItem, IonText } from '@ionic/angular/standalone';
+import { type Poll } from '../../polls/poll.model';
+import { PollService } from '../../polls/poll.service';
 
 @Component({
   selector: 'app-polls',
   templateUrl: './polls.page.html',
   styleUrls: ['./polls.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonButton, IonList, IonItem, IonText]
 })
 export class PollsPage implements OnInit {
+  private readonly pollService = inject(PollService);
+
+  protected polls: Poll[] = [];
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  async ionViewWillEnter() {
+    this.polls = await this.pollService.getPolls();
   }
 
 }

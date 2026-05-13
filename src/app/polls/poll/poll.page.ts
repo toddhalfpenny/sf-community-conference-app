@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonButtons, IonBackButton, IonRadio, IonRadioGroup, IonButton } from '@ionic/angular/standalone';
+import { PollService } from  '../poll.service';
 import { Poll } from '../poll.model';
+import { UserService } from 'src/app/user/user.service';
+import { User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-poll',
@@ -13,12 +16,15 @@ import { Poll } from '../poll.model';
   imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonItem, IonButtons, IonBackButton, IonRadio, IonRadioGroup, IonButton]
 })
 export class PollPage implements OnInit {
+  private readonly PollService = inject(PollService);
   private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
 
   protected alreadyVoted: boolean = true;
   protected selectedOption: string | null = null;
   protected isSubmitDisabled: boolean = true;
   protected poll!: Poll;
+  protected user?: User;
 
   constructor() { 
     const navigation = this.router.currentNavigation();
@@ -33,13 +39,20 @@ export class PollPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.alreadyVoted = localStorage.getItem(`poll_${this.poll.id}_voted`) === 'true';
+    this.user = await this.userService.getUser() as User;
+    console.log("User:", this.user);
+    if (this.user) {
+      this.alreadyVoted = (<any>this.user)[`voted_${this.poll.id}`] ? true : false;
+      // this.alreadyVoted = false
+    } else {
+      this.alreadyVoted = true; // If user is not logged in, treat as already voted to disable voting
+    }
   }
 
   protected submit() {
-    console.log("Submitting poll response for poll:", this.poll);
+    this.PollService.vote(this.poll.id, this.selectedOption!);
     this.isSubmitDisabled = true;
-    localStorage.setItem(`poll_${this.poll.id}_voted`, 'true');
+    // localStorage.setItem(`poll_${this.poll.id}_voted`, 'true');
     this.alreadyVoted = true;
   }
 

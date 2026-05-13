@@ -1,13 +1,17 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>polls</ion-title>
+    <ion-title>Manage Polls</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">polls</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-button disabled expand="block" [routerLink]="['/admin/poll/new']">Create Poll (TBC)</ion-button>
+  <h1>Existing Polls</h1>
+  <ion-list>
+    @for (poll of polls; track $index) {
+      <ion-item [routerLink]="['/admin/polls/' + poll.id]" [state]="{poll: poll}" detail>
+        <ion-text>{{poll.name}}</ion-text>
+      </ion-item>
+    }
+  </ion-list>
 </ion-content>

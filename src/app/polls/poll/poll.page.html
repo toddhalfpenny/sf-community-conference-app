@@ -15,7 +15,7 @@
         <ion-list>
           @for (option of poll.options; track $index) {
             <ion-item>
-              <ion-radio justify="space-between">{{ option }}</ion-radio>
+              <ion-radio [value]="option" justify="space-between">{{ option }}</ion-radio>
             </ion-item>
           }
         </ion-list>

@@ -7,14 +7,18 @@ import {
   getDoc,
   query,
   where,
+  updateDoc,
+  increment,
 } from '@angular/fire/firestore';
 import { StorageService } from '../storage/storage-service';
+import { UserService } from '../user/user.service';
 import { Poll } from './poll.model';
 
 const LOG_TAG = 'poll.servce';
 
 const Poll_DB_CONF = {
-  TTL: 1000 * 60, // 1 minutes
+  // TTL: 1000 * 60, // 1 minutes
+  TTL: 1000 * 10, // 10 secods
   FETCHED_KEY: 'polls_fetched',
 }
 @Injectable({
@@ -23,6 +27,7 @@ const Poll_DB_CONF = {
 export class PollService {
   private readonly firestore = inject(Firestore);
   private readonly storageService = inject(StorageService);
+  private readonly userService = inject(UserService);
 
   protected polls: Poll[] = [];
   
@@ -47,6 +52,26 @@ export class PollService {
       });
       this.polls = polls;
       return this.polls;
+    }
+  }
+
+
+  public async vote(pollId: string, optionId: string) {
+    console.log(LOG_TAG, `Voting on poll ${pollId} for option ${optionId}`);
+
+    // Increment vote count against the poll
+    try { 
+      const sessionDoc = doc(this.firestore, "pollVotes", pollId);
+      await updateDoc(sessionDoc, {
+        [optionId]: increment(1) 
+      });
+
+      // Update eventusers record
+      this.userService.voted(pollId, optionId);
+      return;
+    } catch (error) {
+      console.error(LOG_TAG, 'Error updating poll votes:', error);
+      return;
     }
   }
 

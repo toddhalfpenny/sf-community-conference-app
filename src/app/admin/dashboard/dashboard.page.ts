@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonItem, IonList, IonIcon, IonLabel } from '@ionic/angular/standalone';
-import { book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, peopleCircle } from 'ionicons/icons';
+import { barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, peopleCircle } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 
 @Component({
@@ -16,7 +16,7 @@ import { addIcons } from 'ionicons';
 export class DashboardPage implements OnInit {
 
   constructor() { 
-    addIcons({ book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, peopleCircle });
+    addIcons({ barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, peopleCircle });
 
   }
 

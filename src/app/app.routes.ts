@@ -116,11 +116,11 @@ export const routes: Routes = [
     loadComponent: () => import('./polls/poll/poll.page').then( m => m.PollPage)
   },
   {
-    path: 'polls',
+    path: 'admin/polls',
     loadComponent: () => import('./admin/polls/polls.page').then( m => m.PollsPage)
   },
   {
-    path: 'polls/:pollId',
+    path: 'admin/polls/:pollId',
     loadComponent: () => import('./admin/poll/poll.page').then( m => m.PollPage)
   },
 ];
