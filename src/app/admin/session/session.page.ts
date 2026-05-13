@@ -127,6 +127,7 @@ export class SessionPage implements OnInit {
 
   protected async save() {
     this.isEditing = false;
+    const timeNow= new Date();
     console.log('Form values', JSON.stringify(this.sessionForm.value));
     const startTime = new Date(`2026-06-05T${this.sessionForm.value.startTime}:00+01:00`).getTime() / 1000;
     const endTime = new Date(`2026-06-05T${this.sessionForm.value.endTime}:00+01:00`).getTime() / 1000;
@@ -140,7 +141,8 @@ export class SessionPage implements OnInit {
       // TODO
       // startDateTime: this.session?.startDateTime,
       endDateTime: {seconds: endTime},
-      speakers: this.session?.speakers ?? []
+      speakers: this.session?.speakers ?? [],
+      lastModified: timeNow,
     };
     console.log('Saving session:', updatedSession);
     await this.sessionsService.upsertSessions([updatedSession], true);
