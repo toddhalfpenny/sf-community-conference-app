@@ -6,14 +6,16 @@
     <ion-title>Schedule</ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-segment [value]="currentSegment" (ionChange)="segmentChanged($event)">
-      <ion-segment-button value="all">
-        <ion-label>All</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="my-agenda">
-        <ion-label>My Agenda</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+    @if (user) {
+      <ion-segment [value]="currentSegment" (ionChange)="segmentChanged($event)">
+        <ion-segment-button value="all">
+          <ion-label>All</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="my-agenda">
+          <ion-label>My Agenda</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    }
   </ion-toolbar>
 </ion-header>
 
@@ -29,6 +31,7 @@
             @if (session.format === 3 || currentSegment === 'all' || (currentSegment === 'my-agenda' && user?.myAgendaSessions?.includes(session.id))) { 
               <app-session-card
                 [session]="session"
+                [user]="user"
                 [favourites]="user?.myAgendaSessions"
                 (favouriteToggled)="toggleFavourite($event)"
               ></app-session-card>

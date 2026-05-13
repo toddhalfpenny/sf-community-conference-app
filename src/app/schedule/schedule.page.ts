@@ -66,6 +66,13 @@ SessionFormat: any;
       } catch (error) {
         console.error('Error fetching agenda', error);
       }
+    } else {
+      try {
+        this.agenda = await this.sessionService.getAgenda();
+        console.log('Fetched agenda', this.agenda);
+      } catch (error) {
+        console.error('Error fetching agenda', error);
+      }
     }
     this.currentSegment = localStorage.getItem(LAST_SEGEMENT_KEY) || 'all';
   }

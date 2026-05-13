@@ -18,6 +18,7 @@ export class SessionCardComponent  implements OnInit {
 
   @Input({required: true}) session!: Session;
   @Input() favourites: string[] | undefined = [];
+  @Input() user: any | undefined = undefined;
   @Input() showSpeakers: boolean = true;
   @Output() favouriteToggled = new EventEmitter<{sessionId:string, isFavourite: boolean}>();
 

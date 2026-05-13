@@ -5,6 +5,10 @@
   max-width: 147px;
 }
 
-ion-toolbar {
+ion-header ion-toolbar {
   border-bottom: 3px solid black;
+}
+
+ion-footer ion-title {
+  font-size: 1em;
 }

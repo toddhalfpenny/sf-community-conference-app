@@ -1,19 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  IonApp,
-  IonContent,
-  IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonMenu,
-  IonMenuToggle,
-  IonRouterOutlet,
-  IonSplitPane,
-  IonToolbar
- } from '@ionic/angular/standalone';
+import { IonApp, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonRouterOutlet, IonSplitPane, IonToolbar, IonFooter, IonTitle } from '@ionic/angular/standalone';
 import { barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Subscription } from 'rxjs';
@@ -48,8 +35,10 @@ const LOCAL_DEV = false;
     IonRouterOutlet,
     IonSplitPane,
     IonToolbar,
-    RouterLink
-  ],
+    RouterLink,
+    IonFooter,
+    IonTitle
+],
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
@@ -58,6 +47,10 @@ export class AppComponent {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly userService = inject(UserService);
   private authSubscription?: Subscription;
+
+  protected clientVersion: string = ((<any>window)['clientBundleVersion'] === '') ?
+  '': (<any>window)['clientBundleVersion']
+
 
   private readonly attendeePages: AppPage[] = [
     {
