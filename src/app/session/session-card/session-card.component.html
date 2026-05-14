@@ -22,6 +22,9 @@
     </div>
   </div>
   <h1>{{ session.title }}</h1>
+  @if ( session.format === 1) {
+    <p class="note">Workshop: Laptop required</p>
+  }
   <div class="abstract" [innerHTML]="session.abstract"></div>
   @if (showSpeakers) {
     <div class="speakers">

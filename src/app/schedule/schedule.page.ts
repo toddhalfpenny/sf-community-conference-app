@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSearchbar } from '@ionic/angular/standalone';
 import { SessionService } from '../session/session.service';
 import { Session } from '../session/session.model';
 import { SessionCardComponent } from "../session/session-card/session-card.component";
@@ -16,7 +16,7 @@ const LAST_SEGEMENT_KEY = 'schedulePageLastSegment';
   templateUrl: './schedule.page.html',
   styleUrls: ['./schedule.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel]
+  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel, IonSearchbar]
 })
 export class SchedulePage implements OnInit {
 
@@ -26,6 +26,7 @@ export class SchedulePage implements OnInit {
 
   protected agenda?: Session[][];
   protected currentSegment: string = 'all';
+  protected searchTerm : string = '';
   protected timeNow: Number = 0;
   protected user!: User | null;
 SessionFormat: any;
@@ -75,6 +76,42 @@ SessionFormat: any;
       }
     }
     this.currentSegment = localStorage.getItem(LAST_SEGEMENT_KEY) || 'all';
+  }
+
+
+  protected handleSearchChange(event: any) {
+    console.log("handleSearchChange", event);
+    this.searchTerm = event.detail.value.toLowerCase();
+  }
+
+  protected isInSearchResults(session: Session): boolean {
+    if (this.searchTerm.length < 2) {
+      return true;
+    }
+    if (this,this.searchTerm.length < 3) {
+      console.log('Searching by tags for term', this.searchTerm);
+      // Only search by tags if the search term is less than 3 characters, otherwise it becomes too slow
+      if (session.tags?.some(tag => tag.toLowerCase().includes(this.searchTerm))) {
+        console.log('Found match in tags for session', session.title);
+        return true;
+      }
+      return false;
+    } else {
+
+      if (session.tags?.some(tag => tag.toLowerCase().includes(this.searchTerm))) {
+        return true;
+      }
+      if (session.title.toLowerCase().includes(this.searchTerm)) {
+        return true;
+      }
+      if (session.abstract.toLowerCase().includes(this.searchTerm)) {
+        return true;
+      }
+      if (session.speakers.some(speaker => speaker.name.toLowerCase().includes(this.searchTerm))) {
+        return true;
+      }
+      return false;
+    }
   }
 
   protected segmentChanged(event: any) {

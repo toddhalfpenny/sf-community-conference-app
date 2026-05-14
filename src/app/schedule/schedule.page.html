@@ -6,6 +6,13 @@
     <ion-title>Schedule</ion-title>
   </ion-toolbar>
   <ion-toolbar>
+    <ion-searchbar show-clear-button="focus"
+      placeholder="Search"
+      [debounce]="400" 
+      (ionInput)="handleSearchChange($event)">
+    </ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
     @if (user) {
       <ion-segment [value]="currentSegment" (ionChange)="segmentChanged($event)">
         <ion-segment-button value="all">
@@ -28,7 +35,7 @@
           @if ($index === 0) {
             <summary [class]="session.startDateTime.seconds == timeNow ? 'currentHour' : ''">{{ session.startDateTime.seconds| date : "shortTime"}}</summary>
           } @else {
-            @if (session.format === 3 || currentSegment === 'all' || (currentSegment === 'my-agenda' && user?.myAgendaSessions?.includes(session.id))) { 
+            @if (session.format === 3 || (currentSegment === 'all' && isInSearchResults(session)) || (currentSegment === 'my-agenda' && user?.myAgendaSessions?.includes(session.id) && isInSearchResults(session))) { 
               <app-session-card
                 [session]="session"
                 [user]="user"

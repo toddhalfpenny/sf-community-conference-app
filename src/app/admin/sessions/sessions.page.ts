@@ -19,12 +19,21 @@ const SESSION_XLS_COLUMN_MAP: any = {
   'room': 'Room',
   'isWorkshop': 'Hands-on Workshop',
   'time': 'Time Slot',
+  'isAdmin': 'Admin',
   'isAi': 'AI/Agentforce',
+  'isArchitect': 'Architect',
+  'isBA': 'Business Analyst',
+  'isCareerDevelopment': 'Career Development',
+  'isConsulant': 'Consultant',
   'isDataCloud': 'Data Cloud',
+  'isDeveloper': 'Developer',
   'isFlow': 'Flow',
   'isIntegrations': 'Integrations/APIs',
-  'isHardSkills': 'Soft Skills',
-  'isSlack': 'Slack'
+  'isMarTech': 'MarTech',
+  'isNonProfit': 'Non-Profit',
+  'isSecurity': 'Security',
+  'isSlack': 'Slack',
+  'isTrigger': 'Trigger',
 }
 
 
@@ -118,11 +127,29 @@ export class SessionsPage implements OnInit {
             tags: [],
             lastModified: timeNow,
           }
+          if (row[SESSION_XLS_COLUMN_MAP.isAdmin] === '1') {
+            session.tags?.push('Admin');
+          }
           if (row[SESSION_XLS_COLUMN_MAP.isAi] === '1') {
             session.tags?.push('AI');
           }
+          if (row[SESSION_XLS_COLUMN_MAP.isArchitect] === '1') {
+            session.tags?.push('Architect');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isBA] === '1') {
+            session.tags?.push('Business Analyst');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isCareerDevelopment] === '1') {
+            session.tags?.push('Career Development');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isConsulant] === '1') {
+            session.tags?.push('Consultant');
+          }
           if (row[SESSION_XLS_COLUMN_MAP.isDataCloud] === '1') {
             session.tags?.push('Data Cloud');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isDeveloper] === '1') {
+            session.tags?.push('Developer');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isFlow] === '1') {
             session.tags?.push('Flow');
@@ -130,11 +157,20 @@ export class SessionsPage implements OnInit {
           if (row[SESSION_XLS_COLUMN_MAP.isIntegrations] === '1') {
             session.tags?.push('Integrations');
           }
-          if (row[SESSION_XLS_COLUMN_MAP.isHardSkills] === '1') {
-            session.tags?.push('Hard Skills');
+          if (row[SESSION_XLS_COLUMN_MAP.isMarTech] === '1') {
+            session.tags?.push('MarTech');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isNonProfit] === '1') {
+            session.tags?.push('Non-Profit');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isSecurity] === '1') {
+            session.tags?.push('Security');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isSlack] === '1') {
             session.tags?.push('Slack');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isTrigger] === '1') {
+            session.tags?.push('Trigger');
           }          
           sessionArray.push(session);
         }
