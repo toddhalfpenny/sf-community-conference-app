@@ -80,7 +80,7 @@ SessionFormat: any;
 
 
   protected handleSearchChange(event: any) {
-    console.log("handleSearchChange", event);
+    // console.log("handleSearchChange", event);
     this.searchTerm = event.detail.value.toLowerCase();
   }
 

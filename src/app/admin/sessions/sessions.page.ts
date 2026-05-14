@@ -32,8 +32,7 @@ const SESSION_XLS_COLUMN_MAP: any = {
   'isMarTech': 'MarTech',
   'isNonProfit': 'Non-Profit',
   'isSecurity': 'Security',
-  'isSlack': 'Slack',
-  'isTrigger': 'Trigger',
+  'isSlack': 'Slack'
 }
 
 
@@ -137,13 +136,13 @@ export class SessionsPage implements OnInit {
             session.tags?.push('Architect');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isBA] === '1') {
-            session.tags?.push('Business Analyst');
+            session.tags?.push('BA');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isCareerDevelopment] === '1') {
             session.tags?.push('Career Development');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isConsulant] === '1') {
-            session.tags?.push('Consultant');
+            session.tags?.push('Consultancy');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isDataCloud] === '1') {
             session.tags?.push('Data Cloud');
@@ -158,20 +157,17 @@ export class SessionsPage implements OnInit {
             session.tags?.push('Integrations');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isMarTech] === '1') {
-            session.tags?.push('MarTech');
+            session.tags?.push('Marketing Tech');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isNonProfit] === '1') {
-            session.tags?.push('Non-Profit');
+            session.tags?.push('NonProfit');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isSecurity] === '1') {
             session.tags?.push('Security');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isSlack] === '1') {
             session.tags?.push('Slack');
-          }
-          if (row[SESSION_XLS_COLUMN_MAP.isTrigger] === '1') {
-            session.tags?.push('Trigger');
-          }          
+          }    
           sessionArray.push(session);
         }
       }
