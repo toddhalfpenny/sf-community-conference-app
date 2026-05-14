@@ -12,7 +12,7 @@ import {
 } from '@angular/fire/firestore';
 import { StorageService } from '../storage/storage-service';
 import { UserService } from '../user/user.service';
-import { Poll } from './poll.model';
+import { Poll, PollVotes } from './poll.model';
 
 const LOG_TAG = 'poll.servce';
 
@@ -55,6 +55,23 @@ export class PollService {
     }
   }
 
+  public async getResults(pollId: string) {
+    try {
+      const docRef = doc(this.firestore, "pollVotes", pollId);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const pollVotes = docSnap.data() as PollVotes;
+        console.log(LOG_TAG, 'Fetched pollVotes from Firestore', pollVotes);
+        return pollVotes;
+      } else {
+        console.warn(LOG_TAG, 'No such pollVotes in Firestore:', pollId);
+        return null;
+      }
+    } catch (error) {
+      console.error(LOG_TAG, 'Error fetching pollVotes from Firestore:', error);
+      throw error;
+    }
+  }
 
   public async vote(pollId: string, optionId: string) {
     console.log(LOG_TAG, `Voting on poll ${pollId} for option ${optionId}`);

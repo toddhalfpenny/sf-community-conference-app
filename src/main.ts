@@ -10,6 +10,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getAnalytics, provideAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, provideFirestore } from '@angular/fire/firestore';
 import { getFunctions, provideFunctions } from '@angular/fire/functions';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { environment } from './environments/environment';
 import { isDevMode } from '@angular/core';
 import { provideServiceWorker } from '@angular/service-worker';
@@ -42,5 +43,6 @@ bootstrapApplication(AppComponent, {
             registrationStrategy: 'registerWhenStable:30000'
           })
     ,
+    provideCharts(withDefaultRegisterables())
   ],
 });

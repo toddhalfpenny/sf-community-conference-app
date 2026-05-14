@@ -5,3 +5,8 @@ export interface Poll {
   options: string[];
   isActive: boolean;
 }
+
+export interface PollVotes {
+  id: any;
+  [option: string]: number;
+}

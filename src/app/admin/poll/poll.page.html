@@ -1,13 +1,39 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>poll</ion-title>
+    <ion-buttons slot="start">
+      @if (!pollForm.dirty) {
+        <ion-back-button></ion-back-button>
+      } @else {
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
+    <ion-title>Poll: {{ isNewPoll ? 'Create' :  poll.name}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button  [disabled]="!pollForm.valid" (click)="save()">
+        <ion-icon slot="icon-only" name="save" ></ion-icon> 
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">poll</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- @if (pollResults) { -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Current results</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <canvas baseChart [data]="barChartData"  [type]="'bar'"> </canvas>
+
+      </ion-card-content>
+    </ion-card>
+  <!-- } -->
+  @if (poll) { 
+  }
+  <form [formGroup]="pollForm">
+    <ion-card>
+    </ion-card>
+  </form>
 </ion-content>
