@@ -189,10 +189,10 @@ export class SessionService {
       for (const session of sessions) {
         console.log('Upserting session', session);
         setDoc(doc(this.firestore, "sessions", session.id), session, {merge: true}).then(async (res) => {
-          console.log('Lead saved to Firestore', res);
+          console.log('Session saved to Firestore', res);
           await this.storageService.upsert('sessions', [session], 'id', allStatuses);
         }).catch(async (error) => {
-          console.error('Error saving lead to Firestore:', error);
+          console.error('Error saving Session to Firestore:', error);
           errors.push({session, error});
         });
       }

@@ -19,21 +19,49 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- @if (pollResults) { -->
+  @if (barChartData) {
     <ion-card>
       <ion-card-header>
         <ion-card-title>Current results</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <canvas baseChart [data]="barChartData"  [type]="'bar'"> </canvas>
+        <h2>Raw results (for debug/test)</h2>
+        <pre>{{pollResultsStr}}</pre>
+        <canvas baseChart
+          [data]="barChartData"
+          [type]="'bar'"
+          [options]="barChartData.options"> </canvas>
 
       </ion-card-content>
     </ion-card>
-  <!-- } -->
-  @if (poll) { 
   }
   <form [formGroup]="pollForm">
     <ion-card>
+      <ion-card-header>
+        <ion-card-title>Poll Details</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-toggle 
+          justify="space-between" formControlName="isActive">Poll Active</ion-toggle>
+        </ion-item>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label>Entries</ion-label>
+          </ion-item-divider> 
+          @for (option of poll.options; track $index) {
+            <ion-reorder-group>
+              <ion-item>
+                <ion-input formControlName="option{{$index}}" placeholder="Option {{$index + 1}}"></ion-input>
+                  <ion-button fill="clear" color="danger" disabled>
+                    <ion-icon slot="icon-only" name="trash"></ion-icon>
+                  </ion-button>
+                  <ion-reorder slot="end"></ion-reorder>
+              </ion-item>
+            </ion-reorder-group>
+          }
+        </ion-item-group>
+      </ion-card-content>
     </ion-card>
   </form>
 </ion-content>

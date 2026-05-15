@@ -39,9 +39,14 @@ export class PollPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.user = await this.userService.getUser() as User;
+    this.user = this.userService.getUser() as User;
+    console.log("Fetched user from UserService:", this.user);
     console.log("User:", this.user);
     if (this.user) {
+      if ((<any>this.user).type === 91 || (<any>this.user).type === 92) { // If user is a speaker, allow them to vote
+        this.alreadyVoted = false;
+        return;
+      }
       this.alreadyVoted = (<any>this.user)[`voted_${this.poll.id}`] ? true : false;
       // this.alreadyVoted = false
     } else {

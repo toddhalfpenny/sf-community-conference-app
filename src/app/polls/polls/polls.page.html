@@ -9,12 +9,21 @@
 
 <ion-content class="ion-padding">
   @if (polls) {
-    <ion-list>
-      @for (poll of polls; track $index) {
-        <ion-item detail [routerLink]="['/polls', poll.id]" [state]="{poll: poll}">
-          <ion-label>{{ poll.question }}</ion-label>
-        </ion-item>
-      }
-    </ion-list>
+    @if (polls.length === 0) {
+      <ion-card>
+        <ion-card-content>
+          <p>There aren't any currently active polls.</p>
+          <p>Check back later!</p>
+        </ion-card-content>
+      </ion-card>
+    } @else {
+      <ion-list>
+        @for (poll of polls; track $index) {
+          <ion-item detail [routerLink]="['/polls', poll.id]" [state]="{poll: poll}">
+            <ion-label>{{ poll.question }}</ion-label>
+          </ion-item>
+        }
+      </ion-list>
+    }
   }
 </ion-content>
