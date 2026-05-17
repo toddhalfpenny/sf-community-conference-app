@@ -9,7 +9,7 @@ import {
   query,
   where
 } from '@angular/fire/firestore';
-import { Speaker } from './speaker.model';
+import { Speaker, SpeakerStatus } from './speaker.model';
 import { StorageService } from '../storage/storage-service';
 
 const LOG_TAG = 'speaker.servce';
@@ -18,6 +18,7 @@ const SPEAKERS_DB_CONF = {
   // TTL: 1000 * 60 * 60, // 1 hour
   // TTL: 1000 * 30 * 10, // 10 minutes
   TTL: 1000 * 30, // 30 seconds
+  ADMIN_TTL: 1000 * 60 * 1, // 1 minute
   FETCHED_KEY: 'speakers_fetched',
 }
 
@@ -62,19 +63,20 @@ export class SpeakerService {
     }
   }
 
-  async getSpeakers(): Promise<Speaker[]> {
-    // TODO Implement forceRefresh and allStatuses options like sessions service (for admin view)
+  async getSpeakers(options: {forceRefresh?: boolean, allStatuses?: boolean} = {}): Promise<Speaker[]> {
+    // TODO Implement forceRefresh 
+    
     try {
       console.log('Fetching speakers from Firestore...');
 
-      const shouldRefresh = this.storageService.shouldRefresh(SPEAKERS_DB_CONF.FETCHED_KEY, SPEAKERS_DB_CONF.TTL);
+      const shouldRefresh = this.storageService.shouldRefresh(SPEAKERS_DB_CONF.FETCHED_KEY, options.forceRefresh ? SPEAKERS_DB_CONF.ADMIN_TTL :  SPEAKERS_DB_CONF.TTL);
       console.log('shouldRefresh', shouldRefresh);
 
       if (!shouldRefresh) {
         console.log('Using cached speakers data');
         const cachedSpeakers = await this.storageService.getAll('speakers') as Speaker[];
         console.log('Cached speakers:', cachedSpeakers);
-        return this.sortSpeakers(cachedSpeakers);
+        return this.sortSpeakers(cachedSpeakers).filter(s => options?.allStatuses || s.status !== SpeakerStatus.Draft);
       } else {
         const lastRefreshed = this.storageService.getLastFetchedTime(SPEAKERS_DB_CONF.FETCHED_KEY);
         const collRef = collection(this.firestore, 'speakers');
@@ -86,11 +88,11 @@ export class SpeakerService {
           speakerData.id = doc.id;
           return speakerData;
         });
-        await this.storageService.upsert('speakers', speakersToUpdate, 'id');
+        await this.storageService.upsert('speakers', speakersToUpdate, 'id', options.allStatuses);
         this.storageService.updateFetchedTime(SPEAKERS_DB_CONF.FETCHED_KEY);
         const speakers = await this.storageService.getAll('speakers') as Speaker[];
         console.log('Cached speakers:', speakers);
-        return this.sortSpeakers(speakers);
+        return this.sortSpeakers(speakers).filter(s => options.allStatuses || s.status !== SpeakerStatus.Draft);
       }
     } catch (error) {
       console.error('Error fetching speakers from Firestore:', error);
@@ -98,13 +100,13 @@ export class SpeakerService {
     }
   }
 
-  public async upsertSpeakers(speakers: Speaker[]) { 
+  public async upsertSpeakers(speakers: Speaker[], allStatuses: boolean = false): Promise<any[]> { 
     let errors: any[] = [];
     for (const speaker of speakers) {
       console.log(LOG_TAG, 'Upserting speaker', speaker.firstname, speaker.lastname);
-      setDoc(doc(this.firestore, "speakers", speaker.id), speaker).then(async (res) => {
+      setDoc(doc(this.firestore, "speakers", speaker.id), speaker, {merge: true}).then(async (res) => {
         console.log(LOG_TAG, 'Speaker saved to Firestore', res);
-        await this.storageService.upsert('speakers', [speaker], 'id');
+        await this.storageService.upsert('speakers', [speaker], 'id', allStatuses);
       }).catch(async (error) => {
         console.error(LOG_TAG, 'Error saving lead to Firestore:', error);
         errors.push({speaker, error});

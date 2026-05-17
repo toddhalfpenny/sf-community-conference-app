@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      @if (!speakerForm.dirty) {
+        <ion-back-button></ion-back-button>
+      } @else {
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
+    <ion-title>Editing speaker</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  [disabled]="!speakerForm.valid" (click)="save()">
+        <ion-icon slot="icon-only" name="save" ></ion-icon> 
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-alert
+    [isOpen]="isFailedSaveAlertOpen"
+    header="Save Failed"
+    [message]="failedSaveAlertMessage"
+    [buttons]="failedSaveAlertButtons"
+    (didDismiss)="isFailedSaveAlertOpen = false"
+  ></ion-alert>
+  <form [formGroup]="speakerForm">
+    <ion-card>
+      <ion-list>
+        <ion-item>
+          <ion-input errorText="First name is required" required label="First name" labelPlacement="stacked" formControlName="firstname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input errorText="Last name is required" required label="Last name" labelPlacement="stacked" formControlName="lastname"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea rows="10" label="Bio" labelPlacement="stacked" formControlName="bio"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-input label="LinkedIn Url" labelPlacement="stacked" formControlName="linkedInUrl"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Trailblazer Url" labelPlacement="stacked" formControlName="trailblazerUrl"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-toggle
+            justify="space-between"
+            formControlName="cta"
+          >CTA</ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-toggle
+            justify="space-between"
+            formControlName="mvp"
+          >MVP</ion-toggle>
+        </ion-item>
+        <ion-item>
+          <div>
+          <h3>Sessions</h3>
+          <div>Note: Speakers needed to be added/removed manually from sessions (for now).</div>
+          @if (sessions) {
+            <ion-list>
+              @for (session of sessions; track session.id) {
+                <ion-item>{{ session.title}}</ion-item>
+              }
+            </ion-list>
+          }
+          </div>
+        </ion-item>
+        <ion-item>
+          <ion-label labelPlacement="stacked" >Status</ion-label>
+          <ion-select formControlName="status" ngDefaultControl (ionChange)="onStatusChange($event)">
+            @for (item of SpeakerStatusOptions; track $index) {
+              <ion-select-option [value]="item.value">
+                {{item.label}}
+              </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+  </form> 
+</ion-content>

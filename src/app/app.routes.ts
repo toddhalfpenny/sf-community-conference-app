@@ -80,6 +80,10 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/speakers/speakers.page').then( m => m.SpeakersPage)
   },
   {
+    path: 'admin/speaker/:speakerId',
+    loadComponent: () => import('./admin/speaker/speaker.page').then( m => m.SpeakerPage)
+  },
+  {
     path: 'admin/sessions',
     loadComponent: () => import('./admin/sessions/sessions.page').then( m => m.SessionsPage)
   },

@@ -12,8 +12,11 @@
   <h1>Existing Speakers</h1>
   <ion-list>
     @for (speaker of speakers; track $index) {
-      <ion-item>
-          <ion-text>{{speaker.firstname}} {{speaker.lastname}}</ion-text>
+      <ion-item 
+        detail
+        routerLink="/admin/speaker/{{speaker.id}}"
+        [state]="{ speaker: speaker }">
+        <ion-text>{{speaker.firstname}} {{speaker.lastname}}</ion-text>
       </ion-item>
     }
   </ion-list>
