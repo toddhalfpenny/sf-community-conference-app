@@ -39,6 +39,11 @@ export class SpeakerPage implements OnInit {
     this.user = await this.userService.getUser() as User;
     const speakerId = this.activatedRoute.snapshot.paramMap.get('speakerId') as string;
     this.speaker = await this.speakerService.getSpeakerById(speakerId) as Speaker;
+    if (!this.speaker) {
+      await this.speakerService.getSpeakers();
+      this.speaker = await this.speakerService.getSpeakerById(speakerId) as Speaker;
+    }
+    console.log('speaker', this.speaker);
     this.sessions = await this.sessionService.getSpeakerSessions(speakerId) as Session[];
     console.log('sessions', this.sessions);
   }
