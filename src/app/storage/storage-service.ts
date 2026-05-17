@@ -275,15 +275,19 @@ export class StorageService {
     cacheTTL:number,
     hardTTL :number = HARD_TTL,
     forceRefresh:boolean = false): boolean {
+
+    if (navigator && !navigator.onLine) {
+      return false;
+    }
   
-      const lastFetchedTime = (typeof(lastFetchedTimeOrToken) === "string") ?
-        Number(localStorage.getItem(lastFetchedTimeOrToken) ?? '0'):
-        lastFetchedTimeOrToken;
-      const timeNow = Date.now();
-      const cacheExpired = timeNow > (lastFetchedTime + cacheTTL);
-      const refresh = (forceRefresh || cacheExpired) && 
-        timeNow > (lastFetchedTime + hardTTL);
-      return refresh;
+    const lastFetchedTime = (typeof(lastFetchedTimeOrToken) === "string") ?
+      Number(localStorage.getItem(lastFetchedTimeOrToken) ?? '0'):
+      lastFetchedTimeOrToken;
+    const timeNow = Date.now();
+    const cacheExpired = timeNow > (lastFetchedTime + cacheTTL);
+    const refresh = (forceRefresh || cacheExpired) && 
+      timeNow > (lastFetchedTime + hardTTL);
+    return refresh;
   }
 
   public updateFetchedTime(token: string) {
