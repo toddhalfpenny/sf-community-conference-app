@@ -8,4 +8,55 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <p>Click on maps to zoom/pan.</p>
+  <h1>First Floor</h1>
+  <ul>
+    <li>The Porter Tun</li>
+    <li>Upper Sugar Room - accessed via The Porter Tun</li>
+    <li>Prayer Room</li>
+  </ul>
+  <div class="map">
+      <img src="assets/maps/first-floor.jpg" (click)="openMapModal('first-floor.jpg', 'First Floor Map')">
+  </div>
+  <hr/>
+  <h1>Ground Floor</h1>
+  <ul>
+    <li>Reception</li>
+    <li>Expo Hall (King George III)</li>
+    <li>Lower Sugar Room - accessed via The Expo Hall</li>
+  </ul>
+  <div class="map">
+      <img src="assets/maps/ground-floor.jpg" (click)="openMapModal('ground-floor.jpg', 'Ground Floor Map')">
+  </div>
+  <hr/>
+  <h1>Basement</h1>
+  <ul>
+    <li>James Watt</li>
+    <li>King's Vault</li>
+    <li>Queen's Vault</li>
+    <li>Pasteur Rooms</li>
+    <li>The Cutting Room</li>
+  </ul>
+  <div class="map">
+      <img src="assets/maps/basement.png" (click)="openMapModal('basement.png', 'Basement Map')">
+  </div>
+  <ion-modal [isOpen]="isMapModalOpen" (willDismiss)="isMapModalOpen = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{selectedMapName}}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="isMapModalOpen = false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <div class="map-modal-content">
+          <pinch-zoom backgroundColor="#fff" [autoHeight]="true" [overflow]="'visible'">
+            <img [src]="`assets/maps/${selectedMap}`">
+          </pinch-zoom>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
