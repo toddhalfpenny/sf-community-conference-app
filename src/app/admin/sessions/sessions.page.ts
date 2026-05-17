@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonButton, IonSearchbar, IonText } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonButton, IonSearchbar, IonText, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
 import { tabletojson } from 'tabletojson';
 import { SessionService } from '../../session/session.service'
 import { SpeakerService } from  '../../speakers/speaker.service';
@@ -42,7 +42,7 @@ const SESSION_XLS_COLUMN_MAP: any = {
   templateUrl: './sessions.page.html',
   styleUrls: ['./sessions.page.scss'],
   standalone: true,
-  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonItem, IonButton, IonSearchbar, IonText]
+  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonItem, IonButton, IonSearchbar, IonText, IonButtons, IonMenuButton]
 })
 export class SessionsPage implements OnInit {
   @ViewChild('sessionInput') sessionInput!: any;

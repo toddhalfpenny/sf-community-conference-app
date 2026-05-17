@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonButton, IonSearchbar, IonItem, IonText } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonButton, IonSearchbar, IonItem, IonText, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
 import { UserService } from  '../../user/user.service';
 import { UtilService } from 'src/app/utils/util-service';
 import { UserType, type User } from '../../user/user.model';
@@ -12,7 +12,7 @@ import { UserType, type User } from '../../user/user.model';
   templateUrl: './attendees.page.html',
   styleUrls: ['./attendees.page.scss'],
   standalone: true,
-  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonButton, IonSearchbar, IonItem, IonText]
+  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonButton, IonSearchbar, IonItem, IonText, IonButtons, IonMenuButton]
 })
 export class AttendeesPage implements OnInit {
   @ViewChild('attendeeInput') attendeeInput!: any;

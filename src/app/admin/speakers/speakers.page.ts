@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonItem, IonText } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, IonItem, IonText, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
 import { tabletojson } from 'tabletojson';
 import { SpeakerService } from  '../../speakers/speaker.service';
 import { UtilService } from 'src/app/utils/util-service';
@@ -25,7 +25,7 @@ const SESSION_XLS_COLUMN_MAP: any = {
   templateUrl: './speakers.page.html',
   styleUrls: ['./speakers.page.scss'],
   standalone: true,
-  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonButton, IonItem, IonText]
+  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonButton, IonItem, IonText, IonButtons, IonMenuButton]
 })
 export class SpeakersPage implements OnInit {
   @ViewChild('speakerInput') speakerInput!: any;
