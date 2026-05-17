@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { LeadsGuard } from './guards/leads-guard';
+import { AdminGuard } from './guards/admin-guard';
 
 export const routes: Routes = [
   {
@@ -57,59 +59,18 @@ export const routes: Routes = [
   },
   {
     path: 'leads',
-    loadComponent: () => import('./leads/leads.page').then( m => m.LeadsPage)
+    loadComponent: () => import('./leads/leads.page').then( m => m.LeadsPage),
+    canActivate: [LeadsGuard] // Secure
   },
   {
     path: 'leads/:leadId',
-    loadComponent: () => import('./leads/lead.page').then( m => m.LeadPage)
+    loadComponent: () => import('./leads/lead.page').then( m => m.LeadPage),
+    canActivate: [LeadsGuard] // Secure
   },
   {
     path: 'scanner',
-    loadComponent: () => import('./scanner/scanner.page').then( m => m.ScannerPage)
-  },
-  {
-    path: 'session/:sessionId',
-    loadComponent: () => import('./session/session.page').then( m => m.SessionPage)
-  },
-  {
-    path: 'admin',
-    loadComponent: () => import('./admin/dashboard/dashboard.page').then( m => m.DashboardPage)
-  },
-  {
-    path: 'admin/speakers',
-    loadComponent: () => import('./admin/speakers/speakers.page').then( m => m.SpeakersPage)
-  },
-  {
-    path: 'admin/speaker/:speakerId',
-    loadComponent: () => import('./admin/speaker/speaker.page').then( m => m.SpeakerPage)
-  },
-  {
-    path: 'admin/sessions',
-    loadComponent: () => import('./admin/sessions/sessions.page').then( m => m.SessionsPage)
-  },
-  {
-    path: 'admin/session/:sessionId',
-    loadComponent: () => import('./admin/session/session.page').then( m => m.SessionPage)
-  },
-  {
-    path: 'admin/sponsors',
-    loadComponent: () => import('./admin/sponsors/sponsors.page').then( m => m.SponsorsPage)
-  },
-  {
-    path: 'admin/attendees',
-    loadComponent: () => import('./admin/attendees/attendees.page').then( m => m.AttendeesPage)
-  },
-  {
-    path: 'admin/attendee/:attendeeId',
-    loadComponent: () => import('./admin/attendee/attendee.page').then( m => m.AttendeePage)
-  },
-  {
-    path: 'admin/users',
-    loadComponent: () => import('./admin/users/users.page').then( m => m.UsersPage)
-  },
-  {
-    path: 'admin/user/:userId',
-    loadComponent: () => import('./admin/user/user.page').then( m => m.UserPage)
+    loadComponent: () => import('./scanner/scanner.page').then( m => m.ScannerPage),
+    canActivate: [LeadsGuard] // Secure
   },
   {
     path: 'polls',
@@ -120,11 +81,67 @@ export const routes: Routes = [
     loadComponent: () => import('./polls/poll/poll.page').then( m => m.PollPage)
   },
   {
+    path: 'session/:sessionId',
+    loadComponent: () => import('./session/session.page').then( m => m.SessionPage)
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./admin/dashboard/dashboard.page').then( m => m.DashboardPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/speakers',
+    loadComponent: () => import('./admin/speakers/speakers.page').then( m => m.SpeakersPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/speaker/:speakerId',
+    loadComponent: () => import('./admin/speaker/speaker.page').then( m => m.SpeakerPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/sessions',
+    loadComponent: () => import('./admin/sessions/sessions.page').then( m => m.SessionsPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/session/:sessionId',
+    loadComponent: () => import('./admin/session/session.page').then( m => m.SessionPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/sponsors',
+    loadComponent: () => import('./admin/sponsors/sponsors.page').then( m => m.SponsorsPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/attendees',
+    loadComponent: () => import('./admin/attendees/attendees.page').then( m => m.AttendeesPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/attendee/:attendeeId',
+    loadComponent: () => import('./admin/attendee/attendee.page').then( m => m.AttendeePage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/users',
+    loadComponent: () => import('./admin/users/users.page').then( m => m.UsersPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/user/:userId',
+    loadComponent: () => import('./admin/user/user.page').then( m => m.UserPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
     path: 'admin/polls',
-    loadComponent: () => import('./admin/polls/polls.page').then( m => m.PollsPage)
+    loadComponent: () => import('./admin/polls/polls.page').then( m => m.PollsPage),
+    canActivate: [AdminGuard] // Secure
   },
   {
     path: 'admin/polls/:pollId',
-    loadComponent: () => import('./admin/poll/poll.page').then( m => m.PollPage)
+    loadComponent: () => import('./admin/poll/poll.page').then( m => m.PollPage),
+    canActivate: [AdminGuard] // Secure
   },
 ];
