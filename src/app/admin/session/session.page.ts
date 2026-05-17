@@ -16,6 +16,7 @@ import { SessionService } from '../../session/session.service';
 import { SpeakerService } from 'src/app/speakers/speaker.service';
 import { TypeaheadComponent } from "src/app/typeahead/typeahead.component";
 import { Speaker } from 'src/app/speakers/speaker.model';
+import { share } from 'rxjs';
 
 
 @Component({
@@ -42,6 +43,7 @@ export class SessionPage implements OnInit {
     title: [{value: ''}, Validators.required],
     abstract: [{value: ''}],
     room: [{value: ''}],
+    shareLink: [{value: ''}],
     status: [''],
     startTime: [{value: ''}],
     endTime: [{value: ''}],
@@ -75,6 +77,7 @@ export class SessionPage implements OnInit {
       title: this.session.title,
       abstract: this.session.abstract ?? '',
       room: this.session.room ?? '',
+      shareLink: this.session.shareLink ?? '',
       status: this.session.status ?? SessionStatus.Draft,
       startTime: startTime,
       endTime: endTime,
@@ -136,6 +139,7 @@ export class SessionPage implements OnInit {
       title: this.sessionForm.value.title,    
       abstract: this.sessionForm.value.abstract,
       room: this.sessionForm.value.room,
+      shareLink: this.sessionForm.value.shareLink,
       status: this.sessionForm.value.status,
       startDateTime: {seconds: startTime},
       // TODO

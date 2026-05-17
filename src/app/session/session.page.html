@@ -1,13 +1,16 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+    <ion-buttons slot="end">
+      <ion-menu-button mode="md"></ion-menu-button>
     </ion-buttons>
+    <ion-title>Londons's Calling 2026</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   @if (session) {
-    <!-- <app-speaker-card [speaker]="speaker" [showBio]="true"></app-speaker-card> -->
+   <app-session-card
+      [session]="session" 
+   ></app-session-card> 
   }
 </ion-content>

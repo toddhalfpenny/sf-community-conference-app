@@ -7,6 +7,7 @@ export interface Session {
   endDateTime: {seconds: number}; // ISO 8601 format 
   likes?: number; // Optional number of likes for the session
   format?: SessionFormat;
+  shareLink?: string; // Optional shareable link for the session
   status: SessionStatus;
   speakers: {id: string, name: string}[]; // Array of speaker objects with id and name  ;
   tags?: string[]; // Optional array of tags for the session

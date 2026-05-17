@@ -85,6 +85,33 @@ export class SessionCardComponent  implements OnInit {
     window.open(url, '_blank');
   }
 
+  protected shareSession() {
+    const shareData = {
+      title: this.session.title,
+      text: `${this.session.title} - ${this.session.abstract}\n\nPresented by: ${this.session.speakers.map(s => s.name).join(', ')}\n\nFind out more in the conference app!`,
+      url: `${this.session.shareLink ? this.session.shareLink : 'https://londonscalling.net/schedule'}`
+    };
+    if (navigator.share) {
+      navigator.share(shareData).then(() => {
+        console.log('Session shared successfully');
+      }).catch((error) => {
+        console.error('Error sharing session:', error);
+      });
+    } else {
+      // Fallback for browsers that do not support the Web Share API
+      if (navigator.clipboard) {
+        const sessionDetails = `${this.session.shareLink ? this.session.shareLink : 'https://londonscalling.net/schedule'}`
+        navigator.clipboard.writeText(sessionDetails).then(() => {
+          alert('Session URL copied to clipboard. You can now share it manually!');
+        }).catch((error) => {
+          console.error('Error copying session details to clipboard:', error);
+          alert('Unable to copy session details to clipboard. Please copy them manually:\n\n' + sessionDetails);
+        });
+        return;
+      }
+    }
+  }
+
   protected toggleFavourite() {
     console.log('Toggling favourite for session', this.session.id);
       this.isFavourite = !this.isFavourite;
