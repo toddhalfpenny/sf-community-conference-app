@@ -35,13 +35,15 @@
     ></app-auth-form>
 
     @if (currentPage !== 'signup') {
-    <ion-button expand="block" fill="clear" routerLink="/auth/signup">
-      Create a new account
-    </ion-button>
+      <ion-button expand="block" fill="clear" routerLink="/auth/signup">
+        Create a new account
+      </ion-button>
     } @if (currentPage !== 'reset') {
-    <ion-button expand="block" fill="clear" routerLink="/auth/reset">
-      I forgot my password :(
-    </ion-button>
+      <ion-button expand="block" fill="clear" routerLink="/auth/reset">
+        I forgot my password :(
+      </ion-button>
     }
   }
+  <h2>Privacy Policy &amp; App Terms/Conditions</h2>
+  <p>These can be found on our <a href="https://www.londonscalling.net/privacy-policy/" target="_blank">website</a>.</p>
 </ion-content>
