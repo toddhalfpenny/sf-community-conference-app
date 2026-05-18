@@ -79,12 +79,6 @@ export class AppComponent {
     },
     {
       type: 'page',
-      title: 'Contest',
-      url: '/contest',
-      icon: 'game-controller'
-    },
-    {
-      type: 'page',
       title: 'Maps',
       url: '/maps',
       icon: 'map'
@@ -94,12 +88,6 @@ export class AppComponent {
       title: 'FAQ',
       url: '/faq',
       icon: 'book'
-    },
-    {
-      type: 'page',
-      title: 'Announcements',
-      url: '/announcements',
-      icon: 'megaphone'
     }
   ];
   private readonly adminPages: AppPage[] = [
@@ -146,10 +134,22 @@ export class AppComponent {
           this.appPages.push(
             {
               type: 'page',
+              title: 'Contest',
+              url: '/contest',
+              icon: 'game-controller'
+            },
+            {
+              type: 'page',
               title: 'Polls',
               url: '/polls',
               icon: 'bar-chart'
             },
+            {
+              type: 'page',
+              title: 'Announcements',
+              url: '/announcements',
+              icon: 'megaphone'
+            }
           )
           if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.sponsorAdmin || eventUser?.boothStaff) {
             this.appPages = [...this.appPages, ...this.exhibitorPages];
