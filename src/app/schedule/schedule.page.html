@@ -11,6 +11,23 @@
       [debounce]="400" 
       (ionInput)="handleSearchChange($event)">
     </ion-searchbar>
+    <ion-buttons slot="end">
+      <ion-button id="filter-trigger" shape="round" [fill]="activeFilters.length > 0 ? 'solid' : 'outline'" color="primary">
+        <ion-icon slot="icon-only" name="filter-circle-outline"></ion-icon>
+      </ion-button>
+      <ion-popover trigger="filter-trigger" triggerAction="click">
+        <ng-template>
+          <ion-list>
+            @for (tag of filterTags; track $index) {
+              <ion-item button (click)="toggleFilter(tag)">
+                <ion-label>{{ tag }}</ion-label>
+                <ion-checkbox slot="end" [checked]="activeFilters.includes(tag)"></ion-checkbox>
+              </ion-item>
+            }
+          </ion-list>
+        </ng-template>
+      </ion-popover>
+    </ion-buttons>
   </ion-toolbar>
   <ion-toolbar>
     @if (user) {
@@ -35,7 +52,7 @@
           @if ($index === 0) {
             <summary [class]="session.startDateTime.seconds == timeNow ? 'currentHour' : ''">{{ session.startDateTime.seconds| date : "shortTime"}}</summary>
           } @else {
-            @if (session.format === 3 || (currentSegment === 'all' && isInSearchResults(session)) || (currentSegment === 'my-agenda' && user?.myAgendaSessions?.includes(session.id) && isInSearchResults(session))) { 
+            @if (shouldShowSession(session)) { 
               <app-session-card
                 [session]="session"
                 [user]="user"

@@ -43,9 +43,11 @@
   </p>
   <div id="tags">
     @for (tag of session.tags; track tag) {
-      <ion-chip>
-        <ion-label>{{ tag }}</ion-label>
-      </ion-chip>
+      @if (tag !== 'Trigger') {
+        <ion-chip>
+          <ion-label>{{ tag }}</ion-label>
+        </ion-chip>
+      }
     }
     <!-- @if(session.isBeginner) {
       <ion-chip>

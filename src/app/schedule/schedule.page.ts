@@ -1,7 +1,9 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSearchbar } from '@ionic/angular/standalone';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSearchbar, IonButton, IonIcon, IonPopover, IonCheckbox } from '@ionic/angular/standalone';
+import {  filterCircleOutline } from 'ionicons/icons';
+import { addIcons } from 'ionicons';
 import { SessionService } from '../session/session.service';
 import { Session } from '../session/session.model';
 import { SessionCardComponent } from "../session/session-card/session-card.component";
@@ -16,7 +18,7 @@ const LAST_SEGEMENT_KEY = 'schedulePageLastSegment';
   templateUrl: './schedule.page.html',
   styleUrls: ['./schedule.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel, IonSearchbar]
+  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonButton, IonIcon, IonPopover, IonItem, IonCheckbox]
 })
 export class SchedulePage implements OnInit {
 
@@ -26,12 +28,17 @@ export class SchedulePage implements OnInit {
 
   protected agenda?: Session[][];
   protected currentSegment: string = 'all';
+  protected filterTags: string[] = [];
+  protected activeFilters: string[] = [];
   protected searchTerm : string = '';
   protected timeNow: Number = 0;
   protected user!: User | null;
 SessionFormat: any;
   
   constructor() { 
+    addIcons({ filterCircleOutline });
+
+
     let timeNow = new Date();
     // These are here for testing
     // timeNow.setDate(5);
@@ -42,6 +49,7 @@ SessionFormat: any;
       this.user = user;
       this.sessionService.getAgenda().then((agenda) => {
         this.agenda = agenda;
+        this.filterTags = this.setFilterTags();
       }).catch((error) => {
         console.error('Error fetching agenda', error);
       });
@@ -64,12 +72,14 @@ SessionFormat: any;
       try {
         this.agenda = await this.sessionService.getAgenda();
         console.log('Fetched agenda', this.agenda);
+        this.filterTags = this.setFilterTags();
       } catch (error) {
         console.error('Error fetching agenda', error);
       }
     } else {
       try {
         this.agenda = await this.sessionService.getAgenda();
+        this.filterTags = this.setFilterTags();
         console.log('Fetched agenda', this.agenda);
       } catch (error) {
         console.error('Error fetching agenda', error);
@@ -88,7 +98,7 @@ SessionFormat: any;
     if (this.searchTerm.length < 2) {
       return true;
     }
-    if (this,this.searchTerm.length < 3) {
+    if (this.searchTerm.length < 3) {
       console.log('Searching by tags for term', this.searchTerm);
       // Only search by tags if the search term is less than 3 characters, otherwise it becomes too slow
       if (session.tags?.some(tag => tag.toLowerCase().includes(this.searchTerm))) {
@@ -119,10 +129,53 @@ SessionFormat: any;
     localStorage.setItem(LAST_SEGEMENT_KEY, this.currentSegment);
   }
 
+  protected shouldShowSession(session: Session): boolean {
+    if (session.format === 3) {
+      return true;
+    }
+    if (this.currentSegment === 'all' || this.user?.myAgendaSessions?.includes(session.id!)) {
+      if (this.isInSearchResults(session)) {
+        if (this.activeFilters.length === 0) {
+          return true;
+        } else {
+          // console.log('Filtering session', session.title, 'with tags', session.tags, 'against active filters', this.activeFilters);
+          if (session.tags?.some(tag => this.activeFilters.includes(tag))) {
+            return true;
+          }
+        } 
+      }
+    }
+    return false;
+  }
+
   protected async toggleFavourite(event: any) {
     console.log('Toggling favourite for session', event);
     this.sessionService.toggleFavourite(event.sessionId, event.isFavourite);
     this.userService.toggleFavourite(event.sessionId, event.isFavourite);
+  }
+
+  protected toggleFilter(tag: string) {
+    if (this.activeFilters.includes(tag)) {
+      this.activeFilters = this.activeFilters.filter(t => t !== tag);
+    } else {
+      this.activeFilters.push(tag);
+    }
+    console.log('Active filters', this.activeFilters);
+  }
+
+  private setFilterTags() {
+    let tags: string[] = [];
+    this.agenda?.forEach(timeSlot => {
+      return timeSlot.forEach(session => {
+        session.tags?.forEach(tag => {
+          if (!tags.includes(tag) && tag !== 'Trigger') {
+            tags.push(tag);
+          }
+        });
+      });
+    });
+    console.log('Available tags', tags);
+    return tags.sort();
   }
 
 }
