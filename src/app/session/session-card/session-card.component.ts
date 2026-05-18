@@ -174,6 +174,9 @@ END:VCALENDAR`;
     if (!this.isSessionPage || !this.session.liveStreamLink) {
       return false;
     }
+    if (!this.user || this.user.type === UserType.Guest) {
+      return false;
+    }
     if (this.user?.type === UserType.Admin || this.user?.type === UserType['Super-Admin']) {
       this.shouldShowStream = true;
     }
