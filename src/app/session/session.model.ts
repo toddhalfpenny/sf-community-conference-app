@@ -6,8 +6,10 @@ export interface Session {
   startDateTime: {seconds: number}; // ISO 8601 format
   endDateTime: {seconds: number}; // ISO 8601 format 
   likes?: number; // Optional number of likes for the session
+  liveStreamLink?: string; // Optional link to the live stream of the session
   format?: SessionFormat;
   shareLink?: string; // Optional shareable link for the session
+  recordingLink?: string; // Optional link to the recording of the session
   status: SessionStatus;
   speakers: {id: string, name: string}[]; // Array of speaker objects with id and name  ;
   tags?: string[]; // Optional array of tags for the session

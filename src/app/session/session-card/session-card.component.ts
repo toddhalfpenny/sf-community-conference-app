@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, input, Input, OnInit, Output } from '@angular/core';
 import { type Session } from '../session.model';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { ActionSheetController, IonAvatar, IonChip, IonLabel, IonIcon, IonButton, IonActionSheet } from "@ionic/angular/standalone";
+import { ActionSheetController, IonAvatar, IonChip, IonLabel, IonIcon, IonButton } from "@ionic/angular/standalone";
 import { close, calendar, heart, heartOutline, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { User, UserType } from 'src/app/user/user.model';
+import { DomSanitizer } from '@angular/platform-browser';
 
 
 @Component({
@@ -18,11 +20,17 @@ export class SessionCardComponent  implements OnInit {
 
   @Input({required: true}) session!: Session;
   @Input() favourites: string[] | undefined = [];
-  @Input() user: any | undefined = undefined;
+  @Input() isSessionPage: boolean = false;
+  @Input() user: User | null = null;
   @Input() showSpeakers: boolean = true;
   @Output() favouriteToggled = new EventEmitter<{sessionId:string, isFavourite: boolean}>();
 
+  private sanitizer = inject(DomSanitizer);
+
+
   protected isFavourite: boolean  = false;
+  protected shouldShowStream: boolean = false;
+  protected streamEmbedCode: any = '';
 
   protected readonly addToCalendarButtons = [
     {
@@ -60,6 +68,7 @@ export class SessionCardComponent  implements OnInit {
 
   ngOnInit() {
     this.isFavourite = this.favourites ? this.favourites.includes(this.session.id!) : false;
+    this.calculateShouldShowStream();
   }
 
   protected async showAddToCalendar() {
@@ -157,6 +166,34 @@ END:VCALENDAR`;
     console.log('Opening calendar file URL:', url);
     window.open(url, '_blank');
 
+  }
+
+  private calculateShouldShowStream(): boolean {
+    const nowSeconds = new Date().valueOf() / 1000;
+    console.log('Calculating whether to show live stream for session', this.session.title, this.user);
+    if (!this.isSessionPage || !this.session.liveStreamLink) {
+      return false;
+    }
+    if (this.user?.type === UserType.Admin || this.user?.type === UserType['Super-Admin']) {
+      this.shouldShowStream = true;
+    }
+    // Show stream 15 minutes before and after the session
+    if (this.session.startDateTime.seconds - 15*60 < nowSeconds && this.session.endDateTime.seconds + 15*60 > nowSeconds) {
+      this.shouldShowStream = true;
+    }
+
+    if (this.shouldShowStream) {
+      if (this.session.liveStreamLink.includes("youtube")) {
+        this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe width="100%" height="315" src="${this.session.liveStreamLink}" frameborder="0" allowfullscreen></iframe>`);
+      } else if (this.session.liveStreamLink.includes("vimeo")) {
+        this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe src="${this.session.liveStreamLink}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;"></iframe>`);
+      } else {
+        console.error('Unknown live stream platform for link', this.session.liveStreamLink);
+        this.shouldShowStream = false;
+        return false;
+      }
+    }
+    return false;
   }
 
 }

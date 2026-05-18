@@ -1,4 +1,4 @@
-<div class="session format-{{session.format}}" >
+<div class="session format-{{session.format}}" [routerLink]="`/session/${session.id}`" [state]="{user: user}" >
   <!-- <ion-avatar >
     <img [src]="`/assets/sessions/${session.id}.jpg`" alt="{{ session.firstname }} photo">
   </ion-avatar> -->
@@ -26,6 +26,10 @@
     <p class="note">Workshop: Laptop required</p>
   }
   <div class="abstract" [innerHTML]="session.abstract"></div>
+  @if (shouldShowStream) {
+    <div class="stream" [innerHTML]="streamEmbedCode">Voo</div>
+  }
+
   @if (showSpeakers) {
     <div class="speakers">
       @for (speaker of session.speakers; track speaker.id) {

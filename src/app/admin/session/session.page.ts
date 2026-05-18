@@ -9,7 +9,7 @@ import { CommonModule, Location } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonBackButton, IonButton, IonIcon, IonList, IonInput, IonItem, IonTextarea, IonCard, IonLabel, IonText, IonRow, IonCol, IonSelectOption, IonModal, IonSelect } from '@ionic/angular/standalone';
-import { create, close, save } from 'ionicons/icons';
+import { create, close, save, recording } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Session, SessionStatus } from '../../session/session.model'
 import { SessionService } from '../../session/session.service';
@@ -42,6 +42,8 @@ export class SessionPage implements OnInit {
   protected sessionForm: FormGroup = this.formBuilder.group({
     title: [{value: ''}, Validators.required],
     abstract: [{value: ''}],
+    liveStreamLink: [{value: ''}],
+    recordingLink: [{value: ''}],
     room: [{value: ''}],
     shareLink: [{value: ''}],
     status: [''],
@@ -76,6 +78,8 @@ export class SessionPage implements OnInit {
     this.sessionForm.setValue({
       title: this.session.title,
       abstract: this.session.abstract ?? '',
+      liveStreamLink: this.session.liveStreamLink ?? '',
+      recordingLink: this.session.recordingLink ?? '',
       room: this.session.room ?? '',
       shareLink: this.session.shareLink ?? '',
       status: this.session.status ?? SessionStatus.Draft,
@@ -138,6 +142,8 @@ export class SessionPage implements OnInit {
       id: this.session?.id ?? '',
       title: this.sessionForm.value.title,    
       abstract: this.sessionForm.value.abstract,
+      liveStreamLink: this.sessionForm.value.liveStreamLink,
+      recordingLink: this.sessionForm.value.recordingLink,
       room: this.sessionForm.value.room,
       shareLink: this.sessionForm.value.shareLink,
       status: this.sessionForm.value.status,

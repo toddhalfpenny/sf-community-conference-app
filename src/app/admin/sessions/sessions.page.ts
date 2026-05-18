@@ -22,12 +22,13 @@ const SESSION_XLS_COLUMN_MAP: any = {
   'isAdmin': 'Admin',
   'isAi': 'AI/Agentforce',
   'isArchitect': 'Architect',
-  'isBA': 'Business Analyst',
+  'isBA': 'BA',
   'isCareerDevelopment': 'Career Development',
   'isConsulant': 'Consultant',
   'isDataCloud': 'Data Cloud',
   'isDeveloper': 'Developer',
   'isFlow': 'Flow',
+  'isGeneral': 'General',
   'isIntegrations': 'Integrations/APIs',
   'isMarTech': 'MarTech',
   'isNonProfit': 'Non-Profit',
@@ -152,6 +153,9 @@ export class SessionsPage implements OnInit {
           }
           if (row[SESSION_XLS_COLUMN_MAP.isFlow] === '1') {
             session.tags?.push('Flow');
+          }
+          if (row[SESSION_XLS_COLUMN_MAP.isGeneral] === '1') {
+            session.tags?.push('General');
           }
           if (row[SESSION_XLS_COLUMN_MAP.isIntegrations] === '1') {
             session.tags?.push('Integrations');

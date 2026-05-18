@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-menu-button mode="md"></ion-menu-button>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/schedule"></ion-back-button>
     </ion-buttons>
     <ion-title>Londons's Calling 2026</ion-title>
   </ion-toolbar>
@@ -11,6 +11,8 @@
   @if (session) {
    <app-session-card
       [session]="session" 
+      [isSessionPage]="true"
+      [user]="user"
    ></app-session-card> 
   }
 </ion-content>
