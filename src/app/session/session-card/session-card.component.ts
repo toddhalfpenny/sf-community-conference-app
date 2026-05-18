@@ -88,7 +88,7 @@ export class SessionCardComponent  implements OnInit {
   protected shareSession() {
     const shareData = {
       title: this.session.title,
-      text: `${this.session.title} - ${this.session.abstract}\n\nPresented by: ${this.session.speakers.map(s => s.name).join(', ')}\n\nFind out more in the conference app!`,
+      text: `${this.session.title} - ${this.session.abstract}\n\nPresented by: ${this.session.speakers.map(s => s.name).join(', ')}`,
       url: `${this.session.shareLink ? this.session.shareLink : 'https://londonscalling.net/schedule'}`
     };
     if (navigator.share) {
