@@ -13,6 +13,8 @@
       [session]="session" 
       [isSessionPage]="true"
       [user]="user"
+      [favourites]="user?.myAgendaSessions"
+      (favouriteToggled)="toggleFavourite($event)"
    ></app-session-card> 
   }
 </ion-content>
