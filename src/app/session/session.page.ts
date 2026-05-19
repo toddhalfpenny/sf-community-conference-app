@@ -7,6 +7,7 @@ import { SessionService } from './session.service';
 import { type Session } from './session.model';
 import { SessionCardComponent } from "./session-card/session-card.component";
 import { User } from '../user/user.model';
+import { UserService } from '../user/user.service';
 
 @Component({
   selector: 'app-session',
@@ -19,8 +20,8 @@ export class SessionPage implements OnInit {
 
   private activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly location = inject(Location);
   private readonly sessionService = inject(SessionService);
+  private readonly userService = inject(UserService);
   
   protected session?: Session;
   protected user:User | null = null;
@@ -38,6 +39,12 @@ export class SessionPage implements OnInit {
   async ionViewWillEnter() {
     const sessionId = this.activatedRoute.snapshot.paramMap.get('sessionId') as string;
     this.session = await this.sessionService.getSessionById(sessionId) as Session;
+  }
+
+  protected async toggleFavourite(event: any) {
+    console.log('Toggling favourite for session', event);
+    this.sessionService.toggleFavourite(event.sessionId, event.isFavourite);
+    this.userService.toggleFavourite(event.sessionId, event.isFavourite);
   }
 
 }

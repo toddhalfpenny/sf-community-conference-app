@@ -1,34 +1,36 @@
-<div class="session format-{{session.format}}" [routerLink]="`/session/${session.id}`" [state]="{user: user}" >
-  <!-- <ion-avatar >
-    <img [src]="`/assets/sessions/${session.id}.jpg`" alt="{{ session.firstname }} photo">
-  </ion-avatar> -->
-  <div id="meta">
-    <span id="timing">
-      <ion-icon name="time"></ion-icon>
-      {{ session.startDateTime.seconds *1000| date : "shortTime" }} - {{ session.endDateTime.seconds * 1000| date : "shortTime" }}
-    </span>
-    <div class="actions">
-      @if(user) {
-        <ion-button size="small" fill="outline" (click)="toggleFavourite()">
-          <ion-icon slot="icon-only" [name]="isFavourite ? 'heart' : 'heart-outline'"></ion-icon>
+<div class="session format-{{session.format}}" >
+  <div class="session-details" [routerLink]="`/session/${session.id}`" [state]="{user: user}" >
+    <!-- <ion-avatar >
+      <img [src]="`/assets/sessions/${session.id}.jpg`" alt="{{ session.firstname }} photo">
+    </ion-avatar> -->
+    <div id="meta">
+      <span id="timing">
+        <ion-icon name="time"></ion-icon>
+        {{ session.startDateTime.seconds *1000| date : "shortTime" }} - {{ session.endDateTime.seconds * 1000| date : "shortTime" }}
+      </span>
+      <div class="actions">
+        @if(user) {
+          <ion-button size="small" fill="outline" (click)="toggleFavourite()">
+            <ion-icon slot="icon-only" [name]="isFavourite ? 'heart' : 'heart-outline'"></ion-icon>
+          </ion-button>
+        }
+        <ion-button size="small" fill="outline" (click)="showAddToCalendar()">
+          <ion-icon slot="icon-only" name="calendar"></ion-icon>
         </ion-button>
-      }
-      <ion-button size="small" fill="outline" (click)="showAddToCalendar()">
-        <ion-icon slot="icon-only" name="calendar"></ion-icon>
-      </ion-button>
-      <ion-button size="small" fill="outline" (click)="shareSession()">
-        <ion-icon slot="icon-only" name="share-social"></ion-icon>
-      </ion-button>
+        <ion-button size="small" fill="outline" (click)="shareSession()">
+          <ion-icon slot="icon-only" name="share-social"></ion-icon>
+        </ion-button>
+      </div>
     </div>
+    <h1>{{ session.title }}</h1>
+    @if ( session.format === 1) {
+      <p class="note">Workshop: Laptop required</p>
+    }
+    <div class="abstract" [innerHTML]="session.abstract"></div>
+    @if (shouldShowStream) {
+      <div class="stream" [innerHTML]="streamEmbedCode">Voo</div>
+    }
   </div>
-  <h1>{{ session.title }}</h1>
-  @if ( session.format === 1) {
-    <p class="note">Workshop: Laptop required</p>
-  }
-  <div class="abstract" [innerHTML]="session.abstract"></div>
-  @if (shouldShowStream) {
-    <div class="stream" [innerHTML]="streamEmbedCode">Voo</div>
-  }
 
   @if (showSpeakers) {
     <div class="speakers">
