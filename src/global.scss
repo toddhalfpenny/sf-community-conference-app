@@ -36,6 +36,10 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 // @import '@ionic/angular/css/palettes/dark.system.css';
 
+ion-header  {
+  background-color: white;
+}
+
 
 hr, .divider {
   border-bottom: 1px solid var(--ion-color-lc-blue);
