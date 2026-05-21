@@ -102,7 +102,7 @@ export class StorageService {
   }
 
   private async init() {
-    console.log(LOG_TAG, 'Initializing storage service');
+    // console.log(LOG_TAG, 'Initializing storage service');
     const dbReq = indexedDB.open(IDB_NAME, INDEXED_DB_VERSION);
 
     dbReq.onsuccess = (event:any) => {
@@ -177,13 +177,19 @@ export class StorageService {
     localStorage.removeItem('user_fetched');
   }
 
+  public clearTables() {
+    Promise.all(TABLE_SPECS.map(spec => this.clearTable(spec.name)));
+
+  }
+  
+
 
   public async clearLocalData() {
     await this.waitForDB();
     this.clearTTL()
     // return Promise.all(TABLE_SPECS.map(spec => this.clearTable(spec.name)));
+    this.clearTables();
     this.db.close();
-    Promise.all(TABLE_SPECS.map(spec => this.clearTable(spec.name)));
 
 
     const DBDeleteRequest = window.indexedDB.deleteDatabase("ConfApp");
@@ -245,7 +251,7 @@ export class StorageService {
     // TODO Multi-org
     console.log('getAll', soupName, key, index, direction, usePrimary);
     await this.waitForDB();
-    console.log('DB is ready, proceeding with getAll');
+    // console.log('DB is ready, proceeding with getAll');
     return new Promise(async (resolve, reject) => {
 
     const transaction = this.db.transaction([soupName]);
@@ -295,13 +301,13 @@ export class StorageService {
   }
 
   public async upsert(soupName: string, entries:any[], idField:string = 'id', allStatuses: boolean = false):Promise<any> {
-    console.log(LOG_TAG, "upsert", soupName, entries, allStatuses);
+    // console.log(LOG_TAG, "upsert", soupName, entries, allStatuses);
     if (!entries || entries.length === 0) {
       console.warn(LOG_TAG, "upsert called with empty entries array, skipping");
       return;
     }
     await this.waitForDB();
-    console.log(LOG_TAG, "DB is ready, proceeding with upsert");
+    // console.log(LOG_TAG, "DB is ready, proceeding with upsert");
     return new Promise(async (resolve, reject) => {
 
     setTimeout(() => {
@@ -358,20 +364,20 @@ export class StorageService {
    * @returns 
    */
   private async waitForDB(attempt: number = 1): Promise<void> {
-    console.log(LOG_TAG, `waitForDB attempt ${attempt}`, this.db);
+    // console.log(LOG_TAG, `waitForDB attempt ${attempt}`, this.db);
     if (attempt > 10) {
       console.error(LOG_TAG, 'waitForDB, max attempts reached, giving up');
       return;
     }
     if (this.db) {
-      console.log(LOG_TAG, 'waitForDB, returning');
+      // console.log(LOG_TAG, 'waitForDB, returning');
       return;
     } else {
       // const checkDbInterval = setInterval(() => {
         return new Promise(resolve => setTimeout(() => {
           if (this.db) {
             // clearInterval(checkDbInterval);
-            console.log(LOG_TAG, 'DB is now available');
+            // console.log(LOG_TAG, 'DB is now available');
             resolve();
           } else {
             resolve(this.waitForDB(attempt + 1));

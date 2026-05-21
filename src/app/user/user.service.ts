@@ -17,7 +17,8 @@ import {
   updateDoc,
   where,
 } from '@angular/fire/firestore';
-import { Observable, Subject } from 'rxjs';
+import { AuthenticationService } from '../authentication/authentication.service';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { AppUser, User, UserType } from './user.model';
 import { StorageService } from '../storage/storage-service';
 
@@ -46,9 +47,11 @@ const APPUSER_DB_CONF = {
   providedIn: 'root',
 })
 export class UserService {
+  private readonly authenticationService = inject(AuthenticationService);
   private readonly firestore = inject(Firestore);
   private readonly storageService = inject(StorageService);
 
+  private authSubscription?: Subscription;
   private user: User | null = null;
 
   private _user = new Subject<User| null>();
@@ -60,11 +63,41 @@ export class UserService {
    * U S E R    B I T S
    ********************************************************************/
 
+  constructor() {
+    // initialize user from local storage if available
+    this.storageService.getAll('user').then(cachedUsers => {
+      if (cachedUsers && cachedUsers.length > 0) {
+        const cachedUser = cachedUsers[0] as User;
+        console.log(LOG_TAG, 'Cached user found in storage:', cachedUser);
+        // if (cachedUser.email) {
+        //   this.setUser(cachedUser.email);
+        // }
+        this.user = cachedUser;
+        this._user.next(this.user);
+      } else {
+        console.log(LOG_TAG, 'No cached user found in storage');
+      }
+    }).catch(error => {
+      console.error(LOG_TAG, 'Error fetching cached user from storage:', error);
+    });
+
+    //
+    this.authSubscription = this.authenticationService.getUser().subscribe((user: any) => {
+      console.log(LOG_TAG, 'Constructor:user', user);
+      if (user?.email) {
+        this.setUser(user?.email ?? '');
+      } else {
+        this._user.next(null);
+      }
+    });
+  }
+
   /**
    * 
    * @returns The currently set user, or null if no user is set. Note that this does not guarantee the user data is fresh - use getUserByEmail or setUser to ensure you have the latest data from Firestore.
    */
   public getUser(): User | null {
+    this._user.next(this.user);
     return this.user;
   }
 
@@ -120,7 +153,7 @@ export class UserService {
   
   public async setUser(email: string): Promise<User | null> {
     const cachedUser = (await this.storageService.getAll('user'))[0] as User;
-    console.log('cachedUser:', cachedUser);
+    console.log(LOG_TAG, 'setUser:cachedUser:', cachedUser);
     const shouldRefresh = this.storageService.shouldRefresh(USER_DB_CONF.FETCHED_KEY, USER_DB_CONF.TTL);
     console.log('cachedUser:', cachedUser);
 
@@ -140,7 +173,7 @@ export class UserService {
         const user = querySnapshot.docs.length > 0 ? (querySnapshot.docs[0].data() as User) : null; 
 
         this.storageService.updateFetchedTime(USER_DB_CONF.FETCHED_KEY);
-        console.log('User data received:', user);
+        console.log('User data received from firestore:', user);
         if (user) {
           user.email = email; // Ensure email is set
           await this.storageService.upsert('user', [user], 'id');

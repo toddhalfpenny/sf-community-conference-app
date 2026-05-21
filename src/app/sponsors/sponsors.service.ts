@@ -55,7 +55,7 @@ export class SponsorsService {
     if (!forceRefresh) {
       const cachedSponsor = (await this.storageService.get('sponsors', sponsorId, "id"))[0] as Sponsor;
       if (cachedSponsor) {
-        console.log('Fetched Sponsor from storage', cachedSponsor);
+        // console.log('Fetched Sponsor from storage', cachedSponsor);
         return cachedSponsor;
       } else {
         return null;
@@ -68,7 +68,7 @@ export class SponsorsService {
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         const sponsor = docSnap.data() as Sponsor;
-        console.log('Fetched sponsor from Firestore', sponsor);
+        // console.log('Fetched sponsor from Firestore', sponsor);
         // Cache the sponsor locally
         await this.storageService.upsert('sponsors', [sponsor], 'id');
         return sponsor;
@@ -86,10 +86,10 @@ export class SponsorsService {
   async getRawSponsors(): Promise<Sponsor[]> {
     // TODO Implement forceRefresh and allStatuses options like sessions service (for admin view)
     const shouldRefresh = this.storageService.shouldRefresh(SPONSORS_DB_CONF.FETCHED_KEY, SPONSORS_DB_CONF.TTL);
-    console.log('shouldRefresh', shouldRefresh);
+    // console.log('shouldRefresh', shouldRefresh);
 
     if (!shouldRefresh) {
-      console.log('Using cached sponsors data');
+      // console.log('Using cached sponsors data');
       const cachedSponsors = await this.storageService.getAll('sponsors') as Sponsor[];
       return cachedSponsors;
     } else {
@@ -98,11 +98,11 @@ export class SponsorsService {
       const q = query(collRef, where("lastModified", ">", lastRefreshed));
       const querySnapshot = await getDocs(q);
       this.storageService.updateFetchedTime(SPONSORS_DB_CONF.FETCHED_KEY);
-      console.log(LOG_TAG, 'Fetched sponsors from Firestore, querySnapshot:', querySnapshot.docs.length);
+      // console.log(LOG_TAG, 'Fetched sponsors from Firestore, querySnapshot:', querySnapshot.docs.length);
       const sponsorsToUpdate = querySnapshot.docs.map((doc) => {
         const sponsorData = doc.data() as Sponsor;
         sponsorData.id = doc.id;
-        console.log('Sponsor data:', sponsorData);
+        // console.log('Sponsor data:', sponsorData);
         return sponsorData;
       });
       await this.storageService.upsert('sponsors', sponsorsToUpdate, 'id');
@@ -134,7 +134,7 @@ export class SponsorsService {
         }
       }
     }
-    console.log('Tiered sponsors:', tieredSponsors);
+    // console.log('Tiered sponsors:', tieredSponsors);
     return tieredSponsors;
   }
 
@@ -144,7 +144,7 @@ export class SponsorsService {
     console.log(LOG_TAG, "refreshSponsors", 'shouldRefresh:', shouldRefresh);
 
     if (!shouldRefresh) {
-      console.log(LOG_TAG, "Not refreshing sponsors");
+      // console.log(LOG_TAG, "Not refreshing sponsors");
       return;
     } else {
       const lastRefreshed = this.storageService.getLastFetchedTime(SPONSORS_DB_CONF.FETCHED_KEY);
@@ -152,7 +152,7 @@ export class SponsorsService {
       const q = query(collRef, where("lastModified", ">", lastRefreshed));
       const querySnapshot = await getDocs(q);
       this.storageService.updateFetchedTime(SPONSORS_DB_CONF.FETCHED_KEY);
-      console.log(LOG_TAG, 'Fetched sponsors from Firestore, querySnapshot:', querySnapshot.docs.length);
+      // console.log(LOG_TAG, 'Fetched sponsors from Firestore, querySnapshot:', querySnapshot.docs.length);
       const sponsorsToUpdate = querySnapshot.docs.map((doc) => {
         const sponsorData = doc.data() as Sponsor;
         sponsorData.id = doc.id;
@@ -161,7 +161,7 @@ export class SponsorsService {
       });
       await this.storageService.upsert('sponsors', sponsorsToUpdate, 'id');
       const sponors = await this.tierSponsors(await this.storageService.getAll('sponsors') as Sponsor[]);
-      console.log(LOG_TAG, 'refreshSponsors - sponsors:', sponors);
+      // console.log(LOG_TAG, 'refreshSponsors - sponsors:', sponors);
       this.sponsorsSignal.set(sponors);
       return;
     }

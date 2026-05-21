@@ -1,6 +1,6 @@
 {
-  "name": "app",
-  "short_name": "app",
+  "name": "London's Calling",
+  "short_name": "LC26",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

@@ -24,6 +24,7 @@ export class SchedulePage implements OnInit {
 
   private readonly sessionService = inject(SessionService);
   private readonly userService = inject(UserService);
+  private agendaSubscription?: Subscription;
   private userSubscription?: Subscription;
 
   protected agenda?: Session[][];
@@ -33,27 +34,34 @@ export class SchedulePage implements OnInit {
   protected searchTerm : string = '';
   protected timeNow: Number = 0;
   protected user!: User | null;
-SessionFormat: any;
+  SessionFormat: any;
   
   constructor() { 
     addIcons({ filterCircleOutline });
-
 
     let timeNow = new Date();
     // These are here for testing
     // timeNow.setDate(5);
     // timeNow.setMonth(5);
     this.timeNow = new Date(timeNow).setHours(timeNow.getHours(), 0, 0 ,0).valueOf();
+
+    this.agendaSubscription = this.sessionService.agenda$.subscribe((agenda: Session[][]) => {
+      console.log('Agenda updated', agenda);
+      this.agenda = agenda;
+      this.filterTags = this.setFilterTags();
+    });
+
     this.userSubscription = this.userService.user$.subscribe((user: any) => {
       console.log('User updated', user);
       this.user = user;
-      this.sessionService.getAgenda().then((agenda) => {
-        this.agenda = agenda;
-        this.filterTags = this.setFilterTags();
-      }).catch((error) => {
+      if (user) {
+        this.user = user;
+      }
+      try {
+        this.sessionService.getAgenda();
+      } catch (error) { 
         console.error('Error fetching agenda', error);
-      });
-      console.log('Fetched agenda', this.agenda);
+      }
     });
   }
 
@@ -63,28 +71,14 @@ SessionFormat: any;
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+    if (this.agendaSubscription) {
+      this.agendaSubscription.unsubscribe();
+    }
   }
 
   async ionViewWillEnter() {
-    const user = this.userService.getUser();
-    if (user) {
-      this.user = user;
-      try {
-        this.agenda = await this.sessionService.getAgenda();
-        console.log('Fetched agenda', this.agenda);
-        this.filterTags = this.setFilterTags();
-      } catch (error) {
-        console.error('Error fetching agenda', error);
-      }
-    } else {
-      try {
-        this.agenda = await this.sessionService.getAgenda();
-        this.filterTags = this.setFilterTags();
-        console.log('Fetched agenda', this.agenda);
-      } catch (error) {
-        console.error('Error fetching agenda', error);
-      }
-    }
+    this.userService.getUser();
+    // this.sessionService.getAgenda();
     this.currentSegment = localStorage.getItem(LAST_SEGEMENT_KEY) || 'all';
   }
 
@@ -174,7 +168,7 @@ SessionFormat: any;
         });
       });
     });
-    console.log('Available tags', tags);
+    // console.log('Available tags', tags);
     return tags.sort();
   }
 

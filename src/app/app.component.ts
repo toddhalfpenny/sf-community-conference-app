@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 
 import { StorageService } from './storage/storage-service';
 import { AuthenticationService } from './authentication/authentication.service';
-import { UserType } from './user/user.model';
+import { User, UserType } from './user/user.model';
 import { UserService } from './user/user.service';
 
 interface AppPage {
@@ -18,6 +18,7 @@ interface AppPage {
 }
 
 const LOCAL_DEV = false;
+const LOG_TAG = 'app.component';
 
 @Component({
   selector: 'app-root',
@@ -44,15 +45,16 @@ const LOCAL_DEV = false;
 export class AppComponent {
 
   private readonly storageService = inject(StorageService);
-  private readonly authenticationService = inject(AuthenticationService);
+  // private readonly authenticationService = inject(AuthenticationService);
   private readonly userService = inject(UserService);
+  private userSubscription?: Subscription;
   private authSubscription?: Subscription;
 
   protected clientVersion: string = ((<any>window)['clientBundleVersion'] === '') ?
   '': (<any>window)['clientBundleVersion']
 
 
-  private readonly attendeePages: AppPage[] = [
+  private readonly openPages: AppPage[] = [
     {
       type: 'page',
       title: 'Home',
@@ -90,6 +92,28 @@ export class AppComponent {
       icon: 'book'
     }
   ];
+
+  private readonly attendeePages: AppPage[] = [
+    {
+      type: 'page',
+      title: 'Contest',
+      url: '/contest',
+      icon: 'game-controller'
+    },
+    {
+      type: 'page',
+      title: 'Polls',
+      url: '/polls',
+      icon: 'bar-chart'
+    },
+    {
+      type: 'page',
+      title: 'Announcements',
+      url: '/announcements',
+      icon: 'megaphone'
+    }
+  ];
+
   private readonly adminPages: AppPage[] = [
     {
       type: 'seperator',
@@ -118,93 +142,94 @@ export class AppComponent {
       icon: 'scan-circle'
     }
   ];
+
+  private readonly guestPages: AppPage[] = [
+    {
+      type: 'seperator',
+      title: '',
+      url: '',
+      icon: ''
+    },
+    {
+      type: 'page',
+      title: 'Profile',
+      url: '/profile',
+      icon: 'person'
+    },
+    {
+      type: 'page',
+      title: 'Login',
+      url: '/auth/login',
+      icon: 'log-in'
+    }
+  ];
   
   protected appPages: any[] = [];
 
   constructor() {
     (<any>window).LOCAL_DEV = location.href.includes('localhost') && LOCAL_DEV;
     addIcons({ barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer });
-    this.authSubscription = this.authenticationService.getUser().subscribe(user => {
-      console.log('User in AppComponent:', user);
-      this.userService.setUser(user?.email || '').then(eventUser => {
-        console.log('Event user in AppComponent:', eventUser);
-        this.appPages = []; // Clear existing pages before setting new ones
-        this.appPages = this.attendeePages; // Default to attendee pages
-        if (user) {
-          this.appPages.push(
-            {
-              type: 'page',
-              title: 'Contest',
-              url: '/contest',
-              icon: 'game-controller'
-            },
-            {
-              type: 'page',
-              title: 'Polls',
-              url: '/polls',
-              icon: 'bar-chart'
-            },
-            {
-              type: 'page',
-              title: 'Announcements',
-              url: '/announcements',
-              icon: 'megaphone'
-            }
-          )
-          if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.sponsorAdmin || eventUser?.boothStaff) {
-            this.appPages = [...this.appPages, ...this.exhibitorPages];
-          }
-          if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin) {
-            this.appPages = [...this.appPages, ...this.adminPages];
-          }
-          this.appPages.push(
-            {
-              type: 'seperator',
-              title: '',
-              url: '',
-              icon: ''
-            },
-            {
-              type: 'page',
-              title: 'Profile',
-              url: '/profile',
-              icon: 'person'
-            },
-            {
-              type: 'page',
-              title: 'Logout  ',
-              url: '/auth/logout',
-              icon: 'log-out'
-            }
-          );
-        } else {
-          // // TODO - remove this
-          // this.appPages = [...this.appPages, ...this.exhibitorPages];
-          this.appPages.push(
-            {
-              type: 'seperator',
-              title: '',
-              url: '',
-              icon: ''
-            },
-            {
-              type: 'page',
-              title: 'Profile',
-              url: '/profile',
-              icon: 'person'
-            },
-            {
-              type: 'page',
-              title: 'Login',
-              url: '/auth/login',
-              icon: 'log-in'
-            }
-          );
-        }
-        console.log('App Pages:', this.appPages); 
-      }).catch(error => {
-        console.error('Error setting user in AppComponent:', error);
-      });
+    this.populateMenu();
+    // this.authSubscription = this.authenticationService.getUser().subscribe(user => {
+    //   console.log('User in AppComponent:', user);
+    //   this.userService.setUser(user?.email || '').then(eventUser => {
+    this.userSubscription = this.userService.user$.subscribe(eventUser => {
+      // console.log(LOG_TAG, 'eventUser:', eventUser);
+      this.populateMenu(eventUser);
     });
   }
+
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
+  private populateMenu(eventUser: User | null = null) {
+    // console.log(LOG_TAG, 'Populating menu with eventUser:', eventUser);
+    this.appPages = []; // Clear existing pages before setting new ones
+    this.appPages = this.openPages; // Default to open pages
+    if (eventUser) {
+      this.appPages = []; // Clear existing pages before setting new ones
+      this.appPages = this.openPages; // Default to open pages
+      // console.log(LOG_TAG, 'Event user found, adding role-based items', JSON.stringify(this.appPages), JSON.stringify(this.openPages));
+      this.appPages = [...this.appPages, ...this.attendeePages];
+      if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin || eventUser?.sponsorAdmin || eventUser?.boothStaff) {
+        this.appPages = [...this.appPages, ...this.exhibitorPages];
+      }
+      if (eventUser?.type === UserType['Super-Admin'] || eventUser?.type === UserType.Admin) {
+        this.appPages = [...this.appPages, ...this.adminPages];
+      }
+      this.appPages.push(
+        {
+          type: 'seperator',
+          title: '',
+          url: '',
+          icon: ''
+        },
+        {
+          type: 'page',
+          title: 'Profile',
+          url: '/profile',
+          icon: 'person'
+        },
+        {
+          type: 'page',
+          title: 'Logout  ',
+          url: '/auth/logout',
+          icon: 'log-out'
+        }
+      );
+    } else {
+      // console.log(LOG_TAG, 'No eventUser found, adding guest items');
+      // // TODO - remove this
+      // this.appPages = [...this.appPages, ...this.exhibitorPages];
+      this.appPages = [...this.appPages, ...this.guestPages];
+      // this.appPages.push(
+      // );
+    }
+    // console.log('App Pages:', this.appPages); 
+  }
+
 }

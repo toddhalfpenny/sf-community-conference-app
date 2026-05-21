@@ -9,9 +9,11 @@ import {
   user,
   UserCredential,
 } from '@angular/fire/auth';
-import { from, Observable } from 'rxjs';
-import { UserService } from '../user/user.service';
+import { from, Observable, Subject } from 'rxjs';
+// import { UserService } from '../user/user.service';
 import { StorageService } from '../storage/storage-service';
+
+const LOG_TAG = 'authentication.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +21,18 @@ import { StorageService } from '../storage/storage-service';
 export class AuthenticationService {
   private readonly auth = inject(Auth);
   private readonly storageService = inject(StorageService);
-  private readonly userService = inject(UserService);
+  // private readonly userService = inject(UserService);
   
+
+
+  private _user = new Subject<Auth|null>();
+  public user$ = this._user.asObservable();
+
+  constructor() {
+    console.log(`${LOG_TAG} constructor`);
+    this._user.next(this.auth);
+  }
+
   public getUser(): Observable<User | null> {
     return user(this.auth);
   }
@@ -29,7 +41,8 @@ export class AuthenticationService {
     try {
       const credential = await signInWithEmailAndPassword(this.auth, email, password);
       console.log('Login successful:', credential);
-      await this.userService.setUser(credential.user.email!);
+      // await this.userService.setUser(credential.user.email!);
+      this._user.next(this.auth);
       console.log('User data retrieved from Firestore');
       return credential;
     } catch (error: any) {
@@ -39,8 +52,9 @@ export class AuthenticationService {
   }
   
   public logout(): Observable<void> {
-    this.storageService.clearTable('eventUsers');
-    this.storageService.clearTable('leads');
+    this.storageService.clearTables();
+    this.storageService.clearTTL();
+    this._user.next(null);
     return from(signOut(this.auth));
   }
   

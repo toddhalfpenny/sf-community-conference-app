@@ -170,7 +170,7 @@ END:VCALENDAR`;
 
   private calculateShouldShowStream(): boolean {
     const nowSeconds = new Date().valueOf() / 1000;
-    console.log('Calculating whether to show live stream for session', this.session.title, this.user);
+    // console.log('Calculating whether to show live stream for session', this.session.title, this.user);
     if (!this.isSessionPage || !this.session.liveStreamLink) {
       return false;
     }
