@@ -1,3 +1,6 @@
-.has-unread {
-  color: var(--ion-color-lc-red);
+ion-button.has-unread {
+  --background: var(--ion-color-lc-red);
+  ion-icon {
+    color: yellow;
+  }
 }

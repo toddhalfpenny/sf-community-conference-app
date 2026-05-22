@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      @if (!announcementForm.dirty) {
+        <ion-back-button></ion-back-button>
+      } @else {
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close" ></ion-icon> 
+        </ion-button>
+      }
+    </ion-buttons>
+    <ion-title>Announcement: {{ isNewAnnouncement ? 'Create' :  announcement.title}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button  [disabled]="!announcementForm.valid" (click)="save()">
+        <ion-icon slot="icon-only" name="save" ></ion-icon> 
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="announcementForm">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Announcement Details</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-input errorText="Title name is required" required label="Title" labelPlacement="stacked" formControlName="title"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea errorText="Content name is required"  rows="10" label="Content" labelPlacement="stacked" formControlName="content"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Notification Time</ion-label>
+          <ion-datetime-button  datetime="datetime" errorText="Notification time name is required" required label="Notification Time" ></ion-datetime-button>
+        </ion-item>
+        <ion-item>
+          <ion-toggle 
+          justify="space-between" formControlName="isActive">Announcement Active</ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label labelPlacement="stacked" >Status</ion-label>
+          <ion-select formControlName="type" ngDefaultControl (ionChange)="onTypeChange($event)">
+            @for (item of NotificationTypeOptions; track $index) {
+              <ion-select-option [value]="item.value">
+                {{item.label}}
+              </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="datetime" formControlName="notificationTime" ></ion-datetime>
+      </ng-template>
+    </ion-modal>
+  </form>
+</ion-content>

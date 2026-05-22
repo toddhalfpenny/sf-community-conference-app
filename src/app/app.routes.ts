@@ -125,6 +125,16 @@ export const routes: Routes = [
     canActivate: [AdminGuard] // Secure
   },
   {
+    path: 'admin/announcements',
+    loadComponent: () => import('./admin/announcements/announcements.page').then( m => m.AnnouncementsPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
+    path: 'admin/announcement/:announcementId',
+    loadComponent: () => import('./admin/announcement/announcement.page').then( m => m.AnnouncementPage),
+    canActivate: [AdminGuard] // Secure
+  },
+  {
     path: 'admin/users',
     loadComponent: () => import('./admin/users/users.page').then( m => m.UsersPage),
     canActivate: [AdminGuard] // Secure

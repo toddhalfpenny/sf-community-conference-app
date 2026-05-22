@@ -1,5 +1,5 @@
 @if (shouldShow) {
-  <ion-button fill="clear" [routerLink]="['/announcements']">
+  <ion-button shape="round" [class]="{'has-unread': hasUnreadAnnouncements}" [fill]="hasUnreadAnnouncements ? 'solid' : 'clear'" [routerLink]="['/announcements']">
     <ion-icon
       [name]="hasUnreadAnnouncements ? 'notifications' : 'notifications-outline'"
       [class]="{'has-unread': hasUnreadAnnouncements}"
