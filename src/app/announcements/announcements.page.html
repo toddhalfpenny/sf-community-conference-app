@@ -8,4 +8,40 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-list>
+    @for (announcement of announcements; track announcement.id) {
+      @if (announcement.type === 0) {
+        <ion-item
+          button
+          class="announcement"
+          [ngClass]="{
+            'unread': !announcement.isRead
+          }"
+          (click)="openAnnouncement(announcement)"
+          detail
+          lines="none"
+        >
+          <ion-label>
+            <h2>{{ announcement.title }}</h2>
+            <ion-label class="announcement-content ion-text-nowrap">{{ announcement.content }}</ion-label>
+          </ion-label>
+        </ion-item>
+      }
+    }
+  </ion-list>
+  <ion-modal [isOpen]="isAnnouncementModalOpen" (didDismiss)="isAnnouncementModalOpen = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="isAnnouncementModalOpen = false">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <h2>{{ selectedAnnouncement?.title }}</h2>
+        <div class="announcement-content"><pre>{{selectedAnnouncement?.content}}</pre></div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

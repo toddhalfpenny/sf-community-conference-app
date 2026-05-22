@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonApp, IonContent, IonHeader, IonIcon, IonItem, IonLabel, IonList, IonMenu, IonMenuToggle, IonRouterOutlet, IonSplitPane, IonToolbar, IonFooter, IonTitle } from '@ionic/angular/standalone';
-import { barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer } from 'ionicons/icons';
+import { barChart, book, calendar, diamondOutline, gameController, home, map, notifications, people, person, logIn, logOut, scanCircle, hammer } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { Subscription } from 'rxjs';
 
@@ -110,7 +110,7 @@ export class AppComponent {
       type: 'page',
       title: 'Announcements',
       url: '/announcements',
-      icon: 'megaphone'
+      icon: 'notifications'
     }
   ];
 
@@ -168,7 +168,7 @@ export class AppComponent {
 
   constructor() {
     (<any>window).LOCAL_DEV = location.href.includes('localhost') && LOCAL_DEV;
-    addIcons({ barChart, book, calendar, diamondOutline, gameController, home, map, megaphone, people, person, logIn, logOut, scanCircle, hammer });
+    addIcons({ barChart, book, calendar, diamondOutline, gameController, home, map, notifications, people, person, logIn, logOut, scanCircle, hammer });
     this.populateMenu();
     // this.authSubscription = this.authenticationService.getUser().subscribe(user => {
     //   console.log('User in AppComponent:', user);

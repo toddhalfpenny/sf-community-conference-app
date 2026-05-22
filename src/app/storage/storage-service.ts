@@ -19,12 +19,12 @@ interface VersionSoupUpdates {
 const LOG_TAG = 'storage.servce';
 
 const HARD_TTL = 1000 * 30
-const INDEXED_DB_VERSION = 2;
+const INDEXED_DB_VERSION = 3;
 const IDB_NAME = 'ConfApp';
 
 const TABLE_SPECS: TableSpec[] = [
   {
-    name: 'annoucements',
+    name: 'announcements',
     idbSpec : {keyPath: "id"},
   },
   {
@@ -87,6 +87,11 @@ const versionDBConfig: DbVersionConfig = {
       'speakers',
       'sponsors',
       'user'
+    ],
+  },
+  3 : {
+    changedSoups: [
+      'announcements',
     ]
   }
 }

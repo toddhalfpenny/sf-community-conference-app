@@ -10,6 +10,7 @@ import { SessionCardComponent } from "../session/session-card/session-card.compo
 import  { UserService } from '../user/user.service';
 import { User } from '../user/user.model';
 import { Subscription } from 'rxjs';
+import { AnnouncementIconComponent } from "../announcements/announcement-icon/announcement-icon.component";
 
 const LAST_SEGEMENT_KEY = 'schedulePageLastSegment';
 
@@ -18,7 +19,7 @@ const LAST_SEGEMENT_KEY = 'schedulePageLastSegment';
   templateUrl: './schedule.page.html',
   styleUrls: ['./schedule.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonButton, IonIcon, IonPopover, IonItem, IonCheckbox]
+  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonButton, IonIcon, IonPopover, IonItem, IonCheckbox, AnnouncementIconComponent]
 })
 export class SchedulePage implements OnInit {
 

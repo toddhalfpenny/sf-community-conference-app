@@ -22,7 +22,7 @@ const LOG_TAG = 'session.servce';
 
 const SESSIONS_DB_CONF = {
   // TTL: 1000 * 60 * 60, // 1 hour
-  TTL: 1000 * 30 * 10, // 10 minutes
+  TTL: 1000 * 60 * 10, // 10 minutes
   // TTL: 1000 * 30, // 30 seconds
   ADMIN_TTL: 1000 * 60 * 1, // 1 minute
   // ADMIN_TTL: 1000 * 30 * 10, // 10 minutes
