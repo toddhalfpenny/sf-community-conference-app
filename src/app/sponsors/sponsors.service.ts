@@ -156,7 +156,7 @@ export class SponsorsService {
       const sponsorsToUpdate = querySnapshot.docs.map((doc) => {
         const sponsorData = doc.data() as Sponsor;
         sponsorData.id = doc.id;
-        console.log('Sponsor data:', sponsorData);
+        // console.log('Sponsor data:', sponsorData);
         return sponsorData;
       });
       await this.storageService.upsert('sponsors', sponsorsToUpdate, 'id');
@@ -198,10 +198,10 @@ export class SponsorsService {
   }
 
   private async setCachedSponsors() {
-    console.log(LOG_TAG, 'Setting cached sponsors on service initialization');
+    // console.log(LOG_TAG, 'Setting cached sponsors on service initialization');
     const cachedSponsors = await this.storageService.getAll('sponsors') as Sponsor[];
     const updatedSponsors = await this.tierSponsors(cachedSponsors);
-    console.log(LOG_TAG, 'setCachedSponsors - Cached sponsors:', updatedSponsors);
+    // console.log(LOG_TAG, 'setCachedSponsors - Cached sponsors:', updatedSponsors);
     this.sponsorsSignal.set(updatedSponsors);
   }
 
@@ -225,7 +225,7 @@ export class SponsorsService {
         }
       }
     }
-    console.log('Tiered sponsors:', tieredSponsors);
+    // console.log('Tiered sponsors:', tieredSponsors);
     return tieredSponsors;
   }
 

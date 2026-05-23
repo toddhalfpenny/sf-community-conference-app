@@ -25,18 +25,18 @@ export class AnnouncementIconComponent  implements OnInit, OnDestroy {
   
 
   protected hasUnreadAnnouncements: boolean = false;
-  protected shouldShow: boolean = true;
+  protected shouldShow: boolean = false;
 
   constructor() {
     this.userSubscription = this.userService.user$.subscribe((user: User | null) => {
       // removed shouldShow logic, as this will actually be controlled via the user type and the service
       // if (user) {
-      //   this.shouldShow = true;
+        this.shouldShow = true;
         if (!this.announcementSubscription) {
-          console.log(LOG_TAG, 'Subscribing to announcements for user', user);
+          // console.log(LOG_TAG, 'Subscribing to announcements for user', user);
           addIcons({ notifications, notificationsOutline });
           this.announcementSubscription = this.announcementService.announcements$.subscribe((announcements: Announcement[]) => {
-            console.log(LOG_TAG, 'Announcements updated', announcements);
+            // console.log(LOG_TAG, 'Announcements updated', announcements);
             let anyUnread = false;
             announcements.forEach(announcement => {
               if (!announcement.isRead) {

@@ -66,7 +66,7 @@ const TABLE_SPECS: TableSpec[] = [
 const versionDBConfig: DbVersionConfig = {
   0: {
     allSoups: [
-      'annoucements',
+      'announcements',
       'contestEntries',
       'eventUsers',
       'faqs',
@@ -173,6 +173,7 @@ export class StorageService {
   }
 
   public async clearTTL() {
+    localStorage.removeItem('announcements_fetched');
     localStorage.removeItem('appuser_fetched');
     localStorage.removeItem('eventuser_fetched');
     localStorage.removeItem('leads_fetched');

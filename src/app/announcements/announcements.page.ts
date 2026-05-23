@@ -25,7 +25,7 @@ export class AnnouncementsPage implements OnInit {
 
   constructor() {
     this.announcementSubscription = this.announcementService.announcements$.subscribe((announcements: Announcement[]) => {
-      console.log(LOG_TAG, 'Announcements updated', announcements);
+      // console.log(LOG_TAG, 'Announcements updated', announcements);
       this.announcements = announcements;
     });
    }

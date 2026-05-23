@@ -29,7 +29,7 @@
           <ion-input errorText="Title name is required" required label="Title" labelPlacement="stacked" formControlName="title"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-textarea errorText="Content name is required"  rows="10" label="Content" labelPlacement="stacked" formControlName="content"></ion-textarea>
+          <ion-textarea errorText="Content name is required"  rows="5" label="Content" labelPlacement="stacked" formControlName="content"></ion-textarea>
         </ion-item>
         <ion-item>
           <ion-label position="stacked">Notification Time</ion-label>
@@ -48,6 +48,45 @@
               </ion-select-option>
             }
           </ion-select>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label>Audience</ion-label>
+        </ion-item>
+        <ion-item  lines="none">
+          <ion-toggle
+            (ionChange)="onTargetChange($event)"
+            justify="space-between"
+            formControlName="audienceAll"
+          >All</ion-toggle>
+        </ion-item>
+        <ion-item  lines="none">
+          <ion-toggle
+            (ionChange)="onTargetChange($event)"
+            justify="space-between"
+            formControlName="audienceAttendees"
+          >Attendees</ion-toggle>
+        </ion-item>
+        <ion-item  lines="none">
+          <ion-toggle
+            (ionChange)="onTargetChange($event)"
+            justify="space-between"
+            formControlName="audienceSpeakers"
+          >Speakers</ion-toggle>
+        </ion-item>
+        <ion-item  lines="none">
+          <ion-toggle
+            (ionChange)="onTargetChange($event)"
+            justify="space-between"
+            formControlName="audienceSponsors"
+          >Sponsors</ion-toggle>
+        </ion-item>
+        <ion-item  lines="none">
+          <ion-toggle
+            [disabled]="true"
+            (ionChange)="onTargetChange($event)"
+            justify="space-between"
+            formControlName="audienceAdmins"
+          >Admins</ion-toggle>
         </ion-item>
       </ion-card-content>
     </ion-card>
