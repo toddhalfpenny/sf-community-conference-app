@@ -23,6 +23,7 @@ export class PollsPage implements OnInit {
   }
   async ionViewWillEnter() {
     this.polls = await this.PollService.getPolls();
+    console.log(this.polls);
   }
 
 }

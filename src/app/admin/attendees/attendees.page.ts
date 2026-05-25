@@ -2,7 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonButton, IonSearchbar, IonItem, IonText, IonButtons, IonMenuButton } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonButton, IonSearchbar, IonItem, IonText, IonButtons, IonMenuButton, IonLoading } from '@ionic/angular/standalone';
 import { UserService } from  '../../user/user.service';
 import { UtilService } from 'src/app/utils/util-service';
 import { UserType, type User } from '../../user/user.model';
@@ -25,7 +25,7 @@ const ATTENDEE_TABLE_COLUMN_MAP: any = {
   templateUrl: './attendees.page.html',
   styleUrls: ['./attendees.page.scss'],
   standalone: true,
-  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonButton, IonSearchbar, IonItem, IonText, IonButtons, IonMenuButton]
+  imports: [RouterLink, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, IonButton, IonSearchbar, IonItem, IonText, IonButtons, IonMenuButton, IonLoading]
 })
 export class AttendeesPage implements OnInit {
   @ViewChild('attendeeInput') attendeeInput!: any;
@@ -36,6 +36,7 @@ export class AttendeesPage implements OnInit {
 
   protected attendees: User[] = [];
   protected searchTerm : string = '';
+  protected showLoading: boolean = false;
 
   protected importFileHeaderIndexes = {
     attendeeNumber: -1,
@@ -55,7 +56,9 @@ export class AttendeesPage implements OnInit {
   }
 
   async ionViewWillEnter() {
+    this.showLoading = true;
     this.attendees = await this.attendeeService.getUsers();
+    this.showLoading = false;
   }
 
 
@@ -83,7 +86,7 @@ export class AttendeesPage implements OnInit {
       this.setHeaderIndex2(converted[0]);
       console.log('Header indexes set to:', this.importFileHeaderIndexes);
 
-      for (let index = 0; index < converted.length; index++) {
+      for (let index = 1; index < converted.length -1; index++) {
         let row = converted[index];
         for (let key in row) {
           if (row[key] === 'Â') {

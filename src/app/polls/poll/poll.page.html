@@ -9,6 +9,7 @@
 
 <ion-content class="ion-padding">
   @if (poll) {
+    <h2>{{poll.question}}</h2>
     @if (!alreadyVoted) {
       <ion-button expand="block" shape="round" [disabled]="!selectedOption || alreadyVoted" (click)="submit()">Submit</ion-button>
       <ion-radio-group value="start" [(ngModel)]="selectedOption">

@@ -20,7 +20,8 @@
   <input type="file" id="attendees" name="attendees" accept="text/xls" #attendeeInput />
   <ion-button (click)="importAttendees()">Import</ion-button>
   <hr/>
-  <h1>Existing attendees</h1>
+  <h1>Existing attendees {{attendees.length}}</h1>
+  <ion-loading [isOpen]="showLoading" message="Loading attendees..." duration="10000" (onDidDismiss)="showLoading = false"></ion-loading>
   <ion-list>
     @for (attendee of attendees; track $index) {
       @if (searchTerm === '' || attendee.firstname?.toLowerCase()?.includes(searchTerm.toLowerCase()) ||attendee.lastname?.toLowerCase()?.includes(searchTerm.toLowerCase())) {

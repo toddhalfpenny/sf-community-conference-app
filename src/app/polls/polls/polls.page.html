@@ -19,9 +19,11 @@
     } @else {
       <ion-list>
         @for (poll of polls; track $index) {
-          <ion-item detail [routerLink]="['/polls', poll.id]" [state]="{poll: poll}">
-            <ion-label>{{ poll.question }}</ion-label>
-          </ion-item>
+          @if (poll.isActive) {
+            <ion-item detail [routerLink]="['/polls', poll.id]" [state]="{poll: poll}">
+              <ion-label>{{ poll.name }}</ion-label>
+            </ion-item>
+          }
         }
       </ion-list>
     }
