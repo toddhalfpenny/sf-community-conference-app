@@ -11,9 +11,17 @@
   <ion-alert
     [isOpen]="isFailedLoginAlertOpen"
     header="Login Failed"
-    message="Login failed. Please check your credentials and try again."
+    [message]="failedLoginAlertMessage"
     [buttons]="failedLoginAlertButtons"
     (didDismiss)="isFailedLoginAlertOpen = false"
+  ></ion-alert>
+  <ion-alert
+    backdropDismiss="false"
+    [isOpen]="isNotYetEmailVerfedAlertOpen"
+    header="Email not Verified"
+    [message]="notYetEmailVerfedAlertMessage"
+    [buttons]="notYetEmailVerfedAlertButtons"
+    (didDismiss)="isNotYetEmailVerfedAlertOpen = false"
   ></ion-alert>
   <ion-alert
     [isOpen]="isResetCredsAlertOpen"
@@ -21,6 +29,13 @@
     [message]="resetCredsAlertMessage"
     [buttons]="resetCredsAlertButtons"
     (didDismiss)="isResetCredsAlertOpen = false"
+  ></ion-alert>
+  <ion-alert
+    [isOpen]="isVerfEmailAlertOpen"
+    header="Reset Credentials"
+    [message]="verfEmailAlertMessage"
+    [buttons]="verfEmailAlertButtons"
+    (didDismiss)="isVerfEmailAlertOpen = false"
   ></ion-alert>
   @if (currentPage === 'logout') {
     <ion-button expand="block" fill="clear" (click)="logout()">

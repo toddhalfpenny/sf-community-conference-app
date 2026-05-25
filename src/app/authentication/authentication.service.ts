@@ -3,6 +3,7 @@ import {
   Auth,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
   User,
@@ -42,6 +43,14 @@ export class AuthenticationService {
       const credential = await signInWithEmailAndPassword(this.auth, email, password);
       console.log('Login successful:', credential);
       // await this.userService.setUser(credential.user.email!);
+
+      // Log user out if they haven't verified their email
+      if (!credential.user.emailVerified) {
+        console.warn('Email not verified. Logging out user.');
+        // await this.logout().toPromise();
+        throw new Error('email-not-verified');
+      }
+
       this._user.next(this.auth);
       console.log('User data retrieved from Firestore');
       return credential;
@@ -69,6 +78,18 @@ export class AuthenticationService {
     } catch (error: any) {
       throw new Error(`resetPassword error: ${error.message}`);
     }
+  }
+
+  public async verifyEmail(): Promise<void> {
+    console.log(LOG_TAG, 'verifyEmail called');
+    sendEmailVerification(this.auth.currentUser!)
+      .then(() => {
+        console.log(LOG_TAG, 'Verification email sent');
+      })
+      .catch((error) => {
+        console.error(LOG_TAG, 'Email verification error:', error);
+        throw new Error(`Email verification failed: ${error.message}`);
+      });
   }
   
 }

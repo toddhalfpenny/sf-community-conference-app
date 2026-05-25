@@ -49,7 +49,7 @@ export class AuthenticationPage implements OnDestroy {
    */
   readonly currentPage = this.router.url.split('/')[
     this.router.url.split('/').length - 1
-  ] as 'login' | 'logout' | 'signup' | 'reset';
+  ] as 'login' | 'logout' | 'signup' | 'reset' | 'verify';
 
  /**
    * This object holds the configuration for the authentication page.
@@ -73,6 +73,10 @@ export class AuthenticationPage implements OnDestroy {
       pageTitle: 'Reset your password',
       actionButtonText: 'Reset Password',
     },
+    verify: {
+      pageTitle: 'Verify your email',
+      actionButtonText: 'Verify email',
+    },
   };
 
   /**
@@ -92,6 +96,8 @@ export class AuthenticationPage implements OnDestroy {
       role: 'cancel'
     },
   ];
+  protected failedLoginAlertMessage = 'Login failed. Please check your credentials and try again.';
+
   protected isResetCredsAlertOpen: boolean = false;
   protected resetCredsAlertButtons = [
     {
@@ -99,11 +105,43 @@ export class AuthenticationPage implements OnDestroy {
       role: 'cancel',
       handler: () => {
         this.router.navigateByUrl('auth/login');
-      }
-      
+      }      
     },
   ];
   protected resetCredsAlertMessage = 'If your email is registered, you will receive instructions to reset your password.';
+  
+  protected isVerfEmailAlertOpen: boolean = false;
+  protected verfEmailAlertButtons = [
+    {
+      text: 'OK',
+      role: 'cancel',
+      handler: () => {
+        this.router.navigateByUrl('auth/login');
+      }      
+    },
+  ];
+  protected verfEmailAlertMessage = 'There was an error sending the verification email. Please try again in a moment.';
+
+  protected isNotYetEmailVerfedAlertOpen: boolean = false;
+  protected notYetEmailVerfedAlertButtons = [
+    {
+      text: 'OK',
+      role: 'cancel',
+      handler: () => {
+        this.authenticationService.logout();
+        this.router.navigateByUrl('auth/login');
+      }      
+    },
+    {
+      text: 'Resend verification email',
+      role: 'confirm',
+      handler: () => {
+        console.log(LOG_TAG, 'Resending verification email');
+        this.handleSignUpComplete();
+      }      
+    },
+  ];
+  protected notYetEmailVerfedAlertMessage = 'Please verify your email before logging in. Check your inbox for the verification email.';
 
 
   ngOnDestroy(): void {
@@ -137,6 +175,12 @@ export class AuthenticationPage implements OnDestroy {
       const res = await this.authenticationService.login(email, password as string);
       this.router.navigateByUrl('');
     } catch (error) {
+      this.failedLoginAlertMessage = 'Login failed. Please check your credentials and try again.';
+      if ((<any>error)?.message?.includes('email-not-verified')) {
+        this.isNotYetEmailVerfedAlertOpen = true;
+        return;
+      }
+
       console.error(LOG_TAG, 'Login error:', error);
       this.isFailedLoginAlertOpen = true;
     }
@@ -152,7 +196,8 @@ export class AuthenticationPage implements OnDestroy {
   signup({ email, password }: UserCredentials) {
     this.activeSubscription = this.authenticationService
       .signup(email, password as string)
-      .pipe(tap(() => this.router.navigateByUrl('')))
+      // .pipe(tap(() => this.router.navigateByUrl('')))
+      .pipe(tap(() => this.handleSignUpComplete()))
       .subscribe();
   }
   
@@ -166,5 +211,18 @@ export class AuthenticationPage implements OnDestroy {
       this.resetCredsAlertMessage = 'There was an issue resetting your password. Please try again.';
       this.isResetCredsAlertOpen = true;
     }
+  }
+
+  private handleSignUpComplete() {
+    console.log(LOG_TAG, 'Sign up complete');
+    this.authenticationService.verifyEmail().then(() => {
+      this.authenticationService.logout();
+      this.verfEmailAlertMessage = 'You have been sent a verification email. Please check your inbox and click the verification link before clicking OK here and then logging in. PLEASE CHECK YOUR SPAM FOLDER TOO.';
+      this.isVerfEmailAlertOpen = true;
+    }).catch((error) => {
+      console.error(LOG_TAG, 'Email verification error:', error);
+      this.verfEmailAlertMessage = 'There was an error sending the verification email. Please try again in a moment.';
+      this.isVerfEmailAlertOpen = true;
+    });
   }
 }
