@@ -6,6 +6,19 @@ import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonButton, IonSea
 import { UserService } from  '../../user/user.service';
 import { UtilService } from 'src/app/utils/util-service';
 import { UserType, type User } from '../../user/user.model';
+import { tabletojson } from 'tabletojson';
+
+const ATTENDEE_TABLE_COLUMN_MAP: any = {
+  'id': 'Attendee no.',
+  'firstname': 'First Name',
+  'lastname': 'Surname',
+  'jobtitle': 'Job title',
+  'country': 'Work Country',
+  'email': 'Email',
+  'ticketType': 'Ticket type',
+  'company': 'Company',
+  'telephone': 'Phone number',
+}
 
 @Component({
   selector: 'app-attendees',
@@ -23,6 +36,18 @@ export class AttendeesPage implements OnInit {
 
   protected attendees: User[] = [];
   protected searchTerm : string = '';
+
+  protected importFileHeaderIndexes = {
+    attendeeNumber: -1,
+    firstName: -1,
+    lastName: -1,
+    email: -1,
+    ticketType: -1,
+    company: -1,
+    telephone: -1,
+    country: -1,
+    jobTitle: -1,
+  }
 
   constructor() { }
 
@@ -48,25 +73,39 @@ export class AttendeesPage implements OnInit {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = async (e: any) => {
-      console.log('File content:', e.target.result);
+      // console.log('File content:', e.target.result);
       if (!e.target.result) return;
       const data = e.target.result as string;
 
-      let csvToRowArray = data.split("\n");
-      for (let index = 1; index < csvToRowArray.length; index++) {
-        let row = this.utilService.CSVtoArray(csvToRowArray[index]) as string[];
-        console.log('Processing row:', row);
+
+      const converted = tabletojson.convert(data)[0];
+      console.log('Converted CSV to JSON:', converted.length, 'rows');
+      this.setHeaderIndex2(converted[0]);
+      console.log('Header indexes set to:', this.importFileHeaderIndexes);
+
+      for (let index = 0; index < converted.length; index++) {
+        let row = converted[index];
+        for (let key in row) {
+          if (row[key] === 'Â') {
+            row[key] = '';
+          }
+        }
         if (row && row[3]) {
           const attendee: User = {
-            firstname: row[0],
-            lastname: row[1],
-            email: row[2],
-            type: this.getType(row[3]),
-            id: row[4],
-            company: row[5],
+            firstname: row[this.importFileHeaderIndexes.firstName],
+            lastname: row[this.importFileHeaderIndexes.lastName],
+            email: row[this.importFileHeaderIndexes.email],
+            type: this.getType(row[this.importFileHeaderIndexes.ticketType]),
+            id: row[this.importFileHeaderIndexes.attendeeNumber],
+            company: row[this.importFileHeaderIndexes.company] ?? "",
+            telephone: row[this.importFileHeaderIndexes.telephone] ?? "",
+            companyCountry: row[this.importFileHeaderIndexes.country] ?? "",
+            jobTitle: row[this.importFileHeaderIndexes.jobTitle] ?? "",
             lastModified: timeNow,
           }
-          attendeeArray.push(attendee);
+          if (attendee.type !== UserType.PayItForward) {
+            attendeeArray.push(attendee);
+          }
         }
       }
       console.log(attendeeArray);
@@ -85,8 +124,46 @@ export class AttendeesPage implements OnInit {
       case 'Sponsors':
       case 'Sponsor General Admission':
         return UserType.Sponsor;
+      case 'Pay':
+        return UserType.PayItForward;
       default:
         return UserType['Attendee-InPerson']
+    }
+  }
+
+  private setHeaderIndex2(headerRow: any = {}) {
+    console.log('Setting header indexes from row:', headerRow);
+    for (let key of Object.keys(headerRow)) {
+      console.log(`Processing header column: ${headerRow[key]} at index ${key}`);
+      switch (headerRow[key].toLowerCase()) {
+        case 'attendee no.' :
+          this.importFileHeaderIndexes.attendeeNumber  = parseInt(key);
+          break;
+        case 'first name' :
+          this.importFileHeaderIndexes.firstName  = parseInt(key);
+          break;
+        case 'surname' :
+          this.importFileHeaderIndexes.lastName  = parseInt(key);
+          break;
+        case 'email' :
+          this.importFileHeaderIndexes.email  = parseInt(key);
+          break;
+        case 'ticket type' :
+          this.importFileHeaderIndexes.ticketType  = parseInt(key);
+          break;
+        case 'company' :
+          this.importFileHeaderIndexes.company  = parseInt(key);
+          break;
+        case 'phone number' :
+          this.importFileHeaderIndexes.telephone  = parseInt(key);
+          break;
+        case 'work country' :
+          this.importFileHeaderIndexes.country  = parseInt(key);
+          break;
+        case 'job title' :
+          this.importFileHeaderIndexes.jobTitle  = parseInt(key);
+          break;          
+      }
     }
   }
 }

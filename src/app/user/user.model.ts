@@ -4,6 +4,9 @@ export interface User {
   company?: string;
   firstname?: string;
   lastname?: string;
+  telephone?: string;
+  jobTitle?: string;
+  companyCountry?: string;
   type?: UserType;
   myAgendaSessions?: string[];  // Array of Session Keys for which the user has added to their agenda.
   passportStickers?: string[];  // Array of Sponsor Keys for which the user has passport stickers.
@@ -18,6 +21,7 @@ export enum UserType {
   'Attendee-Virtual' = 1,
   'Speaker' = 2,
   'Sponsor' = 3,
+  'PayItForward' = 4,
   'Guest' = 7,
   'Crew' = 90,
   'Admin' = 91,
