@@ -9,33 +9,11 @@
 
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-alert
-    [isOpen]="isFailedLoginAlertOpen"
-    header="Login Failed"
-    [message]="failedLoginAlertMessage"
-    [buttons]="failedLoginAlertButtons"
-    (didDismiss)="isFailedLoginAlertOpen = false"
-  ></ion-alert>
-  <ion-alert
-    backdropDismiss="false"
-    [isOpen]="isNotYetEmailVerfedAlertOpen"
-    header="Email not Verified"
-    [message]="notYetEmailVerfedAlertMessage"
-    [buttons]="notYetEmailVerfedAlertButtons"
-    (didDismiss)="isNotYetEmailVerfedAlertOpen = false"
-  ></ion-alert>
-  <ion-alert
-    [isOpen]="isResetCredsAlertOpen"
-    header="Reset Credentials"
-    [message]="resetCredsAlertMessage"
-    [buttons]="resetCredsAlertButtons"
-    (didDismiss)="isResetCredsAlertOpen = false"
-  ></ion-alert>
-  <ion-alert
-    [isOpen]="isVerfEmailAlertOpen"
-    header="Reset Credentials"
-    [message]="verfEmailAlertMessage"
-    [buttons]="verfEmailAlertButtons"
-    (didDismiss)="isVerfEmailAlertOpen = false"
+    [isOpen]="isAuthAlertOpen"
+    [header]="authAlertHeader"
+    [message]="authAlertMessage"
+    [buttons]="authAlertButtons"
+    (didDismiss)="isAuthAlertOpen = false"
   ></ion-alert>
   @if (currentPage === 'logout') {
     <ion-button expand="block" fill="clear" (click)="logout()">

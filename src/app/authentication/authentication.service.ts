@@ -67,9 +67,17 @@ export class AuthenticationService {
     return from(signOut(this.auth));
   }
   
-  public signup(email: string, password: string): Observable<UserCredential> {
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  public async signup(email: string, password: string): Promise<UserCredential> {
+    try {
+      const credential = await createUserWithEmailAndPassword(this.auth, email, password);
+      console.log('Signup successful:', credential);
+      return credential;
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      throw new Error(`Signup failed: ${error.message}`);
+    }
   }
+      
   
   public async resetPassword(email: string): Promise<void> {
     try {

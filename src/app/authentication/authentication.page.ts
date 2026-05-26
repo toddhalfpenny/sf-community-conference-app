@@ -9,6 +9,15 @@ import { AuthenticationService } from './authentication.service';
 
 const LOG_TAG = 'authentication.page';
 
+const DEFAULT_AUTH_ALERT_MESSAGE = 'There has been an issue. Please try again later.';
+const DEFAULT_AUTH_ALERT_HEADER = 'Authentication Error';
+const DEFAULT_AUTH_ALERT_BUTTONS = [
+  {
+    text: 'OK',
+    role: 'cancel'
+  },
+];
+
 export interface UserCredentials {
   email: string;
   password?: string;
@@ -89,14 +98,10 @@ export class AuthenticationPage implements OnDestroy {
 
   private activeSubscription?: Subscription;
 
-  protected isFailedLoginAlertOpen: boolean = false;
-  protected failedLoginAlertButtons = [
-    {
-      text: 'OK',
-      role: 'cancel'
-    },
-  ];
-  protected failedLoginAlertMessage = 'Login failed. Please check your credentials and try again.';
+  protected isAuthAlertOpen: boolean = false;
+  protected authAlertButtons = DEFAULT_AUTH_ALERT_BUTTONS
+  protected authAlertMessage = DEFAULT_AUTH_ALERT_MESSAGE;
+  protected authAlertHeader = DEFAULT_AUTH_ALERT_HEADER;
 
   protected isResetCredsAlertOpen: boolean = false;
   protected resetCredsAlertButtons = [
@@ -108,10 +113,10 @@ export class AuthenticationPage implements OnDestroy {
       }      
     },
   ];
-  protected resetCredsAlertMessage = 'If your email is registered, you will receive instructions to reset your password.';
-  
-  protected isVerfEmailAlertOpen: boolean = false;
-  protected verfEmailAlertButtons = [
+
+  private resetCredsAlertMessage = 'If your email is registered, you will receive instructions to reset your password.';
+
+  private verfEmailAlertButtons = [
     {
       text: 'OK',
       role: 'cancel',
@@ -120,10 +125,9 @@ export class AuthenticationPage implements OnDestroy {
       }      
     },
   ];
-  protected verfEmailAlertMessage = 'There was an error sending the verification email. Please try again in a moment.';
+  private verfEmailAlertMessage = 'There was an error sending the verification email. Please try again in a moment.';
 
-  protected isNotYetEmailVerfedAlertOpen: boolean = false;
-  protected notYetEmailVerfedAlertButtons = [
+  private notYetEmailVerfedAlertButtons = [
     {
       text: 'OK',
       role: 'cancel',
@@ -141,7 +145,7 @@ export class AuthenticationPage implements OnDestroy {
       }      
     },
   ];
-  protected notYetEmailVerfedAlertMessage = 'Please verify your email before logging in. Check your inbox for the verification email.';
+  private notYetEmailVerfedAlertMessage = 'Please verify your email before logging in. Check your inbox for the verification email.';
 
 
   ngOnDestroy(): void {
@@ -175,14 +179,19 @@ export class AuthenticationPage implements OnDestroy {
       const res = await this.authenticationService.login(email, password as string);
       this.router.navigateByUrl('');
     } catch (error) {
-      this.failedLoginAlertMessage = 'Login failed. Please check your credentials and try again.';
       if ((<any>error)?.message?.includes('email-not-verified')) {
-        this.isNotYetEmailVerfedAlertOpen = true;
+        this.authAlertButtons = this.notYetEmailVerfedAlertButtons;
+        this.authAlertMessage = this.notYetEmailVerfedAlertMessage;
+        this.authAlertHeader = 'Email Not Verified';
+        this.isAuthAlertOpen = true;
         return;
       }
-
       console.error(LOG_TAG, 'Login error:', error);
-      this.isFailedLoginAlertOpen = true;
+
+      this.authAlertMessage = 'Login failed. Please check your credentials and try again.';
+      this.authAlertHeader = 'Login Failed';
+      this.authAlertButtons = DEFAULT_AUTH_ALERT_BUTTONS;
+      this.isAuthAlertOpen = true;
     }
   }
 
@@ -193,23 +202,38 @@ export class AuthenticationPage implements OnDestroy {
       .subscribe();
   }
   
-  signup({ email, password }: UserCredentials) {
-    this.activeSubscription = this.authenticationService
-      .signup(email, password as string)
-      // .pipe(tap(() => this.router.navigateByUrl('')))
-      .pipe(tap(() => this.handleSignUpComplete()))
-      .subscribe();
+  async signup({ email, password }: UserCredentials) {
+    try {
+      const credentials = await this.authenticationService.signup(email, password as string);
+      console.log(LOG_TAG, "signup", credentials);
+      this.handleSignUpComplete();
+    } catch (error) {
+      console.error(LOG_TAG, 'Signup error:', error);
+      this.authAlertHeader = 'Signup Failed';
+      this.authAlertButtons = DEFAULT_AUTH_ALERT_BUTTONS;
+      this.authAlertMessage = 'There was an error creating your account. Please try again in a moment.';
+      if ((<any>error)?.message?.includes('email-already-in-use')) {
+        this.authAlertMessage = 'This email is already in use. Please log in or use a different email to sign up. If this is your email and you forgot your password, please use the "Reset Password" option.';
+        this.isAuthAlertOpen = true;
+        return;
+      }
+      this.isAuthAlertOpen = true;
+    }
   }
   
   async resetPassword({ email }: UserCredentials) {
     try {
       const res = await this.authenticationService.resetPassword(email);
-      this.resetCredsAlertMessage = 'If your email is registered, you will receive instructions to reset your password.';
-      this.isResetCredsAlertOpen = true;
+      this.authAlertMessage = this.resetCredsAlertMessage;
+      this.authAlertHeader = 'Reset Password';
+      this.authAlertButtons = this.resetCredsAlertButtons;
+      this.isAuthAlertOpen = true;
     } catch (error) {
       console.error(LOG_TAG, 'Login error:', error);
-      this.resetCredsAlertMessage = 'There was an issue resetting your password. Please try again.';
-      this.isResetCredsAlertOpen = true;
+      this.authAlertHeader = 'Reset Password Failed';
+      this.authAlertButtons = DEFAULT_AUTH_ALERT_BUTTONS;
+      this.authAlertMessage = 'There was an issue resetting your password. Please try again.';
+      this.isAuthAlertOpen = true;
     }
   }
 
@@ -217,12 +241,17 @@ export class AuthenticationPage implements OnDestroy {
     console.log(LOG_TAG, 'Sign up complete');
     this.authenticationService.verifyEmail().then(() => {
       this.authenticationService.logout();
-      this.verfEmailAlertMessage = 'You have been sent a verification email. Please check your inbox and click the verification link before clicking OK here and then logging in. PLEASE CHECK YOUR SPAM FOLDER TOO.';
-      this.isVerfEmailAlertOpen = true;
+
+      this.authAlertHeader = 'Verify your email';
+      this.authAlertMessage = 'You have been sent a verification email. Please check your inbox and click the verification link before clicking OK here and then logging in. PLEASE CHECK YOUR SPAM FOLDER TOO.';
+      this.authAlertButtons = this.verfEmailAlertButtons
+      this.isAuthAlertOpen = true;
     }).catch((error) => {
       console.error(LOG_TAG, 'Email verification error:', error);
-      this.verfEmailAlertMessage = 'There was an error sending the verification email. Please try again in a moment.';
-      this.isVerfEmailAlertOpen = true;
+      this.authAlertHeader = DEFAULT_AUTH_ALERT_HEADER;
+      this.authAlertButtons = DEFAULT_AUTH_ALERT_BUTTONS;
+      this.authAlertMessage = this.verfEmailAlertMessage;
+      this.isAuthAlertOpen = true;
     });
   }
 }
