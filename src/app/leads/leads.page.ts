@@ -55,11 +55,12 @@ export class LeadsPage implements OnInit {
       return;
     }
 
+    const csvHeader = 'User ID,First Name,Last Name,Job Title,Email,Telephone,Company,Country\n';
     const csvContent = this.leads.map((e: Lead) => {
-      return `${e.user?.id},${e.user?.firstname},${e.user?.lastname},${e.user?.company}`;
+      return `${e.user?.id},${e.user?.firstname},${e.user?.lastname},${e.user?.jobTitle},${e.user?.email},${e.user?.telephone},${e.user?.company},${e.user?.country}`;
     }).join('\n');
     // const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
+    const url = encodeURI('data:text/csv;charset=utf-8,' + csvHeader + csvContent);
     console.log('Generated CSV URL', url);
     this.downloadlink.nativeElement.href = url;
     this.downloadlink.nativeElement.click();

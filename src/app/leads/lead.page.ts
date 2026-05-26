@@ -35,6 +35,7 @@ export class LeadPage implements OnInit {
     firstname: [{value: '', disabled: true}, Validators.required],
     lastname: [{value: '', disabled: true}, Validators.required],
     company: [{value: '', disabled: true}],
+    email: [{value: '', disabled: true}, Validators.email],
     telephone: [{value: '', disabled: true}],
     country: [{value: '', disabled: true}],
     jobTitle: [{value: '', disabled: true}],
@@ -69,6 +70,7 @@ export class LeadPage implements OnInit {
       firstname: this.lead.user?.firstname ?? '',
       lastname: this.lead.user?.lastname ?? '',
       company: this.lead.user?.company ?? '',
+      email: this.lead.user?.email ?? '',
       country: this.lead.user?.country ?? '',
       jobTitle: this.lead.user?.jobTitle ?? '',
       telephone: this.lead.user?.telephone ?? '',
@@ -121,6 +123,7 @@ export class LeadPage implements OnInit {
         lastname: this.leadForm.value.lastname,
         company: this.leadForm.value.company,
         country: this.leadForm.value.country,
+        email: this.leadForm.value.email,
         telephone: this.leadForm.value.telephone,
         jobTitle: this.leadForm.value.jobTitle
       },

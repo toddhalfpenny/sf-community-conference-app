@@ -55,6 +55,7 @@ exports.enrichLead = onDocumentCreated("/leads/{documentId}", (event) => {
         user: {
           company: userData?.company || "-",
           country: userData?.companyCountry || "-",
+          email: userData?.email || "-",
           jobTitle: userData?.jobTitle || "-",
           telephone: userData?.telephone || "-",
         },
