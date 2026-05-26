@@ -34,6 +34,9 @@ export class AttendeePage implements OnInit {
     firstname: [{value: ''}, Validators.required],
     lastname: [{value: ''}, Validators.required],
     company: [{value: ''}],
+    telephone: [{value: ''}],
+    jobTitle: [{value: ''}],
+    companyCountry: [{value: ''}],
     type: [UserType['Attendee-InPerson'], Validators.required],
     isActive: [true, Validators.required]
   });
@@ -67,6 +70,9 @@ export class AttendeePage implements OnInit {
           firstname: '',
           lastname: '',
           company: '',
+          jobTitle: '',
+          companyCountry: '',
+          telephone: '',
           type: UserType['Attendee-InPerson'],
           isActive: true,
         }
@@ -80,6 +86,9 @@ export class AttendeePage implements OnInit {
         firstname: this.attendee.firstname,
         lastname: this.attendee.lastname,
         company: this.attendee.company ?? '',
+        jobTitle: this.attendee.jobTitle ?? '',
+        telephone: this.attendee.telephone ?? '',
+        companyCountry: this.attendee.companyCountry ?? '',
         type: this.attendee.type,
         isActive: this.attendee.isActive === false ? false : true
       });
@@ -136,6 +145,9 @@ export class AttendeePage implements OnInit {
         firstname: this.userForm.value.firstname,
         lastname: this.userForm.value.lastname,
         company: this.userForm.value.company,
+        jobTitle: this.userForm.value.jobTitle,
+        telephone: this.userForm.value.telephone,
+        companyCountry: this.userForm.value.companyCountry,
         type: this.userForm.value.type,
         isActive: this.userForm.value.isActive,
         lastModified: timeNow,
