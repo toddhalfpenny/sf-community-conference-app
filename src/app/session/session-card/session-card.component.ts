@@ -71,7 +71,8 @@ export class SessionCardComponent  implements OnInit {
     this.calculateShouldShowStream();
   }
 
-  protected async showAddToCalendar() {
+  protected async showAddToCalendar(event: any) {
+    event.stopPropagation();
     console.log('Showing add to calendar options');
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'Actions',
@@ -94,7 +95,8 @@ export class SessionCardComponent  implements OnInit {
     window.open(url, '_blank');
   }
 
-  protected shareSession() {
+  protected shareSession(event: any) {
+    event.stopPropagation();
     const shareData = {
       title: this.session.title,
       text: `${this.session.title} - ${this.session.abstract}\n\nPresented by: ${this.session.speakers.map(s => s.name).join(', ')}`,
@@ -121,7 +123,8 @@ export class SessionCardComponent  implements OnInit {
     }
   }
 
-  protected toggleFavourite() {
+  protected toggleFavourite(event: any) {
+    event.stopPropagation();
     console.log('Toggling favourite for session', this.session.id);
       this.isFavourite = !this.isFavourite;
       this.favouriteToggled.emit({sessionId: this.session.id, isFavourite: this.isFavourite});

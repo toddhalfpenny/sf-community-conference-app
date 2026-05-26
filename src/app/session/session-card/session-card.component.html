@@ -10,14 +10,14 @@
       </span>
       <div class="actions">
         @if(user) {
-          <ion-button size="small" fill="outline" (click)="toggleFavourite()">
+          <ion-button size="small" fill="outline" (click)="toggleFavourite($event)">
             <ion-icon slot="icon-only" [name]="isFavourite ? 'heart' : 'heart-outline'"></ion-icon>
           </ion-button>
         }
-        <ion-button size="small" fill="outline" (click)="showAddToCalendar()">
+        <ion-button size="small" fill="outline" (click)="showAddToCalendar($event)">
           <ion-icon slot="icon-only" name="calendar"></ion-icon>
         </ion-button>
-        <ion-button size="small" fill="outline" (click)="shareSession()">
+        <ion-button size="small" fill="outline" (click)="shareSession($event)">
           <ion-icon slot="icon-only" name="share-social"></ion-icon>
         </ion-button>
       </div>
