@@ -8,8 +8,11 @@
  */
 
 import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
+import {onDocumentCreated} from "firebase-functions/firestore";
 import * as logger from "firebase-functions/logger";
+import {getFirestore} from "firebase-admin/firestore";
+import {initializeApp} from "firebase-admin/app";
+initializeApp();
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -24,9 +27,45 @@ import * as logger from "firebase-functions/logger";
 // functions should each use functions.runWith({ maxInstances: 10 }) instead.
 // In the v1 API, each function can only serve one request per container, so
 // this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+setGlobalOptions({maxInstances: 10, minInstances: 1});
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// Listens for new messages added to /messages/:documentId/original
+// and saves an uppercased version of the message
+// to /messages/:documentId/uppercase
+exports.enrichLead = onDocumentCreated("/leads/{documentId}", (event) => {
+  // Grab the current value of what was written to Firestore.
+  const userId = event?.data?.data().user.id;
+  if (!userId) {
+    logger.error("No user ID found in document", event.data);
+    return;
+  }
+
+  logger.log("userId", userId);
+
+  const db = getFirestore();
+  db.doc(`eventusers/${userId}`).get().then((doc) => {
+  // });
+  // db.collection("eventusers").doc(userId).get().then((doc) => {
+    logger.log("doc", doc);
+    if (doc.exists) {
+      const userData = doc.data();
+      logger.log("User data retrieved", userData);
+      // Set fields on l  ead document based on user data
+      return event?.data?.ref.set({
+        user: {
+          company: userData?.company || "-",
+          country: userData?.companyCountry || "-",
+          jobTitle: userData?.jobTitle || "-",
+          telephone: userData?.telephone || "-",
+        },
+        lastModified: new Date(),
+      }, {merge: true});
+    } else {
+      logger.error("No such document for user ID:", userId);
+      return;
+    }
+  }).catch((error) => {
+    logger.error("Error fetching user document:", error);
+    return;
+  });
+});
