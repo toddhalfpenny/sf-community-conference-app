@@ -6,7 +6,7 @@
     <div id="meta">
       <span id="timing">
         <ion-icon name="time"></ion-icon>
-        {{ session.startDateTime.seconds *1000| date : "shortTime" }} - {{ session.endDateTime.seconds * 1000| date : "shortTime" }}
+        {{ session.startDateTime.seconds *1000| date : "shortTime":'+0100'}} - {{ session.endDateTime.seconds * 1000| date : "shortTime":'+0100' }}
       </span>
       <div class="actions">
         @if(user) {

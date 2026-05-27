@@ -51,7 +51,7 @@
       <details open class="session-hour">
         @for (session of sessionHour; track session.id) {
           @if ($index === 0) {
-            <summary [class]="session.startDateTime.seconds == timeNow ? 'currentHour' : ''">{{ session.startDateTime.seconds| date : "shortTime"}}</summary>
+            <summary [class]="session.startDateTime.seconds == timeNow ? 'currentHour' : ''">{{ session.startDateTime.seconds| date : "shortTime":"+0100"}}</summary>
           } @else {
             @if (shouldShowSession(session)) { 
               <app-session-card

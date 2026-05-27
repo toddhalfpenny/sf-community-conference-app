@@ -190,13 +190,13 @@ END:VCALENDAR`;
 
     if (this.shouldShowStream) {
       if (this.session.liveStreamLink.includes("youtube")) {
-        this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe width="100%" height="315" src="${this.session.liveStreamLink}" frameborder="0" allowfullscreen></iframe>`);
+        this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe width="100%" height="315" src="${this.session.liveStreamLink}" frameborder="0" allowfullscreen style="width:100%;min-height:300px"></iframe>`);
       } else if (this.session.liveStreamLink.includes("vimeo")) {
-        this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe src="${this.session.liveStreamLink}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;"></iframe>`);
+        this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe src="${this.session.liveStreamLink}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;min-height:300px"></iframe>`);
       } else {
-        console.error('Unknown live stream platform for link', this.session.liveStreamLink);
-        this.shouldShowStream = false;
-        return false;
+        // console.error('Unknown live stream platform for link', this.session.liveStreamLink);
+        // this.shouldShowStream = false;
+        this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe src="${this.session.liveStreamLink}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;min-height:300px"></iframe>`);
       }
     }
     return false;
