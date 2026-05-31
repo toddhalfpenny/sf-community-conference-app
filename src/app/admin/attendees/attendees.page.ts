@@ -82,7 +82,7 @@ export class AttendeesPage implements OnInit {
 
 
       const converted = tabletojson.convert(data)[0];
-      console.log('Converted CSV to JSON:', converted.length, 'rows');
+      console.log('Converted table to JSON:', converted.length, 'rows');
       this.setHeaderIndex2(converted[0]);
       console.log('Header indexes set to:', this.importFileHeaderIndexes);
 
@@ -119,13 +119,13 @@ export class AttendeesPage implements OnInit {
   }
 
   private getType(ticketType: string): UserType {
-    switch (ticketType) {
-      case 'Organisers':
+    switch (ticketType.toLowerCase()) {
+      case 'organiser':
         return UserType.Admin;
-      case 'Speakers':
+      case 'speaker':
         return UserType.Speaker;
-      case 'Sponsors':
-      case 'Sponsor General Admission':
+      case 'sponsor':
+      // case 'sponsor General Admission':
         return UserType.Sponsor;
       case 'Pay':
         return UserType.PayItForward;
@@ -139,13 +139,13 @@ export class AttendeesPage implements OnInit {
     for (let key of Object.keys(headerRow)) {
       console.log(`Processing header column: ${headerRow[key]} at index ${key}`);
       switch (headerRow[key].toLowerCase()) {
-        case 'attendee no.' :
+        case 'attendee #' :
           this.importFileHeaderIndexes.attendeeNumber  = parseInt(key);
           break;
         case 'first name' :
           this.importFileHeaderIndexes.firstName  = parseInt(key);
           break;
-        case 'surname' :
+        case 'last name' :
           this.importFileHeaderIndexes.lastName  = parseInt(key);
           break;
         case 'email' :
