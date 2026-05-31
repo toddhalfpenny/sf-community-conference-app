@@ -4,6 +4,7 @@ export interface Poll {
   question: string;
   options: string[];
   isActive: boolean;
+  isResultPublic: boolean;
 }
 
 export interface PollVotes {

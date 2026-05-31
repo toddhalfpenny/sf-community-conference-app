@@ -76,6 +76,7 @@ export class PollPage implements OnInit {
 
   protected pollForm: FormGroup = this.formBuilder.group({
     isActive: [false, Validators.required], // Add the isActive field
+    isResultPublic: [false, Validators.required], // Add the isResultPublic field
   });
 
   constructor() {
@@ -97,11 +98,13 @@ export class PollPage implements OnInit {
         question: '',
         options: [],
         isActive: false,
+        isResultPublic: false,
       };
     }
 
     const formValues: any = {
-      isActive: this.poll.isActive
+      isActive: this.poll.isActive,
+      isResultPublic: this.poll.isResultPublic ?? false
     };
     this.poll.options.forEach((option, index) => {
       formValues[`option${index}`] = option;
@@ -123,14 +126,16 @@ export class PollPage implements OnInit {
     let biggestResult = 0;
     let currIndex = 0;
     for (let key in this.pollResults) {
-      console.log(`Option: ${key}, Votes: ${this.pollResults[key]}`);
-      dataArr.push(this.pollResults[key]);
-      labelsArr.push(key);
-      if (this.pollResults[key] > biggestResult) {
-        biggestIndex = currIndex;
-        biggestResult = this.pollResults[key];
+      if (key !== 'dummy') {
+        console.log(`Option: ${key}, Votes: ${this.pollResults[key]}`);
+        dataArr.push(this.pollResults[key]);
+        labelsArr.push(key);
+        if (this.pollResults[key] > biggestResult) {
+          biggestIndex = currIndex;
+          biggestResult = this.pollResults[key];
+        }
+        currIndex++;
       }
-      currIndex++;
     }
     console.log('biggestIndex', biggestIndex);
     // dataArr[biggestIndex] = biggestResult + 5;
@@ -197,6 +202,7 @@ export class PollPage implements OnInit {
     const updatedPoll = {
       ...this.poll,
       isActive: this.pollForm.value.isActive, // Update the isActive flag
+      isResultPublic: this.pollForm.value.isResultPublic, // Update the isResultPublic flag
     };
   
     console.log('Saving poll:', updatedPoll);
