@@ -110,7 +110,7 @@ export class SessionService {
       await this.storageService.upsert('sessions', updatedSessions, 'id', options.allStatuses);
       this.storageService.updateFetchedTime(SESSIONS_DB_CONF.FETCHED_KEY);
       const sessions = await this.storageService.getAll('sessions') as Session[];
-      this.setAgenda(cachedSessions);
+      this.setAgenda(sessions);
       return sessions;
     }
   }

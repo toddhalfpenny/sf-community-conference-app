@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSearchbar, IonButton, IonIcon, IonPopover, IonCheckbox } from '@ionic/angular/standalone';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonSegment, IonSegmentButton, IonSearchbar, IonButton, IonIcon, IonPopover, IonCheckbox, IonLoading } from '@ionic/angular/standalone';
 import {  filterCircleOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { SessionService } from '../session/session.service';
@@ -19,7 +19,7 @@ const LAST_SEGEMENT_KEY = 'schedulePageLastSegment';
   templateUrl: './schedule.page.html',
   styleUrls: ['./schedule.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonButton, IonIcon, IonPopover, IonItem, IonCheckbox, AnnouncementIconComponent]
+  imports: [IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, CommonModule, FormsModule, IonList, SessionCardComponent, IonSegment, IonSegmentButton, IonLabel, IonSearchbar, IonButton, IonIcon, IonPopover, IonItem, IonCheckbox, AnnouncementIconComponent, IonLoading]
 })
 export class SchedulePage implements OnInit {
 
@@ -30,6 +30,7 @@ export class SchedulePage implements OnInit {
 
   protected agenda?: Session[][];
   protected currentSegment: string = 'all';
+  protected isLoading: boolean = true;
   protected filterTags: string[] = [];
   protected activeFilters: string[] = [];
   protected searchTerm : string = '';
@@ -49,6 +50,9 @@ export class SchedulePage implements OnInit {
     this.agendaSubscription = this.sessionService.agenda$.subscribe((agenda: Session[][]) => {
       console.log('Agenda updated', agenda);
       this.agenda = agenda;
+      if (this.agenda && this.agenda.length > 1) {
+        this.isLoading = false;
+      } 
       this.filterTags = this.setFilterTags();
     });
 
@@ -78,8 +82,13 @@ export class SchedulePage implements OnInit {
   }
 
   async ionViewWillEnter() {
+
+    this.isLoading = true;
     this.userService.getUser();
-    // this.sessionService.getAgenda();
+    // if (!this.agenda || this.agenda.length < 2) {
+    //   console.log('ionnViewWillEnter: Fetching agenda');
+    //   this.sessionService.getAgenda();
+    // }
     this.currentSegment = localStorage.getItem(LAST_SEGEMENT_KEY) || 'all';
   }
 
