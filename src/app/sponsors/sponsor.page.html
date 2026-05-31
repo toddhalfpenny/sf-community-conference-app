@@ -10,11 +10,11 @@
 <ion-content [fullscreen]="true" class="ion-padding">
   @if (sponsor) {
     <div class="sponsor">
-      @if (sponsor.logoUrl) {
-          <img [src]="`/assets/sponsor-logos/${sponsor.logoUrl}`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
-      } @else {  
+      <!-- @if (sponsor.logoUrl) { -->
+          <img [src]="`/assets/sponsor-logos/${sponsor.id}.png`" alt="{{ sponsor.name }} logo" [alt]="sponsor.name"/>
+      <!-- } @else {  
         {{ sponsor.name }}
-      }
+      } -->
       <div class="sponsor-details">
         @if (sponsor.bio) {
           <pre class="sponsor-bio">{{ sponsor.bio }}</pre>
