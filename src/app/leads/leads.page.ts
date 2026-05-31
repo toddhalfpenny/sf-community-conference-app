@@ -41,7 +41,7 @@ export class LeadsPage implements OnInit {
     // TODO SUBSCRIPTION THIS
     if (!this.user) {
       this.user = await this.userService.getUser() as User;
-      console.log('User in contest page', this.user);
+      console.log('User in leads page', this.user);
     }
     if (this.user) {
       this.leads = await this.leadsService.getLeads(this.user.sponsorAdmin ?? this.user.boothStaff);
