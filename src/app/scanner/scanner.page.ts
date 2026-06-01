@@ -135,6 +135,7 @@ export class ScannerPage implements OnDestroy{
 
 
   async startScanner() {
+    console.log('Starting scanner, fetching devices...');
     setTimeout(() => {
       this.scanner.devices.subscribe((devices) => {
         this.devices = devices;
@@ -172,14 +173,32 @@ export class ScannerPage implements OnDestroy{
       
   }
 
-  protected toggleCamera() {
+  protected async toggleCamera() {
     this.currDeviceIdx++;
     if (this.currDeviceIdx >= this.devices.length) {
       this.currDeviceIdx = 0;
     } 
     console.log('Switching to device index:', this.currDeviceIdx, this.devices[this.currDeviceIdx]);
     localStorage.setItem(DEVICE_SCAN_TOKEN, this.devices[this.currDeviceIdx].deviceId);
-    this.scanner.playDevice(this.devices[this.currDeviceIdx].deviceId);
+    if (this.devices[this.currDeviceIdx].deviceId === '') {
+      console.warn('Device ID is empty, cannot switch camera.');
+      // LOAD_WASM().subscribe(res => {
+      //   console.log('LOAD_WASM in toggleCamera',res)
+
+          await this.scanner.start().subscribe((res: any) => {
+            console.log('Scanner restarted after empty device ID:', res);
+
+        console.log('Reloading scanner page to reset camera state');
+        this.router.navigate(['/leads'], { replaceUrl: true});
+          });
+          // this.startScanner();
+      // });
+      return;
+    } else {
+      console.log('Playing device:', this.devices[this.currDeviceIdx]);
+      this.scanner.playDevice(this.devices[this.currDeviceIdx].deviceId);
+      return;
+    }
   }
 
 
