@@ -18,8 +18,8 @@ import { Poll, PollVotes } from './poll.model';
 const LOG_TAG = 'poll.servce';
 
 const Poll_DB_CONF = {
-  // TTL: 1000 * 60, // 1 minutes
-  TTL: 1000 * 10, // 10 secods
+  TTL: 1000 * 60, // 1 minutes
+  // TTL: 1000 * 10, // 10 secods
   FETCHED_KEY: 'polls_fetched',
 }
 @Injectable({

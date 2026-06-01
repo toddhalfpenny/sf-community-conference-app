@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, IonAlert } from '@ionic/angular/standalone';
+import { IonBackButton, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, IonAlert, IonCard } from '@ionic/angular/standalone';
 import { Subscription, tap } from 'rxjs';
 import { AuthFormComponent } from './auth-form/auth-form.component';
 import { AuthenticationService } from './authentication.service';
@@ -40,7 +40,8 @@ export interface UserCredentials {
     FormsModule,
     AuthFormComponent,
     RouterLink,
-    IonAlert
+    IonAlert,
+    IonCard
 ],
 })
 export class AuthenticationPage implements OnDestroy {

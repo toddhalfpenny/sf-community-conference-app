@@ -15,7 +15,7 @@ const LOG_TAG = 'faq.servce';
 
 const FAQ_DB_CONF = {
   // TTL: 1000 * 60 * 60, // 1 hour
-  TTL: 1000 * 30 * 10, // 10 minutes
+  TTL: 1000 * 60 * 10, // 10 minutes
   // TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'faqs_fetched',
 }

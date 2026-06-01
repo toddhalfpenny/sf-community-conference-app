@@ -23,7 +23,7 @@ const LOG_TAG = 'lead.servce';
 
 const lead_DB_CONF = {
   // TTL: 1000 * 60 * 60, // 1 hour
-  TTL: 1000 * 30 * 5, // 5 minutes
+  TTL: 1000 * 60 * 10, // 10 minutes
   // TTL: 1000 * 30, // 30 seconds
   FETCHED_KEY: 'leads_fetched',
 }

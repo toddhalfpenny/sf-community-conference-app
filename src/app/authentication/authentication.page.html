@@ -28,11 +28,11 @@
     ></app-auth-form>
 
     @if (currentPage !== 'signup') {
-      <ion-button expand="block" fill="clear" routerLink="/auth/signup">
+      <ion-button expand="block" color="secondary" fill="outline" routerLink="/auth/signup">
         Create a new account
       </ion-button>
     } @if (currentPage !== 'reset') {
-      <ion-button expand="block" fill="clear" routerLink="/auth/reset">
+      <ion-button expand="block" color="secondary" fill="outline" routerLink="/auth/reset">
         I forgot my password :(
       </ion-button>
     }
