@@ -132,7 +132,9 @@ export class LeadPage implements OnInit {
     };
     console.log('Saving lead:', updatedLead);
     await this.leadsService.saveLead(updatedLead);
-    this.router.navigate(['/leads'], { replaceUrl:true });
+    setTimeout(() => {
+      this.router.navigate(['/leads'], { replaceUrl:true });
+    }, 500);
   }
 
   protected async sync() {

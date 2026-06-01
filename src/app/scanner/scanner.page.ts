@@ -124,13 +124,21 @@ export class ScannerPage implements OnDestroy{
   }
 
   protected async save() {
-    this.isSavingLead = true;
-    const newLead  = await this.leadsService.newLead(this.lead);
-    this.isSavingLead = false;
-    console.log('New lead saved:', newLead);
-    setTimeout(() => {
-      this.router.navigate(['/leads']);
-    }, 100);
+    try {
+      this.isSavingLead = true;
+      const newLead  = await this.leadsService.newLead(this.lead);
+      console.log('New lead saved:', newLead);
+      setTimeout(() => {
+        setTimeout(() => {
+          this.router.navigate(['/leads']);
+        }, 500);
+        this.isSavingLead = false;
+      }, 500);
+    } catch (error) {
+      console.error('Error saving lead:', error);
+      this.isSavingLead = false;
+      alert('Failed to save lead. Please try again.' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
   }
 
 
