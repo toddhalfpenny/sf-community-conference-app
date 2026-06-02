@@ -27,7 +27,7 @@ interface TieredSponsors {
   'Sweet Trolley'?: Sponsor[],
   'Headshot Photographer'?: Sponsor[],
   'WI-FI'?: Sponsor[],
-  'Coffee/Beverage'?: Sponsor[],
+  'Tea & Coffee'?: Sponsor[],
   'Stairs'?: Sponsor[]
 }
 
@@ -126,7 +126,7 @@ export class SponsorsService {
       'Sweet Trolley': [],
       'Headshot Photographer': [],
       'WI-FI': [],
-      'Coffee/Beverage': [],
+      'Tea & Coffee': [],
       'Stairs': []
     }
 
@@ -179,13 +179,13 @@ export class SponsorsService {
       'Gold',
       'Demo Jam',
       'Room & Video',
-      'Speaker & Salesforce MVP Party',
       'The Retreats',
       'Sweet Trolley',
       'Headshot Photographer',
       'WI-FI',
-      'Coffee/Beverage',
-      'Stairs'
+      'Tea & Coffee',
+      'Stairs',
+      'Speaker & Salesforce MVP Party'
     ]
   }
 
@@ -225,7 +225,7 @@ export class SponsorsService {
       'Sweet Trolley': [],
       'Headshot Photographer': [],
       'WI-FI': [],
-      'Coffee/Beverage': [],
+      'Tea & Coffee': [],
       'Stairs': []
     }
     for (const sponsorData of sponsors) {
