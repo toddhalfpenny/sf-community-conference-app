@@ -175,8 +175,11 @@ export class StorageService {
   public async clearTTL() {
     localStorage.removeItem('announcements_fetched');
     localStorage.removeItem('appuser_fetched');
+    localStorage.removeItem('contest_fetched');
     localStorage.removeItem('eventuser_fetched');
+    localStorage.removeItem('faqs_fetched');
     localStorage.removeItem('leads_fetched');
+    localStorage.removeItem('polls_fetched');
     localStorage.removeItem('sessions_fetched');
     localStorage.removeItem('speakers_fetched');
     localStorage.removeItem('sponsors_fetched');
