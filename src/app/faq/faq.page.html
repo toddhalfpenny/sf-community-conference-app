@@ -11,7 +11,7 @@
   @if (faqs) {
     <ion-list>
       @for (faq of faqs; track $index) {
-        <ion-item>
+        <ion-item class="faq-item">
           <ion-label>
             <h2>{{ faq.question }}</h2>
             <div class="answer" [innerHTML]="faq.answer"></div>

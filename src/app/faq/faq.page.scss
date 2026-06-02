@@ -1,4 +1,12 @@
-.answer {
+.faq-item .answer {
   color: var(--ion-color-dark-tint);
-  font-size: 0.8em;
+  font-size: 14px;
+  p {
+    margin-top: 1em;
+  }
+}
+
+.faq-item .answer p{
+  color: var(--ion-color-dark-tint);
+  margin-top: 1em;
 }
