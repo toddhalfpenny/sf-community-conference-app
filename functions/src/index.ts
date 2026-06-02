@@ -11,7 +11,9 @@ import {setGlobalOptions} from "firebase-functions";
 import {onDocumentCreated} from "firebase-functions/firestore";
 import * as logger from "firebase-functions/logger";
 import {getFirestore} from "firebase-admin/firestore";
+import {getAuth} from "firebase-admin/auth";
 import {initializeApp} from "firebase-admin/app";
+import {onRequest} from "firebase-functions/https";
 initializeApp();
 
 // Start writing functions
@@ -29,9 +31,42 @@ initializeApp();
 // this will be the maximum concurrent request count.
 setGlobalOptions({maxInstances: 10, minInstances: 1});
 
-// Listens for new messages added to /messages/:documentId/original
-// and saves an uppercased version of the message
-// to /messages/:documentId/uppercase
+
+exports.todd = onRequest(async (req, res) => {
+  // Grab the text parameter.
+  // const original = req.query.text;
+  // res.json({result: `Message with ID: ${original} received.`});
+  const code = req.query.code;
+  const doc = req.query.doc;
+  const uuid = req.query.uuid;
+  const db = getFirestore();
+  db.doc(`config/${doc}`).get().then((doc) => {
+    if (doc.exists) {
+      const configData = doc.data();
+      logger.log("Config data retrieved", configData);
+      if (configData?.code === code) {
+        return getAuth()
+          .updateUser(uuid as string, {emailVerified: true}).then(() => {
+            logger.log("User enabled successfully");
+            return res.json({result: "success"});
+          }).catch((error) => {
+            logger.error("Error enabling user:", error);
+            return res.json({result: "whoops"});
+          });
+      } else {
+        return res.json({result: "Invalid"});
+      }
+    } else {
+      logger.error("No such document for doc ID:", doc);
+      return res.json({result: `No such document for doc ID: ${doc}`});
+    }
+  }).catch((error) => {
+    logger.error("Error fetching config document:", error);
+    return;
+  });
+});
+
+
 exports.enrichLead = onDocumentCreated("/leads/{documentId}", (event) => {
   // Grab the current value of what was written to Firestore.
   const userId = event?.data?.data().user.id;
