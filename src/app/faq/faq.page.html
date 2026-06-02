@@ -14,7 +14,7 @@
         <ion-item>
           <ion-label>
             <h2>{{ faq.question }}</h2>
-            <p>{{ faq.answer }}</p>
+            <div class="answer" [innerHTML]="faq.answer"></div>
           </ion-label>
         </ion-item>
       }
