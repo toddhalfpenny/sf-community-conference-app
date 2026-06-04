@@ -76,6 +76,7 @@ export class AttendeePage implements OnInit {
           telephone: '',
           type: UserType['Attendee-InPerson'],
           isActive: true,
+          prevUserId: null
         }
       } else {
         this.attendee = await this.userService.getUserById(attendeeId) as User;
