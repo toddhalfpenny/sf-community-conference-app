@@ -215,9 +215,14 @@ export class UserService {
 
     this.user.myAgendaSessions = updatedFavourites;
     this._user.next(this.user);
-    this.storageService.upsert('user', [this.user], 'id');
-    const userDocRef = doc(this.firestore, `eventusers/${this.user.id}`);
-    await setDoc(userDocRef, { myAgendaSessions: updatedFavourites }, {merge: true});
+    try {
+      this.storageService.upsert('user', [this.user], 'id');
+      const userDocRef = doc(this.firestore, `eventusers/${this.user.id}`);
+      const res = await setDoc(userDocRef, { myAgendaSessions: updatedFavourites }, {merge: true});
+      console.log(LOG_TAG, 'Favourite sessions updated in Firestore', res);
+    } catch (error) {
+      console.error(LOG_TAG, 'Error updating favourite sessions:', error);
+    }
   }
 
 
