@@ -30,6 +30,7 @@ export class AttendeePage implements OnInit {
 
   protected attendee!: User;
   protected userForm: FormGroup = this.formBuilder.group({
+    id: [{value: null}],
     email: [{value: ''}, Validators.required],
     firstname: [{value: ''}, Validators.required],
     lastname: [{value: ''}, Validators.required],
@@ -78,10 +79,12 @@ export class AttendeePage implements OnInit {
         }
       } else {
         this.attendee = await this.userService.getUserById(attendeeId) as User;
+        this.attendee.prevUserId = this.attendee.id; // Store the original ID in case it gets changed (for new users, this will be null and can be ignored)
       }
       console.log('Loaded attendee', this.attendee);
 
       this.userForm.setValue({
+        id: this.attendee.id,
         email: this.attendee.email,
         firstname: this.attendee.firstname,
         lastname: this.attendee.lastname,
@@ -140,7 +143,7 @@ export class AttendeePage implements OnInit {
       const timeNow= new Date();
       console.log('Form values', JSON.stringify(this.userForm.value));
       const updatedUser: User = {
-        id: this.attendee.id,        
+        id: this.userForm.value.id,        
         email: this.userForm.value.email,
         firstname: this.userForm.value.firstname,
         lastname: this.userForm.value.lastname,
@@ -151,6 +154,7 @@ export class AttendeePage implements OnInit {
         type: this.userForm.value.type,
         isActive: this.userForm.value.isActive,
         lastModified: timeNow,
+        prevUserId: this.attendee.prevUserId // Include the original ID for upsert logic
       };
       console.log('Saving attendee:', updatedUser);
       await this.userService.upsertUsers([updatedUser], true);

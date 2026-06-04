@@ -229,7 +229,7 @@ export class UserService {
   public async upsertUsers(users: User[], storeLocally: boolean = false): Promise<any[]> { 
     let errors: any[] = [];
     for (const user of users) {
-      console.log(LOG_TAG, 'Upserting user', user.firstname, user.lastname);
+      console.log(LOG_TAG, 'Upserting user', user.firstname, user.lastname, user);
       if (!user.id) {
         addDoc(collection(this.firestore, "eventusers"), user).then(async (res) => {
           console.log(LOG_TAG, 'User saved to Firestore', res);
@@ -242,15 +242,39 @@ export class UserService {
           errors.push({user, error});
         });
       } else {
-        setDoc(doc(this.firestore, "eventusers", user.id as string), user, {merge:true}).then(async (res) => {
-          console.log(LOG_TAG, 'User saved to Firestore', res);
-          if (storeLocally) {
+        if (user.id === user.prevUserId) {
+          // Updating, but not changing ID
+          setDoc(doc(this.firestore, "eventusers", user.id as string), user, {merge:true}).then(async (res) => {
+            console.log(LOG_TAG, 'User saved to Firestore', res);
+            if (storeLocally) {
+              await this.storageService.upsert('eventUsers', [user], 'id');
+            }
+          }).catch(async (error) => {
+            console.error(LOG_TAG, 'Error saving eventusers to Firestore:', error);
+            errors.push({user, error});
+          });
+        } else {
+          console.log(LOG_TAG, 'User ID has changed. Creating new document and deleting old one to preserve data integrity.', user);
+          // Create new document with updated ID
+          setDoc(doc(this.firestore, "eventusers", user.id), user).then(async (res) => {
+            console.log(LOG_TAG, 'User with updated ID saved to Firestore', res);
             await this.storageService.upsert('eventUsers', [user], 'id');
-          }
-        }).catch(async (error) => {
-          console.error(LOG_TAG, 'Error saving eventusers to Firestore:', error);
-          errors.push({user, error});
-        });
+            // Update old document - set email to have ".inactive" suffix and set to isActive  = false
+            let inactiveUser = {...user, id: user.prevUserId, email: `${user.email}.inactive`, isActive: false};
+            setDoc(doc(this.firestore, "eventusers", user.prevUserId as string), inactiveUser, {merge:true}).then(async (res) => {
+              console.log(LOG_TAG, 'User saved to Firestore', res);
+              if (storeLocally) {
+                await this.storageService.upsert('eventUsers', [inactiveUser], 'id');
+              }
+            }).catch(async (error) => {
+              console.error(LOG_TAG, 'Error saving eventusers to Firestore:', error);
+              errors.push({user, error});
+            });
+          }).catch(async (error) => {
+            console.error(LOG_TAG, 'Error saving eventusers with updated ID to Firestore:', error);
+            errors.push({user, error});
+          });
+        }
       }
     }
     return errors;
