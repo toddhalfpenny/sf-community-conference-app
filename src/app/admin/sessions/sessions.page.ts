@@ -62,7 +62,7 @@ export class SessionsPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.sessions = await this.sessionService.getSessions({forceRefresh: true, allStatuses: true});
+    this.sessions = (await this.sessionService.getSessions({forceRefresh: true, allStatuses: true})).sort((a, b) => (a.title < b.title ? -1 : 1));
   }
 
   public async importSessions() {
