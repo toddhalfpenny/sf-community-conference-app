@@ -154,4 +154,8 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/poll/poll.page').then( m => m.PollPage),
     canActivate: [AdminGuard] // Secure
   },
+  {
+    path: 'admin/leads',
+    loadComponent: () => import('./admin/leads/leads.page').then( m => m.LeadsPage)
+  },
 ];

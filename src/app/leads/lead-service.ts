@@ -70,6 +70,17 @@ export class LeadService {
   
   }
 
+  public async getAllLeads() {
+    const collRef = collection(this.firestore, 'leads');
+    const q = query(collRef);
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map((doc) => {
+      const leadData = doc.data() as Lead;
+      leadData.id = doc.id;
+      return leadData;
+    });
+  }
+
   async getLeads(sponsorId: any) {
     const shouldRefresh = this.storageService.shouldRefresh(lead_DB_CONF.FETCHED_KEY, lead_DB_CONF.TTL);
     console.log('shouldRefresh', shouldRefresh);
@@ -102,7 +113,7 @@ export class LeadService {
     try {
       lead.id = `${this.user?.id}-${lead.user?.id}`;
       lead.createdById = this.user?.id,
-      lead.sponsorId = this.user?.sponsorAdmin ?? this.user?.boothStaff;
+      lead.sponsorId = ((this.user?.sponsorAdmin ??  "") !== "") ? this.user?.sponsorAdmin : this.user?.boothStaff;
       lead.createdDate = new Date();
       lead.lastModified = new Date(); 
       lead.status = SyncStatus.pending;

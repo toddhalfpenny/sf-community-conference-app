@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Manage Leads</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button mode="md"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-button expand="block" (click)="fixLeads()">Fix leads</ion-button>
+  <ion-button [disabled]="leads.length === 0" (click)="exportLeads()" expand="block" shape="round" color="primary" size="large">
+    Export
+  </ion-button>
+  <a #downloadlink download="leads.csv" style="display: none;"></a>
+  <h1>Leads</h1>
+  @if (isLoaded){
+    <ion-list>
+      @for (lead of leads; track $index) {
+        <ion-card>
+          <p>Created by: {{ usersMap[lead.createdById ?? ""].firstname}} {{ usersMap[lead.createdById ?? ""].lastname}} ({{ lead.createdById }})</p>
+          <p>Sponsor (U): {{ sponsorsMap[usersMap[lead.createdById ?? ""].boothStaff ?? ""]?.name}}</p>
+          <p>Sponsor (L): {{ sponsorsMap[lead.sponsorId ?? ""]?.name}}</p>
+          <p>{{ lead.user?.firstname }} {{ lead.user?.lastname }}</p>
+        </ion-card>
+      }
+    </ion-list>
+  }
+</ion-content>

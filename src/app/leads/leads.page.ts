@@ -44,7 +44,7 @@ export class LeadsPage implements OnInit {
       console.log('User in leads page', this.user);
     }
     if (this.user) {
-      this.leads = await this.leadsService.getLeads(this.user.sponsorAdmin ?? this.user.boothStaff);
+      this.leads = await this.leadsService.getLeads((this.user.sponsorAdmin ?? "") !== "" ? this.user.sponsorAdmin : this.user.boothStaff);
     }
   }
 

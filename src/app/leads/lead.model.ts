@@ -4,7 +4,7 @@ import { User } from '../user/user.model';
 export interface Lead {
   id: string;
   createdDate?: Date | {seconds: number, nanoseconds: number};
-  createdById?: number;
+  createdById?: number | string;
   user?: User;
   lastModified?: Date | {seconds: number, nanoseconds: number};
   notes?: string;
