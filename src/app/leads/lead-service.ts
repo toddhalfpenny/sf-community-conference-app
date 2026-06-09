@@ -81,13 +81,18 @@ export class LeadService {
     });
   }
 
+  /**
+   * Gets all non-deleted leads for a sponsor Id
+   * @param sponsorId 
+   * @returns 
+   */
   async getLeads(sponsorId: any) {
     const shouldRefresh = this.storageService.shouldRefresh(lead_DB_CONF.FETCHED_KEY, lead_DB_CONF.TTL);
     console.log('shouldRefresh', shouldRefresh);
 
     if (!shouldRefresh) {
       console.log('Using cached leads data');
-      const cachedleads = await this.storageService.getAll('leads') as Lead[];
+      const cachedleads = (await this.storageService.getAll('leads') as Lead[]).filter(lead => lead.sponsorId === sponsorId && lead.status !== SyncStatus.deleted);
       return cachedleads;
     } else {
       const lastRefreshed = this.storageService.getLastFetchedTime(lead_DB_CONF.FETCHED_KEY);
@@ -103,7 +108,7 @@ export class LeadService {
         return leadData;
       });
       await this.storageService.upsert('leads', leadsToUpdate, 'id', true);
-      const leads = await this.storageService.getAll('leads') as Lead[];
+      const leads = (await this.storageService.getAll('leads') as Lead[]).filter(lead => lead.sponsorId === sponsorId && lead.status !== SyncStatus.deleted);
       return leads;
     }
   }

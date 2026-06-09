@@ -55,9 +55,9 @@ export class LeadsPage implements OnInit {
       return;
     }
 
-    const csvHeader = 'User ID,First Name,Last Name,Job Title,Email,Telephone,Company,Country\n';
+    const csvHeader = 'User ID,First Name,Last Name,Job Title,Email,Telephone,Company,Country,ScannedById,Notes\n';
     const csvContent = this.leads.map((e: Lead) => {
-      return `${e.user?.id},${e.user?.firstname},${e.user?.lastname},${e.user?.jobTitle},${e.user?.email},${e.user?.telephone},${e.user?.company},${e.user?.country}`;
+      return `${e.user?.id},${e.user?.firstname},${e.user?.lastname},"${e.user?.jobTitle}",${e.user?.email},${e.user?.telephone},${e.user?.company},${e.user?.country},${e.createdById},"${e.notes}"`;
     }).join('\n');
     // const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = encodeURI('data:text/csv;charset=utf-8,' + csvHeader + csvContent);

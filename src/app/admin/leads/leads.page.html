@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-button expand="block" (click)="fixLeads()">Fix leads</ion-button>
+  <ion-button disabled expand="block" (click)="fixLeads()">Fix leads</ion-button>
   <ion-button [disabled]="leads.length === 0" (click)="exportLeads()" expand="block" shape="round" color="primary" size="large">
     Export
   </ion-button>

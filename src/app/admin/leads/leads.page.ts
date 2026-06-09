@@ -62,23 +62,26 @@ export class LeadsPage implements OnInit {
   }
 
   protected async fixLeads() {
-    console.log('Fixing leads...');
-    for (let lead of this.leads) {
-      const user = this.usersMap[lead.createdById ?? ""];
-      if (lead.sponsorId === "" && user) {
-        const sponsorId = (user.sponsorAdmin ?? "") !== "" ? user.sponsorAdmin : user.boothStaff;
-        const sponsor = this.sponsorsMap[sponsorId ?? ""];
-        if (sponsor) {
-          lead.sponsorId = sponsor.id;
-          await this.leadsService.saveLead(lead);
-          console.log(`Updated lead (${lead.id} with sponsorId ${sponsor.id}`);
-        } else {
-          console.warn(`No sponsor found for user ${user.id} with sponsorAdmin ${user.sponsorAdmin} and boothStaff ${user.boothStaff}`);
-        }
-      } else {
+    console.log('Fixing leads...'); 
+    console.warn('No longer implemented');
+
+    // OLD CODE, to be removed after running once
+    // for (let lead of this.leads) {
+    //   const user = this.usersMap[lead.createdById ?? ""];
+    //   if (lead.sponsorId === "" && user) {
+    //     const sponsorId = (user.sponsorAdmin ?? "") !== "" ? user.sponsorAdmin : user.boothStaff;
+    //     const sponsor = this.sponsorsMap[sponsorId ?? ""];
+    //     if (sponsor) {
+    //       lead.sponsorId = sponsor.id;
+    //       await this.leadsService.saveLead(lead);
+    //       console.log(`Updated lead (${lead.id} with sponsorId ${sponsor.id}`);
+    //     } else {
+    //       console.warn(`No sponsor found for user ${user.id} with sponsorAdmin ${user.sponsorAdmin} and boothStaff ${user.boothStaff}`);
+    //     }
+    //   } else {
         
-      }
-    }
+    //   }
+    // }
   }
 
 
