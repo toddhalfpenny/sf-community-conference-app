@@ -28,8 +28,13 @@
     }
     <pre class="abstract">{{ session.abstract }}</pre>
     <!-- <div class="abstract" [innerHTML]="session.abstract"></div> -->
-    @if (shouldShowStream) {
-      <div class="stream" [innerHTML]="streamEmbedCode">Voo</div>
+    @if (session.recordingLink) {
+      <div class="recording">
+        <ion-icon name="videocam"></ion-icon>
+      </div>
+    }
+    @if (shouldShowStream || shouldShowRecording) {
+      <div class="stream" [innerHTML]="streamEmbedCode"></div>
     }
   </div>
 

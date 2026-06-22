@@ -3,7 +3,7 @@ import { type Session } from '../session.model';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ActionSheetController, IonAvatar, IonChip, IonLabel, IonIcon, IonButton } from "@ionic/angular/standalone";
-import { close, calendar, heart, heartOutline, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft } from 'ionicons/icons';
+import { close, calendar, heart, heartOutline, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft,videocam } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { User, UserType } from 'src/app/user/user.model';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -29,6 +29,8 @@ export class SessionCardComponent  implements OnInit {
 
 
   protected isFavourite: boolean  = false;
+  protected isVideoAvailable: boolean = false;
+  protected shouldShowRecording: boolean = false;
   protected shouldShowStream: boolean = false;
   protected streamEmbedCode: any = '';
 
@@ -63,12 +65,14 @@ export class SessionCardComponent  implements OnInit {
   constructor(
     private actionSheetCtrl: ActionSheetController
   ) {
-    addIcons({ close, calendar, heart, heartOutline, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft });
+    addIcons({ close, calendar, heart, heartOutline, shareSocial, time, location, logoGoogle, logoApple, logoMicrosoft, videocam });
   }
 
   ngOnInit() {
     this.isFavourite = this.favourites ? this.favourites.includes(this.session.id!) : false;
     this.calculateShouldShowStream();
+    this.calculateShouldShowRecording();
+    this.isVideoAvailable = this.shouldShowStream || this.shouldShowRecording;
   }
 
   protected async showAddToCalendar(event: any) {
@@ -169,6 +173,22 @@ END:VCALENDAR`;
     console.log('Opening calendar file URL:', url);
     window.open(url, '_blank');
 
+  }
+
+  private calculateShouldShowRecording(): boolean {
+    if (!this.isSessionPage ||!this.user || this.user.type === UserType.Guest) {
+      this.shouldShowRecording = false;
+      return false;
+    }
+    if (this.session.recordingLink) {
+      this.shouldShowRecording = true;
+      this.shouldShowStream = false; // If recording is available, don't show stream
+      this.streamEmbedCode = this.sanitizer.bypassSecurityTrustHtml(`<iframe src="${this.session.recordingLink}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;min-height:300px"></iframe>`);
+      return true;
+    } else {
+      this.shouldShowRecording = false;
+      return false;
+    }
   }
 
   private calculateShouldShowStream(): boolean {
